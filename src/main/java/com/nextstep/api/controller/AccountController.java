@@ -13,7 +13,6 @@ import com.nextstep.api.form.account.UpdateProfileAdminForm;
 import com.nextstep.api.mapper.AccountMapper;
 import com.nextstep.api.model.Account;
 import com.nextstep.api.model.Group;
-import com.nextstep.api.model.Service;
 import com.nextstep.api.model.criteria.AccountCriteria;
 import com.nextstep.api.service.UserBaseApiService;
 import com.nextstep.api.utils.AESUtils;
@@ -59,22 +58,20 @@ public class AccountController extends ABasicController{
     @Autowired
     UserRepository userRepository;
 
-    @Autowired
-    ServiceRepository serviceRepository;
 
-    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('ACC_L')")
-    public ApiResponse<ResponseListDto<Service>> list(AccountCriteria accountCriteria, Pageable pageable) {
-        if(!isSuperAdmin() ){
-            throw new UnauthorizationException("Not allowed to list career.");
-        }
-        ApiResponse<ResponseListDto<Service>> apiMessageDto = new ApiResponse<>();
-        Page<Account> careerList = accountRepository.findAll(accountCriteria.getSpecification() , pageable);
-        ResponseListDto<Service> responseListDto = new ResponseListDto(careerList.getContent(), careerList.getTotalElements(), careerList.getTotalPages());
-        apiMessageDto.setData(responseListDto);
-        apiMessageDto.setMessage("Get career list success");
-        return apiMessageDto;
-    }
+//    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
+//    @PreAuthorize("hasRole('ACC_L')")
+//    public ApiResponse<ResponseListDto<Service>> list(AccountCriteria accountCriteria, Pageable pageable) {
+//        if(!isSuperAdmin() ){
+//            throw new UnauthorizationException("Not allowed to list career.");
+//        }
+//        ApiResponse<ResponseListDto<Service>> apiMessageDto = new ApiResponse<>();
+//        Page<Account> careerList = accountRepository.findAll(accountCriteria.getSpecification() , pageable);
+//        ResponseListDto<Service> responseListDto = new ResponseListDto(careerList.getContent(), careerList.getTotalElements(), careerList.getTotalPages());
+//        apiMessageDto.setData(responseListDto);
+//        apiMessageDto.setMessage("Get career list success");
+//        return apiMessageDto;
+//    }
 
     @PostMapping(value = "/create_admin", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('ACC_C_AD')")
@@ -178,7 +175,6 @@ public class AccountController extends ABasicController{
         //delete avatar file
         userBaseApiService.deleteFile(account.getAvatarPath());
         userRepository.deleteAllByAccountId(id);
-        serviceRepository.deleteAllByAccountId(id);
         accountRepository.deleteById(id);
         apiMessageDto.setMessage("Delete Account success");
         return apiMessageDto;

@@ -1,7 +1,7 @@
 package com.nextstep.api.controller;
 
 import com.nextstep.api.constant.NextStepConstant;
-import com.nextstep.api.jwt.UserBaseJwt;
+import com.nextstep.api.jwt.NextStepJwt;
 import com.nextstep.api.service.impl.UserServiceImpl;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -16,31 +16,31 @@ public class ABasicController {
     private UserServiceImpl userService;
 
     public long getCurrentUser(){
-        UserBaseJwt userBaseJwt = userService.getAddInfoFromToken();
-        return userBaseJwt.getAccountId();
+        NextStepJwt nextStepJwt = userService.getAddInfoFromToken();
+        return nextStepJwt.getAccountId();
     }
 
     public long getTokenId(){
-        UserBaseJwt userBaseJwt = userService.getAddInfoFromToken();
-        return userBaseJwt.getTokenId();
+        NextStepJwt nextStepJwt = userService.getAddInfoFromToken();
+        return nextStepJwt.getTokenId();
     }
 
-    public UserBaseJwt getSessionFromToken(){
+    public NextStepJwt getSessionFromToken(){
         return userService.getAddInfoFromToken();
     }
 
     public boolean isSuperAdmin(){
-        UserBaseJwt userBaseJwt = userService.getAddInfoFromToken();
-        if(userBaseJwt !=null){
-            return userBaseJwt.getIsSuperAdmin();
+        NextStepJwt nextStepJwt = userService.getAddInfoFromToken();
+        if(nextStepJwt !=null){
+            return nextStepJwt.getIsSuperAdmin();
         }
         return false;
     }
 
     public boolean isShop(){
-        UserBaseJwt userBaseJwt = userService.getAddInfoFromToken();
-        if(userBaseJwt !=null){
-            return Objects.equals(userBaseJwt.getUserKind(), NextStepConstant.USER_KIND_MANAGER);
+        NextStepJwt nextStepJwt = userService.getAddInfoFromToken();
+        if(nextStepJwt !=null){
+            return Objects.equals(nextStepJwt.getUserKind(), NextStepConstant.USER_KIND_MANAGER);
         }
         return false;
     }

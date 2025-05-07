@@ -12,7 +12,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "db_user_base_account")
+@Table(name = "db_account")
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter

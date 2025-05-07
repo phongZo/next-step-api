@@ -9,7 +9,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import javax.persistence.*;
 
 @Entity
-@Table(name = "db_user_base_category")
+@Table(name = "db_category")
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter

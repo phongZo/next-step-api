@@ -8,7 +8,7 @@ import java.io.Serializable;
 
 @Slf4j
 @Data
-public class UserBaseJwt implements Serializable {
+public class NextStepJwt implements Serializable {
     public static final String DELIM = "\\|";
     public static final String EMPTY_STRING = "<>";
     private Long tokenId;
@@ -48,12 +48,12 @@ public class UserBaseJwt implements Serializable {
         return ZipUtils.zipString(accountId+DELIM+ storeId +DELIM+kind+DELIM+pemission+DELIM+deviceId+DELIM+userKind+DELIM+username+DELIM+tabletKind+DELIM+orderId+DELIM+isSuperAdmin+DELIM+tenantId) ;
     }
 
-    public static UserBaseJwt decode(String input){
-        UserBaseJwt result = null;
+    public static NextStepJwt decode(String input){
+        NextStepJwt result = null;
         try {
             String[] items = ZipUtils.unzipString(input).split(DELIM,11);
             if(items.length >= 10){
-                result = new UserBaseJwt();
+                result = new NextStepJwt();
                 result.setAccountId(parserLong(items[0]));
                 result.setStoreId(parserLong(items[1]));
                 result.setKind(checkString(items[2]));

@@ -51,10 +51,6 @@ public class UserController {
     @Autowired
     private GroupRepository groupRepository;
 
-
-    @Autowired
-    private ServiceRepository serviceRepository;
-
     @PostMapping(value = "/signup", produces= MediaType.APPLICATION_JSON_VALUE)
     public ApiMessageDto<String> create(@Valid @RequestBody SignUpUserForm signUpUserForm, BindingResult bindingResult)
     {
@@ -152,7 +148,6 @@ public class UserController {
             return apiMessageDto;
         }
         userRepository.delete(user);
-        serviceRepository.deleteAllByAccountId(account.getId());
         accountRepository.delete(account);
         apiMessageDto.setMessage("Delete User success");
         return apiMessageDto;

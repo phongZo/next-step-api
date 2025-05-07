@@ -2,7 +2,7 @@ package com.nextstep.api.service.impl;
 
 import com.nextstep.api.config.SecurityConstant;
 import com.nextstep.api.constant.NextStepConstant;
-import com.nextstep.api.jwt.UserBaseJwt;
+import com.nextstep.api.jwt.NextStepJwt;
 import com.nextstep.api.model.Account;
 import com.nextstep.api.repository.AccountRepository;
 import com.nextstep.api.repository.GroupRepository;
@@ -135,7 +135,7 @@ public class UserServiceImpl implements UserDetailsService {
         return tokenServices.createAccessToken(auth);
     }
 
-    public UserBaseJwt getAddInfoFromToken() {
+    public NextStepJwt getAddInfoFromToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
             OAuth2AuthenticationDetails oauthDetails =
@@ -145,7 +145,7 @@ public class UserServiceImpl implements UserDetailsService {
                 String encodedData = (String) map.get("additional_info");
                 //idStr -> json
                 if (encodedData != null && !encodedData.isEmpty()) {
-                    return UserBaseJwt.decode(encodedData);
+                    return NextStepJwt.decode(encodedData);
                 }
                 return null;
             }

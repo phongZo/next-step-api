@@ -9,7 +9,7 @@ import javax.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "db_user_base_user")
+@Table(name = "db_user")
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter

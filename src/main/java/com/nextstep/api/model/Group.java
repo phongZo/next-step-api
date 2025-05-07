@@ -10,7 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Entity
-@Table(name = "db_user_base_group")
+@Table(name = "db_group")
 @EntityListeners(AuditingEntityListener.class)
 @Getter
 @Setter
