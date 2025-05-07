@@ -50,8 +50,7 @@ public class UserController {
     private AccountMapper accountMapper;
     @Autowired
     private GroupRepository groupRepository;
-    @Autowired
-    private AddressRepository addressRepository;
+
 
     @Autowired
     private ServiceRepository serviceRepository;
@@ -152,7 +151,6 @@ public class UserController {
             apiMessageDto.setCode(ErrorCode.ACCOUNT_ERROR_NOT_ALLOW_DELETE_SUPPER_ADMIN);
             return apiMessageDto;
         }
-        addressRepository.deleteAllByUserId(id);
         userRepository.delete(user);
         serviceRepository.deleteAllByAccountId(account.getId());
         accountRepository.delete(account);

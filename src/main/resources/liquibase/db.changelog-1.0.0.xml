@@ -3,7 +3,7 @@
                    xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext"
                    xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
-    <changeSet author="Authentication" id="1697783111984-1">
+    <changeSet author="NextStep" id="1697783111984-1">
         <createTable tableName="db_user_base_account">
             <column name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -41,7 +41,7 @@
             <column name="phone" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-3">
+    <changeSet author="NextStep" id="1697783111984-3">
         <createTable tableName="db_user_base_group">
             <column name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -69,7 +69,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-4">
+    <changeSet author="NextStep" id="1697783111984-4">
         <createTable tableName="db_user_base_permission">
             <column autoIncrement="true" name="id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -99,7 +99,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-5">
+    <changeSet author="NextStep" id="1697783111984-5">
         <createTable tableName="db_user_base_permission_group">
             <column name="group_id" type="BIGINT">
                 <constraints nullable="false"/>
@@ -109,7 +109,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-7">
+    <changeSet author="NextStep" id="1697783111984-7">
         <createTable tableName="db_user_base_service">
             <column name="account_id" type="BIGINT">
                 <constraints nullable="false" primaryKey="true"/>
@@ -138,7 +138,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-8">
+    <changeSet author="NextStep" id="1697783111984-8">
         <createTable tableName="oauth_access_token">
             <column name="token_id" type="VARCHAR(255)"/>
             <column name="token" type="LONGBLOB"/>
@@ -149,7 +149,7 @@
             <column name="refresh_token" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-9">
+    <changeSet author="NextStep" id="1697783111984-9">
         <createTable tableName="oauth_approvals">
             <column name="userId" type="VARCHAR(255)"/>
             <column name="clientId" type="VARCHAR(255)"/>
@@ -163,7 +163,7 @@
             </column>
         </createTable>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-10">
+    <changeSet author="NextStep" id="1697783111984-10">
         <createTable tableName="oauth_client_details">
             <column name="client_id" type="VARCHAR(255)">
                 <constraints nullable="false" primaryKey="true"/>
@@ -180,7 +180,7 @@
             <column name="autoapprove" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-11">
+    <changeSet author="NextStep" id="1697783111984-11">
         <createTable tableName="oauth_client_token">
             <column name="token_id" type="VARCHAR(255)"/>
             <column name="token" type="LONGBLOB"/>
@@ -189,20 +189,20 @@
             <column name="client_id" type="VARCHAR(255)"/>
         </createTable>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-12">
+    <changeSet author="NextStep" id="1697783111984-12">
         <createTable tableName="oauth_code">
             <column name="code" type="VARCHAR(255)"/>
             <column name="authentication" type="LONGBLOB"/>
         </createTable>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-13">
+    <changeSet author="NextStep" id="1697783111984-13">
         <createTable tableName="oauth_refresh_token">
             <column name="token_id" type="VARCHAR(255)"/>
             <column name="token" type="LONGBLOB"/>
             <column name="authentication" type="LONGBLOB"/>
         </createTable>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-14">
+    <changeSet author="NextStep" id="1697783111984-14">
         <insert tableName="db_user_base_account">
             <column name="id" valueNumeric="2"/>
             <column name="kind" valueNumeric="1"/>
@@ -336,7 +336,7 @@
             <column name="phone"/>
         </insert>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-16">
+    <changeSet author="NextStep" id="1697783111984-16">
         <insert tableName="db_user_base_group">
             <column name="id" valueNumeric="14"/>
             <column name="name" value="ROLE ADMIN"/>
@@ -410,7 +410,7 @@
             <column name="modified_date" valueDate="2023-10-06T16:02:40"/>
         </insert>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-17">
+    <changeSet author="NextStep" id="1697783111984-17">
         <insert tableName="db_user_base_permission">
             <column name="id" valueNumeric="6778614941024257"/>
             <column name="name" value="Create account"/>
@@ -846,7 +846,7 @@
             <column name="modified_date" valueDate="2023-10-20T06:06:27"/>
         </insert>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-18">
+    <changeSet author="NextStep" id="1697783111984-18">
         <insert tableName="db_user_base_permission_group">
             <column name="group_id" valueNumeric="15"/>
             <column name="permission_id" valueNumeric="6778614941024279"/>
@@ -984,7 +984,7 @@
             <column name="permission_id" valueNumeric="6778614941024269"/>
         </insert>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-20">
+    <changeSet author="NextStep" id="1697783111984-20">
         <insert tableName="db_user_base_service">
             <column name="account_id" valueNumeric="6783713748123648"/>
             <column name="tenant_id" value="cntt"/>
@@ -1031,7 +1031,7 @@
             <column name="status" valueNumeric="1"/>
         </insert>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-22">
+    <changeSet author="NextStep" id="1697783111984-22">
         <insert tableName="oauth_client_details">
             <column name="client_id" value="abc_client"/>
             <column name="resource_ids"/>
@@ -1102,48 +1102,300 @@
             <column name="autoapprove"/>
         </insert>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-26">
+    <changeSet author="NextStep" id="1697783111984-26">
         <createIndex indexName="FKi109re56lruai5trbtbtwswu6" tableName="db_user_base_permission_group">
             <column name="permission_id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-27">
+    <changeSet author="NextStep" id="1697783111984-27">
         <createIndex indexName="FKkwktf6145nb9dqrgemft4isdi" tableName="db_user_base_permission_group">
             <column name="group_id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-28">
+    <changeSet author="NextStep" id="1697783111984-28">
         <createIndex indexName="FKq43gkcct4py9h5wfjdwcpaj9w" tableName="db_user_base_account">
             <column name="group_id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-29">
+    <changeSet author="NextStep" id="1697783111984-29">
         <createIndex indexName="oauth_refresh_token_id" tableName="oauth_access_token">
             <column name="token_id"/>
         </createIndex>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-30">
+    <changeSet author="NextStep" id="1697783111984-30">
         <addForeignKeyConstraint baseColumnNames="permission_id" baseTableName="db_user_base_permission_group"
                                  constraintName="FK3fhlobbbeuhf2o9rji0hos6ul" deferrable="false"
                                  initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
                                  referencedColumnNames="id" referencedTableName="db_user_base_permission" validate="true"/>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-33">
+    <changeSet author="NextStep" id="1697783111984-33">
         <addForeignKeyConstraint baseColumnNames="account_id" baseTableName="db_user_base_service"
                                  constraintName="FKkhwfkupqyq24cbofkqutn1hw0" deferrable="false"
                                  initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
                                  referencedColumnNames="id" referencedTableName="db_user_base_account" validate="true"/>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-34">
+    <changeSet author="NextStep" id="1697783111984-34">
         <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="db_user_base_permission_group"
                                  constraintName="FKkwktf6145nb9dqrgemft4isdi" deferrable="false"
                                  initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
                                  referencedColumnNames="id" referencedTableName="db_user_base_group" validate="true"/>
     </changeSet>
-    <changeSet author="Authentication" id="1697783111984-35">
+    <changeSet author="NextStep" id="1697783111984-35">
         <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="db_user_base_account"
                                  constraintName="FKt24ved32tlgedttymq32ojjj4" deferrable="false"
                                  initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT"
                                  referencedColumnNames="id" referencedTableName="db_user_base_group" validate="true"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-36">
+        <createTable tableName="db_user_base_address">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="db_user_base_addressPK"/>
+            </column>
+            <column name="address" type="VARCHAR(255)"/>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="phone" type="VARCHAR(255)"/>
+            <column name="province_id" type="BIGINT"/>
+            <column name="district_id" type="BIGINT"/>
+            <column name="ward_id" type="BIGINT"/>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-37">
+        <createTable tableName="db_user_base_category">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="db_user_base_categoryPK"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="image" type="VARCHAR(255)"/>
+            <column name="kind" type="INT"/>
+            <column name="description" type="TEXT"/>
+            <column name="ordering" type="INT"/>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-38">
+        <createTable tableName="db_user_base_nation">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="db_user_base_nationPK"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="kind" type="INT"/>
+            <column name="post_code" type="VARCHAR(255)"/>
+            <column name="parent_id" type="BIGINT"/>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-39">
+        <createTable tableName="db_user_base_news">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="db_user_base_newsPK"/>
+            </column>
+            <column name="title" type="VARCHAR(255)"/>
+            <column name="category_id" type="BIGINT"/>
+            <column name="avatar" type="VARCHAR(255)"/>
+            <column name="banner" type="VARCHAR(255)"/>
+            <column name="content" type="TEXT"/>
+            <column name="description" type="TEXT"/>
+            <column name="pin_top" type="INT"/>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-40">
+        <createTable tableName="db_user_base_settings">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="db_user_base_settingsPK"/>
+            </column>
+            <column name="setting_key" type="VARCHAR(255)"/>
+            <column name="group_name" type="VARCHAR(255)"/>
+            <column name="setting_value" type="TEXT"/>
+            <column name="description" type="TEXT"/>
+            <column name="is_editable" type="INT"/>
+            <column name="is_system" type="INT"/>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-41">
+        <createTable tableName="db_user_base_user">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="db_user_base_userPK"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="email" type="VARCHAR(255)"/>
+            <column name="phone" type="VARCHAR(255)"/>
+            <column name="avatar" type="VARCHAR(255)"/>
+            <column name="birthday" type="datetime"/>
+            <column name="password" type="VARCHAR(255)"/>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-42">
+        <addUniqueConstraint columnNames="setting_key" constraintName="UC_DB_USER_BASE_SETTINGSSETTING_KEY_COL"
+                             tableName="db_user_base_settings"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-43">
+        <addForeignKeyConstraint baseColumnNames="ward_id" baseTableName="db_user_base_address"
+                                 constraintName="FK8qmry5dwhndr3nd58d8tc4gas" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="db_user_base_nation" validate="true"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-44">
+        <addForeignKeyConstraint baseColumnNames="parent_id" baseTableName="db_user_base_nation"
+                                 constraintName="FKfm7hrua7hasbf38ienyysm4ts" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="db_user_base_nation" validate="true"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-45">
+        <addForeignKeyConstraint baseColumnNames="province_id" baseTableName="db_user_base_address"
+                                 constraintName="FKim4vth9cpbdrqunanc0h5oh5c" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="db_user_base_nation" validate="true"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-46">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="db_user_base_news"
+                                 constraintName="FKk59lu60nces75j1n4amm9ipw4" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="db_user_base_category" validate="true"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-47">
+        <addForeignKeyConstraint baseColumnNames="district_id" baseTableName="db_user_base_address"
+                                 constraintName="FKo4m6xptceftxjfepiy01e1k0i" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="db_user_base_nation" validate="true"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-48">
+        <addColumn tableName="db_user_base_user">
+            <column name="account_id" type="bigint" afterColumn="id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-49">
+        <addColumn tableName="db_user_base_address">
+            <column name="user_id" type="bigint" afterColumn="id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-50">
+        <addForeignKeyConstraint baseColumnNames="user_id" baseTableName="db_user_base_address"
+                                 constraintName="FK20mqlhry7ck664s85wk1eq1qn" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="db_user_base_user" validate="true"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1698938825239-4">
+        <addForeignKeyConstraint baseColumnNames="account_id" baseTableName="db_user_base_user"
+                                 constraintName="FK30tks1lqufixlmk8b08gti667" deferrable="false"
+                                 initiallyDeferred="false" referencedColumnNames="id"
+                                 referencedTableName="db_user_base_account" validate="true"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-51">
+        <dropColumn columnName="avatar" tableName="db_user_base_user"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-52">
+        <dropColumn columnName="email" tableName="db_user_base_user"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-53">
+        <dropColumn columnName="name" tableName="db_user_base_user"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-54">
+        <dropColumn columnName="password" tableName="db_user_base_user"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-55">
+        <dropColumn columnName="phone" tableName="db_user_base_user"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-56">
+        <dropForeignKeyConstraint baseTableName="db_user_base_address" constraintName="FK20mqlhry7ck664s85wk1eq1qn"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-57">
+        <dropForeignKeyConstraint baseTableName="db_user_base_address" constraintName="FK8qmry5dwhndr3nd58d8tc4gas"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-58">
+        <dropForeignKeyConstraint baseTableName="db_user_base_address" constraintName="FKim4vth9cpbdrqunanc0h5oh5c"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-59">
+        <dropForeignKeyConstraint baseTableName="db_user_base_address" constraintName="FKo4m6xptceftxjfepiy01e1k0i"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1697783111984-60">
+        <dropTable tableName="db_user_base_address"/>
     </changeSet>
 </databaseChangeLog>

@@ -60,9 +60,6 @@ public class AccountController extends ABasicController{
     UserRepository userRepository;
 
     @Autowired
-    AddressRepository addressRepository;
-
-    @Autowired
     ServiceRepository serviceRepository;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -180,7 +177,6 @@ public class AccountController extends ABasicController{
         }
         //delete avatar file
         userBaseApiService.deleteFile(account.getAvatarPath());
-        addressRepository.deleteAllByAccountId(id);
         userRepository.deleteAllByAccountId(id);
         serviceRepository.deleteAllByAccountId(id);
         accountRepository.deleteById(id);

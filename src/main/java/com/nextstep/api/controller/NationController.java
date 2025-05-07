@@ -10,10 +10,8 @@ import com.nextstep.api.exception.BadRequestException;
 import com.nextstep.api.form.nation.CreateNationForm;
 import com.nextstep.api.form.nation.UpdateNationForm;
 import com.nextstep.api.mapper.NationMapper;;
-import com.nextstep.api.model.Address;
 import com.nextstep.api.model.Nation;
 import com.nextstep.api.model.criteria.NationCriteria;
-import com.nextstep.api.repository.AddressRepository;
 import com.nextstep.api.repository.NationRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,8 +40,7 @@ public class NationController extends ABasicController{
     @Autowired
     NationMapper nationMapper;
 
-    @Autowired
-    AddressRepository addressRepository;
+
 
     @PostMapping(value = "/create", produces= MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('N_C')")
@@ -153,13 +150,6 @@ public class NationController extends ABasicController{
         nationIdsToDelete.addAll(children1);
         nationIdsToDelete.addAll(children2);
         nationIdsToDelete.add(id);
-        Address address = addressRepository.findByNationIdIn(nationIdsToDelete).orElse(null);
-        if (address != null){
-            apiMessageDto.setResult(false);
-            apiMessageDto.setCode(ErrorCode.NATION_ERROR_CANT_DELETE_RELATIONSHIP_WITH_ADDRESS);
-            apiMessageDto.setMessage("Cant delete nation relationship to address");
-            return apiMessageDto;
-        }
         nationRepository.deleteAllByParentIdInList(children1);
         nationRepository.deleteAllByParentIdInList(Collections.singletonList(id));
         nationRepository.deleteById(id);
