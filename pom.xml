@@ -3,11 +3,11 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.userbase.auth</groupId>
-	<artifactId>user-base-auth</artifactId>
+	<groupId>com.nextstep.api</groupId>
+	<artifactId>next-step-api</artifactId>
 	<version>0.0.1</version>
-	<name>user-base-service</name>
-	<description>User Base Authentication</description>
+	<name>next-step-api</name>
+	<description>NextStep</description>
 
 	<properties>
 		<java.version>11</java.version>
