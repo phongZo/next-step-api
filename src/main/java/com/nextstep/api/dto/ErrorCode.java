@@ -95,4 +95,15 @@ public class ErrorCode {
      *
      */
     public static final String  ERROR_DB_QUERY = "ERROR-DB-QUERY-0000";
+
+    /**
+     * Starting error code GROUP
+     * */
+    public static final String GROUP_ERROR_NOT_FOUND = "ERROR-GROUP-0000";
+
+    /**
+     * Starting error code Employee
+     * */
+    public static final String EMPLOYEE_ERROR_EXIST = "ERROR-EMPLOYEE-0000";
+    public static final String EMPLOYEE_ERROR_NOT_FOUND= "ERROR-EMPLOYEE-0001";
 }
