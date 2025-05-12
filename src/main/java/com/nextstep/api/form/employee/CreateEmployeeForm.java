@@ -11,9 +11,6 @@ import javax.validation.constraints.NotNull;
 @Data
 @ApiModel
 public class CreateEmployeeForm {
-    @NotEmpty(message = "username cant not be null")
-    @ApiModelProperty(name = "username", required = true)
-    private String username;
     @ApiModelProperty(name = "email")
     @Email
     private String email;
@@ -26,9 +23,6 @@ public class CreateEmployeeForm {
     @ApiModelProperty(name = "fullName",example = "Tam Nguyen",required = true)
     private String fullName;
     private String avatarPath;
-    @NotNull(message = "groupId cant not be null")
-    @ApiModelProperty(name = "groupId", required = true)
-    private Long groupId;
     @ApiModelProperty(name = "name",required = true)
     private String name;
     @ApiModelProperty(name = "code",required = true)

@@ -14,9 +14,6 @@ public class UpdateEmployeeForm {
     @NotNull(message = "id cant not be null")
     @ApiModelProperty(name = "id", required = true)
     private Long id;
-    @NotEmpty(message = "username cant not be null")
-    @ApiModelProperty(name = "username", required = true)
-    private String username;
     @ApiModelProperty(name = "email")
     @Email
     private String email;
@@ -31,8 +28,6 @@ public class UpdateEmployeeForm {
     private String fullName;
     @ApiModelProperty(name = "avatar path", required = false)
     private String avatarPath;
-    @ApiModelProperty(name = "groupId", required = false)
-    private Long groupId;
     @ApiModelProperty(name = "name",required = true)
     private String name;
     @ApiModelProperty(name = "code",required = true)

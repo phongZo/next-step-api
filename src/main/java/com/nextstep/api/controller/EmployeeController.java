@@ -50,52 +50,6 @@ public class EmployeeController extends ABasicController {
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('EMP_C')")
-    @Transactional
-    public ApiMessageDto<String> createEmployee(
-            @Valid @RequestBody CreateEmployeeForm createEmployeeForm,
-            BindingResult bindingResult
-    ){
-        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
-        if(accountRepository.existsByUsername(createEmployeeForm.getUsername())){
-            throw new BadRequestException("Username exist", ErrorCode.ACCOUNT_ERROR_USERNAME_EXIST);
-        }
-        Group group = groupRepository.findById(createEmployeeForm.getGroupId()).orElse(null);
-        if(group == null){
-            throw new BadRequestException("Group not found",  ErrorCode.GROUP_ERROR_NOT_FOUND);
-        }
-
-        Account account = new Account();
-        account.setKind(NextStepConstant.USER_KIND_EMPLOYEE);
-        account.setUsername(createEmployeeForm.getUsername());
-        account.setPassword(passwordEncoder.encode(createEmployeeForm.getPassword()));
-        account.setPhone(createEmployeeForm.getPhone());
-        account.setEmail(createEmployeeForm.getEmail());
-        account.setFullName(createEmployeeForm.getFullName());
-        account.setAvatarPath(createEmployeeForm.getAvatarPath());
-        account.setGroup(group);
-        account.setStatus(NextStepConstant.STATUS_ACTIVE);
-        Account savedAccount = accountRepository.save(account);
-
-        Employee employee = employeeMapper.fromCreateEmployeeFormToEntity(createEmployeeForm);
-        employee.setAccount(savedAccount);
-        employeeRepository.save(employee);
-        apiMessageDto.setMessage("Create employee successfully");
-        return apiMessageDto;
-    }
-    @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('EMP_V')")
-    public ApiMessageDto<EmployeeDto> getEmployee(@PathVariable Long id) {
-        ApiMessageDto<EmployeeDto> apiMessageDto = new ApiMessageDto<>();
-        Employee employee = employeeRepository.findById(id).orElse(null);
-        if (employee == null) {
-            throw new BadRequestException("Employee not found",  ErrorCode.EMPLOYEE_ERROR_NOT_FOUND);
-        }
-        apiMessageDto.setData(employeeMapper.fromEntityToEmployeeDto(employee));
-        apiMessageDto.setMessage("Get employee successfully");
-        return apiMessageDto;
-    }
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('EMP_L')")
     public ApiMessageDto<ResponseListDto<List<EmployeeDto>>> getEmployeeList(
@@ -115,6 +69,54 @@ public class EmployeeController extends ABasicController {
         apiMessageDto.setMessage("Get employee list successfully");
         return apiMessageDto;
     }
+
+    @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('EMP_V')")
+    public ApiMessageDto<EmployeeDto> getEmployee(@PathVariable Long id) {
+        ApiMessageDto<EmployeeDto> apiMessageDto = new ApiMessageDto<>();
+        Employee employee = employeeRepository.findById(id).orElse(null);
+        if (employee == null) {
+            throw new BadRequestException("Employee not found",  ErrorCode.EMPLOYEE_ERROR_NOT_FOUND);
+        }
+        apiMessageDto.setData(employeeMapper.fromEntityToEmployeeDto(employee));
+        apiMessageDto.setMessage("Get employee successfully");
+        return apiMessageDto;
+    }
+
+    @PostMapping(value = "/create", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('EMP_C')")
+    @Transactional
+    public ApiMessageDto<String> createEmployee(
+            @Valid @RequestBody CreateEmployeeForm createEmployeeForm,
+            BindingResult bindingResult
+    ){
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        if(accountRepository.existsByPhone(createEmployeeForm.getPhone())){
+            throw new BadRequestException("Phone number already in use", ErrorCode.ACCOUNT_ERROR_PHONE_EXIST);
+        }
+        Group group = groupRepository.findFirstByKind(NextStepConstant.GROUP_KIND_EMPLOYEE);
+        if(group == null){
+            throw new BadRequestException("Group not found",  ErrorCode.GROUP_ERROR_NOT_FOUND);
+        }
+
+        Account account = new Account();
+        account.setKind(NextStepConstant.USER_KIND_EMPLOYEE);
+        account.setPassword(passwordEncoder.encode(createEmployeeForm.getPassword()));
+        account.setPhone(createEmployeeForm.getPhone());
+        account.setEmail(createEmployeeForm.getEmail());
+        account.setFullName(createEmployeeForm.getFullName());
+        account.setAvatarPath(createEmployeeForm.getAvatarPath());
+        account.setGroup(group);
+        account.setStatus(NextStepConstant.STATUS_ACTIVE);
+        Account savedAccount = accountRepository.save(account);
+
+        Employee employee = employeeMapper.fromCreateEmployeeFormToEntity(createEmployeeForm);
+        employee.setAccount(savedAccount);
+        employeeRepository.save(employee);
+        apiMessageDto.setMessage("Create employee successfully");
+        return apiMessageDto;
+    }
+
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('EMP_U')")
     @Transactional
@@ -128,26 +130,26 @@ public class EmployeeController extends ABasicController {
             throw new BadRequestException("Employee not found",  ErrorCode.EMPLOYEE_ERROR_NOT_FOUND);
         }
         Account account = employee.getAccount();
-        if (!account.getUsername().equals(updateEmployeeForm.getUsername())) {
-            if(accountRepository.existsByUsername(updateEmployeeForm.getUsername())){
-                throw new BadRequestException("Username exist", ErrorCode.ACCOUNT_ERROR_USERNAME_EXIST);
+        if (!account.getPhone().equals(updateEmployeeForm.getPhone())) {
+            if (accountRepository.existsByPhone(updateEmployeeForm.getPhone())) {
+                throw new BadRequestException("Phone number already in use", ErrorCode.ACCOUNT_ERROR_PHONE_EXIST);
             }
-            account.setUsername(updateEmployeeForm.getUsername());
+            account.setPhone(updateEmployeeForm.getPhone());
         }
         if (StringUtils.isNoneBlank(updateEmployeeForm.getPassword())
                 || StringUtils.isNoneBlank(updateEmployeeForm.getOldPassword())) {
+
             if (!StringUtils.isNoneBlank(updateEmployeeForm.getOldPassword())) {
                 throw new BadRequestException("Old password can not be empty", ErrorCode.ACCOUNT_ERROR_WRONG_PASSWORD);
-            } else {
-                if (!StringUtils.isNoneBlank(updateEmployeeForm.getPassword())) {
-                    throw new BadRequestException("Old password can not be empty", ErrorCode.ACCOUNT_ERROR_WRONG_PASSWORD);
-                }
-                if (!passwordEncoder.matches(updateEmployeeForm.getOldPassword(), account.getPassword())) {
-                    throw new BadRequestException("Old password is not correct", ErrorCode.ACCOUNT_ERROR_WRONG_PASSWORD);
-                }
-                if (!passwordEncoder.matches(updateEmployeeForm.getPassword(), account.getPassword())) {
-                    account.setPassword(passwordEncoder.encode(updateEmployeeForm.getPassword()));
-                }
+            }
+            if (!StringUtils.isNoneBlank(updateEmployeeForm.getPassword())) {
+                throw new BadRequestException("New password can not be empty", ErrorCode.ACCOUNT_ERROR_WRONG_PASSWORD);
+            }
+            if (!passwordEncoder.matches(updateEmployeeForm.getOldPassword(), account.getPassword())) {
+                throw new BadRequestException("Old password is not correct", ErrorCode.ACCOUNT_ERROR_WRONG_PASSWORD);
+            }
+            if (!passwordEncoder.matches(updateEmployeeForm.getPassword(), account.getPassword())) {
+                account.setPassword(passwordEncoder.encode(updateEmployeeForm.getPassword()));
             }
         }
         account.setPhone(updateEmployeeForm.getPhone());
@@ -155,14 +157,6 @@ public class EmployeeController extends ABasicController {
         account.setFullName(updateEmployeeForm.getFullName());
         account.setStatus(updateEmployeeForm.getStatus());
         account.setAvatarPath(updateEmployeeForm.getAvatarPath());
-        if (updateEmployeeForm.getGroupId() != null &&
-                !updateEmployeeForm.getGroupId().equals(account.getGroup().getId())) {
-            Group group = groupRepository.findById(updateEmployeeForm.getGroupId()).orElse(null);
-            if(group == null){
-                throw new BadRequestException("Group not found",  ErrorCode.GROUP_ERROR_NOT_FOUND);
-            }
-            account.setGroup(group);
-        }
         accountRepository.save(account);
         employeeMapper.updateFromUpdateEmployeeForm(employee, updateEmployeeForm);
         employee.setManager(updateEmployeeForm.isManager());

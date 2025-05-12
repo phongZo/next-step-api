@@ -23,6 +23,7 @@ public class NextStepConstant {
     public static final Integer GROUP_KIND_ADMIN = 1;
     public static final Integer GROUP_KIND_MANAGER = 2;
     public static final Integer GROUP_KIND_USER=3;
+    public static final Integer GROUP_KIND_EMPLOYEE=7;
 
     public static final Integer MAX_ATTEMPT_FORGET_PWD = 5;
     public static final int MAX_TIME_FORGET_PWD = 5 * 60 * 1000; //5 minutes
