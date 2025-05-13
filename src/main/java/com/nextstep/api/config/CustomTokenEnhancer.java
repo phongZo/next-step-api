@@ -37,6 +37,9 @@ public class CustomTokenEnhancer implements TokenEnhancer {
             if(grantType.equals(SecurityConstant.GRANT_TYPE_USER) ){
                 String phone = authentication.getOAuth2Request().getRequestParameters().get("phone");
                 additionalInfo = getAdditionalUserInfo(phone, grantType);
+            } else if (grantType.equals(SecurityConstant.GRANT_TYPE_EMPLOYEE)) {
+                String phone = authentication.getOAuth2Request().getRequestParameters().get("phone");
+                additionalInfo = getAdditionalEmployeeInfo(phone, grantType);
             }
         }
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
@@ -61,6 +64,42 @@ public class CustomTokenEnhancer implements TokenEnhancer {
             additionalInfo.put("user_id", a.getId());
             additionalInfo.put("user_kind", a.getKind());
             additionalInfo.put("grant_type", grantType == null ? SecurityConstant.GRANT_TYPE_PASSWORD : grantType);
+            additionalInfo.put("tenant_info", tenantId);
+            String DELIM = "|";
+            String additionalInfoStr = ZipUtils.zipString(userId + DELIM
+                    + storeId + DELIM
+                    + kind + DELIM
+                    + pemission + DELIM
+                    + deviceId + DELIM
+                    + userKind + DELIM
+                    + phone + DELIM
+                    + tabletKind + DELIM
+                    + orderId + DELIM
+                    + isSuperAdmin + DELIM
+                    + tenantId);
+            additionalInfo.put("additional_info", additionalInfoStr);
+        }
+        return additionalInfo;
+    }
+
+    private Map<String, Object> getAdditionalEmployeeInfo(String phone, String grantType) {
+        Map<String, Object> additionalInfo = new HashMap<>();
+        AccountForTokenDto a = getUserByPhone(phone);
+
+        if (a != null) {
+            Long userId = a.getId();
+            Long storeId = -1L;
+            String kind = a.getKind() +  "";//token kind
+            Long deviceId = -1L;// id cua thiet bi, lưu ở table device để get firebase url..
+            String pemission = "<>";//empty string
+            Integer userKind = a.getKind(); //loại user là admin hay là gì
+            Integer tabletKind = -1;
+            Long orderId = -1L;
+            Boolean isSuperAdmin = a.getIsSuperAdmin();
+            String tenantId = "";
+            additionalInfo.put("user_id", a.getId());
+            additionalInfo.put("user_kind", a.getKind());
+            additionalInfo.put("grant_type", grantType == null ? SecurityConstant.GRANT_TYPE_EMPLOYEE : grantType);
             additionalInfo.put("tenant_info", tenantId);
             String DELIM = "|";
             String additionalInfoStr = ZipUtils.zipString(userId + DELIM
