@@ -124,4 +124,129 @@
             <column name="permission_id" valueNumeric="8448471254433792"/>
         </insert>
     </changeSet>
+    <changeSet author="NextStep" id="1746899298265-5">
+        <createTable tableName="db_company">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="db_companyPK"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="description" type="TEXT"/>
+            <column name="short_description" type="VARCHAR(255)"/>
+            <column name="banner" type="VARCHAR(255)"/>
+            <column name="hotline" type="VARCHAR(255)"/>
+            <column name="logo" type="VARCHAR(255)"/>
+            <column name="created_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-6">
+        <addUniqueConstraint columnNames="hotline" constraintName="UC_DB_COMPANYHOTLINE_COL" tableName="db_company"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-7">
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8455413790048256"/>
+            <column name="name" value="Create company"/>
+            <column name="action" value="/v1/company/create"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="Create company"/>
+            <column name="name_group" value="Company"/>
+            <column name="p_code" value="COM_C"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-13 15:32:41"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-11 04:39:21"/>
+        </insert>
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8455415307304960"/>
+            <column name="name" value="Get list company"/>
+            <column name="action" value="/v1/company/list"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="Get list company"/>
+            <column name="name_group" value="Company"/>
+            <column name="p_code" value="COM_L"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-13 15:33:27"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-13 15:33:27"/>
+        </insert>
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8455416755847168"/>
+            <column name="name" value="Get company"/>
+            <column name="action" value="/v1/company/get"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="Get company"/>
+            <column name="name_group" value="Company"/>
+            <column name="p_code" value="COM_V"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-13 15:34:12"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-13 15:34:12"/>
+        </insert>
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8455417299042304"/>
+            <column name="name" value="Update company"/>
+            <column name="action" value="/v1/company/update"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="Update company"/>
+            <column name="name_group" value="Company"/>
+            <column name="p_code" value="COM_U"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-13 15:34:28"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-13 15:34:28"/>
+        </insert>
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8455417949192192"/>
+            <column name="name" value="Delete company"/>
+            <column name="action" value="/v1/company/delete"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="Delete company"/>
+            <column name="name_group" value="Company"/>
+            <column name="p_code" value="COM_D"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-13 15:34:48"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-13 15:34:48"/>
+        </insert>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-8">
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8455413790048256"/>
+        </insert>
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8455415307304960"/>
+        </insert>
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8455416755847168"/>
+        </insert>
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8455417299042304"/>
+        </insert>
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8455417949192192"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

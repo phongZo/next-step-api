@@ -1099,7 +1099,7 @@
             <column name="client_secret" value="{bcrypt}$2a$12$zlKHpSw7.8asgQFCexLLkudLYkd9wQGElMps2yVG5p4vm2f.CTYcy"/>
             <column name="scope" value="read,write"/>
             <column name="authorized_grant_types"
-                    value="employee,company,student,leader,password,refresh_token,client_credentials,authorization_code"/>
+                    value="company,student,leader,password,refresh_token,client_credentials,authorization_code"/>
             <column name="web_server_redirect_uri"/>
             <column name="authorities" value="ROLE_CLIENT,ROLE_TRUSTED_CLIENT"/>
             <column name="access_token_validity" valueNumeric="2592000"/>

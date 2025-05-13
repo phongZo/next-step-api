@@ -152,6 +152,11 @@ public class UserServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException("Invalid phone.");
         }
 
+        if (user.getKind() != NextStepConstant.USER_KIND_EMPLOYEE) {
+            log.error("User is not an employee.");
+            throw new UsernameNotFoundException("User is not an employee.");
+        }
+
         if(!passwordEncoder.matches(password, user.getPassword())){
             log.error("Invalid password.");
             throw new UsernameNotFoundException("Invalid password.");

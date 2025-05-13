@@ -107,4 +107,10 @@ public class ErrorCode {
      * */
     public static final String EMPLOYEE_ERROR_EXIST = "ERROR-EMPLOYEE-0000";
     public static final String EMPLOYEE_ERROR_NOT_FOUND= "ERROR-EMPLOYEE-0001";
+
+    /**
+     * Starting error code Company
+     * */
+    public static final String COMPANY_ERROR_EXIST = "ERROR-COMPANY-0000";
+    public static final String COMPANY_ERROR_NOT_FOUND= "ERROR-COMPANY-0001";
 }
