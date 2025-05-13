@@ -27,6 +27,7 @@ public class ErrorCode {
     public static final String ACCOUNT_ERROR_MERCHANT_LOGIN_WRONG_STORE = "ERROR-ACCOUNT-0010";
     public static final String ACCOUNT_ERROR_MERCHANT_SERVICE_NOT_REGISTER = "ERROR-ACCOUNT-0011";
     public static final String ACCOUNT_ERROR_NOT_ALLOW_DELETE_SUPPER_ADMIN = "ERROR-ACCOUNT-0012";
+    public static final String ACCOUNT_ERROR_PHONE_EXIST = "ERROR-ACCOUNT-0013";
 
 
     /**
@@ -95,4 +96,15 @@ public class ErrorCode {
      *
      */
     public static final String  ERROR_DB_QUERY = "ERROR-DB-QUERY-0000";
+
+    /**
+     * Starting error code GROUP
+     * */
+    public static final String GROUP_ERROR_NOT_FOUND = "ERROR-GROUP-0000";
+
+    /**
+     * Starting error code Employee
+     * */
+    public static final String EMPLOYEE_ERROR_EXIST = "ERROR-EMPLOYEE-0000";
+    public static final String EMPLOYEE_ERROR_NOT_FOUND= "ERROR-EMPLOYEE-0001";
 }

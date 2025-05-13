@@ -1216,4 +1216,18 @@
     <changeSet author="NextStep" id="1746633859815-33">
         <addForeignKeyConstraint baseColumnNames="group_id" baseTableName="db_account" constraintName="FKt24ved32tlgedttymq32ojjj4" deferrable="false" initiallyDeferred="false" onDelete="RESTRICT" onUpdate="RESTRICT" referencedColumnNames="id" referencedTableName="db_group" validate="true"/>
     </changeSet>
+    <changeSet author="NextStep" id="1746633859815-34">
+        <insert tableName="db_group">
+            <column name="id" valueNumeric="8451233046429696"/>
+            <column name="name" value="ROLE EMPLOYEE"/>
+            <column name="description" value="Role for employee"/>
+            <column name="kind" valueNumeric="7"/>
+            <column name="is_system_role" valueBoolean="false"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-12 04:06:15"/>
+            <column name="modified_by" value="admin"/>
+            <column name="modified_date" valueDate="2025-05-12 04:06:15"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

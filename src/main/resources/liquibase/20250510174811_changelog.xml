@@ -1,0 +1,127 @@
+<?xml version="1.1" encoding="UTF-8" standalone="no"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog" xmlns:ext="http://www.liquibase.org/xml/ns/dbchangelog-ext" xmlns:pro="http://www.liquibase.org/xml/ns/pro" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd http://www.liquibase.org/xml/ns/pro http://www.liquibase.org/xml/ns/pro/liquibase-pro-latest.xsd http://www.liquibase.org/xml/ns/dbchangelog http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+    <changeSet author="NextStep" id="1746899298265-1">
+        <createTable tableName="db_employee">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="db_employeePK"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="code" type="VARCHAR(255)"/>
+            <column name="is_manager" type="BIT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-2">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="db_employee" constraintName="FKhuakpvpa7frhpakidjsb1s3k8" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="db_account" validate="true"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-3">
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8448466985451520"/>
+            <column name="name" value="Create employee"/>
+            <column name="action" value="/v1/employee/create"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="Create employee"/>
+            <column name="name_group" value="Employee"/>
+            <column name="p_code" value="EMP_C"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-11 04:39:21"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-11 04:39:21"/>
+        </insert>
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8448468156678144"/>
+            <column name="name" value="Get list employee"/>
+            <column name="action" value="/v1/employee/list"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="Get list employee"/>
+            <column name="name_group" value="Employee"/>
+            <column name="p_code" value="EMP_L"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-11 04:39:57"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-11 04:39:57"/>
+        </insert>
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8448469080932352"/>
+            <column name="name" value="Get employee"/>
+            <column name="action" value="/v1/employee/get"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="Get employee"/>
+            <column name="name_group" value="Employee"/>
+            <column name="p_code" value="EMP_V"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-11 04:40:25"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-11 04:40:25"/>
+        </insert>
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8448470622437376"/>
+            <column name="name" value="Update employee"/>
+            <column name="action" value="/v1/employee/update"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="Update employee"/>
+            <column name="name_group" value="Employee"/>
+            <column name="p_code" value="EMP_U"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-11 04:41:12"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-11 04:41:12"/>
+        </insert>
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8448471254433792"/>
+            <column name="name" value="Delete employee"/>
+            <column name="action" value="/v1/employee/delete"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="Delete employee"/>
+            <column name="name_group" value="Employee"/>
+            <column name="p_code" value="EMP_D"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-11 04:41:32"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-11 04:41:32"/>
+        </insert>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-4">
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8448466985451520"/>
+        </insert>
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8448468156678144"/>
+        </insert>
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8448469080932352"/>
+        </insert>
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8448470622437376"/>
+        </insert>
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8448471254433792"/>
+        </insert>
+    </changeSet>
+</databaseChangeLog>
