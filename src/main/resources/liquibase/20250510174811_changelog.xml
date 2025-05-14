@@ -249,4 +249,145 @@
             <column name="permission_id" valueNumeric="8455417949192192"/>
         </insert>
     </changeSet>
+    <changeSet author="NextStep" id="1746899298265-9">
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8456921084231680"/>
+            <column name="name" value="Create post"/>
+            <column name="action" value="/v1/post/create"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="Create post"/>
+            <column name="name_group" value="Post"/>
+            <column name="p_code" value="POST_C"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-14 04:19:20"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-14 04:19:20"/>
+        </insert>
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8456922044825600"/>
+            <column name="name" value="Get list post"/>
+            <column name="action" value="/v1/post/list"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="Get list post"/>
+            <column name="name_group" value="Post"/>
+            <column name="p_code" value="POST_L"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-14 04:19:49"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-14 04:19:49"/>
+        </insert>
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8456923097923584"/>
+            <column name="name" value="Get post"/>
+            <column name="action" value="/v1/post/get"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="Get post"/>
+            <column name="name_group" value="Post"/>
+            <column name="p_code" value="POST_V"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-14 04:20:22"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-14 04:20:22"/>
+        </insert>
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8456923714256896"/>
+            <column name="name" value="Update post"/>
+            <column name="action" value="/v1/post/update"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="Update post"/>
+            <column name="name_group" value="Post"/>
+            <column name="p_code" value="POST_U"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-14 04:20:40"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-14 04:20:40"/>
+        </insert>
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8456924260401152"/>
+            <column name="name" value="Delete post"/>
+            <column name="action" value="/v1/post/delete"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="Delete post"/>
+            <column name="name_group" value="Post"/>
+            <column name="p_code" value="POST_D"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-14 04:20:57"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-14 04:20:57"/>
+        </insert>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-10">
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8456921084231680"/>
+        </insert>
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8456922044825600"/>
+        </insert>
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8456923097923584"/>
+        </insert>
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8456923714256896"/>
+        </insert>
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8456924260401152"/>
+        </insert>
+    </changeSet>
+
+    <changeSet author="NextStep" id="1746899298265-11">
+        <createTable tableName="db_post">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="db_postPK"/>
+            </column>
+            <column name="name" type="VARCHAR(255)"/>
+            <column name="description" type="TEXT"/>
+            <column name="contract_type" type="INT"/>
+            <column name="experience" type="INT"/>
+            <column name="expire_date" type="datetime"/>
+            <column name="level" type="VARCHAR(255)"/>
+            <column name="tag" type="VARCHAR(255)"/>
+            <column name="type" type="INT"/>
+            <column name="company_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-12">
+        <addColumn tableName="db_employee">
+            <column name="company_id" type="bigint" afterColumn="is_manager">
+                <constraints nullable="false"/>
+            </column>
+        </addColumn>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-13">
+        <addForeignKeyConstraint baseColumnNames="company_id" baseTableName="db_employee" constraintName="FKfaby0u302mp0do8xlppsevnh9" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="db_company" validate="true"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-14">
+        <addForeignKeyConstraint baseColumnNames="company_id" baseTableName="db_post" constraintName="FKtqwiiy5dkc9aptf5jwd1v2by1" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="db_company" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

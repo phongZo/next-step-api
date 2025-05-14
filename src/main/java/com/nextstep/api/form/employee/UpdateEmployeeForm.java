@@ -38,4 +38,7 @@ public class UpdateEmployeeForm {
     @ApiModelProperty(name = "status", example = "1", required = true)
     @AccountStatus(allowNull = false)
     private Integer status;
+    @ApiModelProperty(name = "companyId",required = true)
+    @NotNull(message = "companyId cant not be null")
+    private Long companyId;
 }

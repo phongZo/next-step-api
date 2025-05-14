@@ -11,10 +11,12 @@ import com.nextstep.api.form.employee.CreateEmployeeForm;
 import com.nextstep.api.form.employee.UpdateEmployeeForm;
 import com.nextstep.api.mapper.EmployeeMapper;
 import com.nextstep.api.model.Account;
+import com.nextstep.api.model.Company;
 import com.nextstep.api.model.Employee;
 import com.nextstep.api.model.Group;
 import com.nextstep.api.model.criteria.EmployeeCriteria;
 import com.nextstep.api.repository.AccountRepository;
+import com.nextstep.api.repository.CompanyRepository;
 import com.nextstep.api.repository.EmployeeRepository;
 import com.nextstep.api.repository.GroupRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -49,6 +51,9 @@ public class EmployeeController extends ABasicController {
     GroupRepository groupRepository;
     @Autowired
     private PasswordEncoder passwordEncoder;
+    @Autowired
+    CompanyRepository companyRepository;
+
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('EMP_L')")
@@ -98,7 +103,10 @@ public class EmployeeController extends ABasicController {
         if(group == null){
             throw new BadRequestException("Group not found",  ErrorCode.GROUP_ERROR_NOT_FOUND);
         }
-
+        Company company = companyRepository.findById(createEmployeeForm.getCompanyId()).orElse(null);
+        if (company == null) {
+            throw new BadRequestException("Company not found", ErrorCode.COMPANY_ERROR_NOT_FOUND);
+        }
         Account account = new Account();
         account.setKind(NextStepConstant.USER_KIND_EMPLOYEE);
         account.setPassword(passwordEncoder.encode(createEmployeeForm.getPassword()));
@@ -112,6 +120,7 @@ public class EmployeeController extends ABasicController {
 
         Employee employee = employeeMapper.fromCreateEmployeeFormToEntity(createEmployeeForm);
         employee.setAccount(savedAccount);
+        employee.setCompany(company);
         employeeRepository.save(employee);
         apiMessageDto.setMessage("Create employee successfully");
         return apiMessageDto;
@@ -152,6 +161,13 @@ public class EmployeeController extends ABasicController {
                 account.setPassword(passwordEncoder.encode(updateEmployeeForm.getPassword()));
             }
         }
+        if (!employee.getCompany().getId().equals(updateEmployeeForm.getCompanyId())) {
+            Company company = companyRepository.findById(updateEmployeeForm.getCompanyId()).orElse(null);
+            if (company == null) {
+                throw new BadRequestException("Company not found", ErrorCode.COMPANY_ERROR_NOT_FOUND);
+            }
+            employee.setCompany(company);
+        }
         account.setPhone(updateEmployeeForm.getPhone());
         account.setEmail(updateEmployeeForm.getEmail());
         account.setFullName(updateEmployeeForm.getFullName());
@@ -159,6 +175,7 @@ public class EmployeeController extends ABasicController {
         account.setAvatarPath(updateEmployeeForm.getAvatarPath());
         accountRepository.save(account);
         employeeMapper.updateFromUpdateEmployeeForm(employee, updateEmployeeForm);
+
         employee.setManager(updateEmployeeForm.isManager());
         employeeRepository.save(employee);
         apiMessageDto.setMessage("Update employee successfully");

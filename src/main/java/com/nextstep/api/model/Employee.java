@@ -21,4 +21,8 @@ public class Employee extends Auditable<String>{
     @JoinColumn(name = "id", referencedColumnName = "id", nullable = false)
     private Account account;
     private boolean isManager;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "company_id", nullable = false)
+    private Company company;
 }

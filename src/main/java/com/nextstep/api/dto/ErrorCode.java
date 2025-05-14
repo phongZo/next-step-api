@@ -113,4 +113,11 @@ public class ErrorCode {
      * */
     public static final String COMPANY_ERROR_EXIST = "ERROR-COMPANY-0000";
     public static final String COMPANY_ERROR_NOT_FOUND= "ERROR-COMPANY-0001";
+
+    /**
+     * Starting error code Post
+     * */
+    public static final String POST_ERROR_EXIST = "ERROR-POST-0000";
+    public static final String POST_ERROR_NOT_FOUND= "ERROR-POST-0001";
+    public static final String POST_ERROR_INVALID_EXPIRE_DATE= "ERROR-POST-0002";
 }
