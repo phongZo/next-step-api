@@ -38,7 +38,11 @@ public class CustomTokenGranter extends AbstractTokenGranter {
             if(SecurityConstant.GRANT_TYPE_USER.equalsIgnoreCase(tokenRequest.getGrantType())){
                 String phone = tokenRequest.getRequestParameters().get("phone");
                 return userService.getAccessTokenForUser(client, tokenRequest, password, phone, this.getTokenServices());
-            }else{
+            } else if (SecurityConstant.GRANT_TYPE_EMPLOYEE.equalsIgnoreCase(tokenRequest.getGrantType())) {
+                String phone = tokenRequest.getRequestParameters().get("phone");
+                return userService.getAccessTokenForEmployee(client, tokenRequest, password, phone, this.getTokenServices());
+            }
+            else{
                 return userService.getAccessTokenForCustomType(client, tokenRequest, username, password, this.getTokenServices());
             }
         } catch (GeneralSecurityException | IOException e) {

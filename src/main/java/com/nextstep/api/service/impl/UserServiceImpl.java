@@ -135,6 +135,53 @@ public class UserServiceImpl implements UserDetailsService {
         return tokenServices.createAccessToken(auth);
     }
 
+    public OAuth2AccessToken getAccessTokenForEmployee(ClientDetails client, TokenRequest tokenRequest, String password, String phone, AuthorizationServerTokenServices tokenServices) throws GeneralSecurityException, IOException {
+        Map<String, String> requestParameters = new HashMap<>();
+        requestParameters.put("grantType", SecurityConstant.GRANT_TYPE_EMPLOYEE);
+
+        String clientId = client.getClientId();
+        boolean approved = true;
+        Set<String> responseTypes = new HashSet<>();
+        responseTypes.add("code");
+
+        Map<String, Serializable> extensionProperties = new HashMap<>();
+
+        Account user = accountRepository.findAccountByPhone(phone);
+        if(user == null || !Objects.equals(NextStepConstant.STATUS_ACTIVE, user.getStatus())){
+            log.error("Invalid phone.");
+            throw new UsernameNotFoundException("Invalid phone.");
+        }
+
+        if (user.getKind() != NextStepConstant.USER_KIND_EMPLOYEE) {
+            log.error("User is not an employee.");
+            throw new UsernameNotFoundException("User is not an employee.");
+        }
+
+        if(!passwordEncoder.matches(password, user.getPassword())){
+            log.error("Invalid password.");
+            throw new UsernameNotFoundException("Invalid password.");
+        }
+
+        boolean enabled = true;
+        if (user.getStatus() != 1) {
+            log.error("User had been locked");
+            enabled = false;
+        }
+
+        requestParameters.put("phone", user.getPhone());
+
+        Set<GrantedAuthority> grantedAuthorities = getAccountPermission(user);
+
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getPhone(), user.getPassword(), enabled, true, true, true, grantedAuthorities);
+        OAuth2Request oAuth2Request = new OAuth2Request(requestParameters, clientId,
+                userDetails.getAuthorities(), approved, client.getScope(),
+                client.getResourceIds(), null, responseTypes, extensionProperties);
+        org.springframework.security.core.userdetails.User userPrincipal = new org.springframework.security.core.userdetails.User(userDetails.getUsername(), userDetails.getPassword(), userDetails.isEnabled(), userDetails.isAccountNonExpired(), userDetails.isCredentialsNonExpired(), userDetails.isAccountNonLocked(), userDetails.getAuthorities());
+        UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(userPrincipal, null, userDetails.getAuthorities());
+        OAuth2Authentication auth = new OAuth2Authentication(oAuth2Request, authenticationToken);
+        return tokenServices.createAccessToken(auth);
+    }
+
     public NextStepJwt getAddInfoFromToken() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (!(authentication instanceof AnonymousAuthenticationToken)) {
