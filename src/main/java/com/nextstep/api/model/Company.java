@@ -31,9 +31,5 @@ public class Company extends Auditable<String>{
     private String logo;
     @Column(name = "banner")
     private String banner;
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Employee> employees = new ArrayList<>();
-    @OneToMany(mappedBy = "company", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Post> posts = new ArrayList<>();
 
 }

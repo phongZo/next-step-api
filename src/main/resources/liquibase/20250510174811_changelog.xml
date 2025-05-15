@@ -343,7 +343,6 @@
             <column name="permission_id" valueNumeric="8456924260401152"/>
         </insert>
     </changeSet>
-
     <changeSet author="NextStep" id="1746899298265-11">
         <createTable tableName="db_post">
             <column name="id" type="BIGINT">
@@ -389,5 +388,27 @@
     </changeSet>
     <changeSet author="NextStep" id="1746899298265-14">
         <addForeignKeyConstraint baseColumnNames="company_id" baseTableName="db_post" constraintName="FKtqwiiy5dkc9aptf5jwd1v2by1" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="db_company" validate="true"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-15">
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="8451233046429696"/>
+            <column name="permission_id" valueNumeric="8456921084231680"/>
+        </insert>
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="8451233046429696"/>
+            <column name="permission_id" valueNumeric="8456922044825600"/>
+        </insert>
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="8451233046429696"/>
+            <column name="permission_id" valueNumeric="8456923097923584"/>
+        </insert>
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="8451233046429696"/>
+            <column name="permission_id" valueNumeric="8456923714256896"/>
+        </insert>
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="8451233046429696"/>
+            <column name="permission_id" valueNumeric="8456924260401152"/>
+        </insert>
     </changeSet>
 </databaseChangeLog>

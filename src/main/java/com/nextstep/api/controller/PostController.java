@@ -69,6 +69,14 @@ public class PostController extends ABasicController{
         if(post == null){
             throw new BadRequestException("Post not found", ErrorCode.POST_ERROR_NOT_FOUND);
         }
+        
+        if (isEmployee()) {
+            Long currentCompanyId = getCurrentEmployeeCompanyId();
+            if (!post.getCompany().getId().equals(currentCompanyId)) {
+                throw new BadRequestException("You can only view posts of your company", ErrorCode.POST_ERROR_NOT_FOUND);
+            }
+        }
+        
         apiMessageDto.setData(postMapper.fromEntityToPostDto(post));
         apiMessageDto.setMessage("Get post successfully");
         return apiMessageDto;
@@ -82,15 +90,14 @@ public class PostController extends ABasicController{
             BindingResult bindingResult
     ){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
-        Company company = companyRepository.findById(createPostForm.getCompanyId()).orElse(null);
-        if (createPostForm.getExpireDate() == null ||
-                createPostForm.getExpireDate().before(new Date())) {
-            throw new BadRequestException("Expire date must be in the future", ErrorCode.POST_ERROR_INVALID_EXPIRE_DATE);
-        }
 
+        Long companyId = getCurrentEmployeeCompanyId();
+        Company company = companyRepository.findById(companyId).orElse(null);
+        
         if (company == null) {
             throw new BadRequestException("Company not found", ErrorCode.COMPANY_ERROR_NOT_FOUND);
         }
+        
         Post post = postMapper.fromCreatePostFormToEntity(createPostForm);
         post.setCompany(company);
         postRepository.save(post);
@@ -99,22 +106,29 @@ public class PostController extends ABasicController{
     }
 
     @PutMapping(value = "/update", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('EMP_U')")
+    @PreAuthorize("hasRole('POST_U')")
     @Transactional
     public ApiMessageDto<String> updatePost(
             @Valid @RequestBody UpdatePostForm updatePostForm,
             BindingResult bindingResult
     ){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        
+        if (!isEmployee()) {
+            throw new BadRequestException("Only employees can update posts", ErrorCode.ACCOUNT_ERROR_NOT_FOUND);
+        }
+        
         Post post = postRepository.findById(updatePostForm.getId()).orElse(null);
         if(post == null){
             throw new BadRequestException("Post not found", ErrorCode.POST_ERROR_NOT_FOUND);
         }
-        if (updatePostForm.getExpireDate() == null ||
-                updatePostForm.getExpireDate().before(new Date())) {
-            throw new BadRequestException("Expire date must be in the future", ErrorCode.POST_ERROR_INVALID_EXPIRE_DATE);
+        
+        Long currentCompanyId = getCurrentEmployeeCompanyId();
+        if (!post.getCompany().getId().equals(currentCompanyId)) {
+            throw new BadRequestException("You can only update posts of your company", ErrorCode.POST_ERROR_NOT_FOUND);
         }
-        postMapper.updateFromUpdatePostForm(post,updatePostForm);
+        
+        postMapper.updateFromUpdatePostForm(post, updatePostForm);
         postRepository.save(post);
         apiMessageDto.setMessage("Update post successfully");
         return apiMessageDto;
@@ -125,10 +139,21 @@ public class PostController extends ABasicController{
     @Transactional
     public ApiMessageDto<String> deletePost(@PathVariable Long id) {
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        
+        if (!isEmployee()) {
+            throw new BadRequestException("Only employees can delete posts", ErrorCode.ACCOUNT_ERROR_NOT_FOUND);
+        }
+        
         Post post = postRepository.findById(id).orElse(null);
         if(post == null){
             throw new BadRequestException("Post not found", ErrorCode.POST_ERROR_NOT_FOUND);
         }
+        
+        Long currentCompanyId = getCurrentEmployeeCompanyId();
+        if (!post.getCompany().getId().equals(currentCompanyId)) {
+            throw new BadRequestException("You can only delete posts of your company", ErrorCode.POST_ERROR_NOT_FOUND);
+        }
+        
         postRepository.delete(post);
         apiMessageDto.setMessage("Delete Post successfully");
         return apiMessageDto;

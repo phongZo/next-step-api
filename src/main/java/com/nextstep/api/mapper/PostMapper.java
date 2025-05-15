@@ -44,7 +44,7 @@ public interface PostMapper {
     @Named("fromEntityToPostDto")
     PostDto fromEntityToPostDto(Post post);
 
-    @IterableMapping(elementTargetType = EmployeeDto.class, qualifiedByName = "fromEntityToPostDto")
+    @IterableMapping(elementTargetType = PostDto.class, qualifiedByName = "fromEntityToPostDto")
     @Named("fromEntitiesToPostDtoList")
     List<PostDto> fromEntitiesToPostDtoList(List<Post> posts);
 

@@ -6,6 +6,7 @@ import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import javax.validation.constraints.Future;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import java.util.Date;
@@ -31,6 +32,8 @@ public class UpdatePostForm {
     @NotBlank(message = "tag cant not be null")
     @ApiModelProperty(name = "tag",required = true)
     private String tag;
+    @NotNull(message = "expireDate can not be null")
+    @Future
     @ApiModelProperty(name = "expireDate",required = true)
     private Date expireDate;
     @NotNull(message = "type can not null")
@@ -41,7 +44,4 @@ public class UpdatePostForm {
     @ApiModelProperty(name = "contractType",required = true)
     @PostContractType(allowNull = false)
     private Integer contractType;
-    @NotNull(message = "companyId cannot be null ")
-    @ApiModelProperty(name = "companyId", required = true)
-    private Long companyId;
 }

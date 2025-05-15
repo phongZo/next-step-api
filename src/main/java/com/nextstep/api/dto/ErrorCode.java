@@ -113,6 +113,7 @@ public class ErrorCode {
      * */
     public static final String COMPANY_ERROR_EXIST = "ERROR-COMPANY-0000";
     public static final String COMPANY_ERROR_NOT_FOUND= "ERROR-COMPANY-0001";
+    public static final String COMPANY_ERROR_HAS_EMPLOYEES= "ERROR-COMPANY-0002";
 
     /**
      * Starting error code Post

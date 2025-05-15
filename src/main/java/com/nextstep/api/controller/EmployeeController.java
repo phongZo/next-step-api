@@ -161,20 +161,16 @@ public class EmployeeController extends ABasicController {
                 account.setPassword(passwordEncoder.encode(updateEmployeeForm.getPassword()));
             }
         }
-        if (!employee.getCompany().getId().equals(updateEmployeeForm.getCompanyId())) {
-            Company company = companyRepository.findById(updateEmployeeForm.getCompanyId()).orElse(null);
-            if (company == null) {
-                throw new BadRequestException("Company not found", ErrorCode.COMPANY_ERROR_NOT_FOUND);
-            }
-            employee.setCompany(company);
-        }
+        
         account.setPhone(updateEmployeeForm.getPhone());
         account.setEmail(updateEmployeeForm.getEmail());
         account.setFullName(updateEmployeeForm.getFullName());
         account.setStatus(updateEmployeeForm.getStatus());
         account.setAvatarPath(updateEmployeeForm.getAvatarPath());
         accountRepository.save(account);
+
         employeeMapper.updateFromUpdateEmployeeForm(employee, updateEmployeeForm);
+
 
         employee.setManager(updateEmployeeForm.isManager());
         employeeRepository.save(employee);
