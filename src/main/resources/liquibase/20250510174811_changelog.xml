@@ -411,4 +411,33 @@
             <column name="permission_id" valueNumeric="8456924260401152"/>
         </insert>
     </changeSet>
+    <changeSet author="NextStep" id="1746899298265-16">
+        <createTable tableName="db_candidate">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="db_candidatePK"/>
+            </column>
+            <column name="cover_letter" type="LONGTEXT"/>
+            <column name="is_auto_apply" type="BIT"/>
+            <column name="is_job_searching" type="BIT"/>
+            <column name="job_title" type="VARCHAR(255)"/>
+            <column name="created_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-17">
+        <addForeignKeyConstraint baseColumnNames="id" baseTableName="db_candidate" constraintName="FKqhn5ab4y5vt0sdsbwfbrc2f45" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="db_account" validate="true"/>
+    </changeSet>
 </databaseChangeLog>
