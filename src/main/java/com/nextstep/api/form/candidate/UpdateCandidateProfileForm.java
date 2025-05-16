@@ -15,7 +15,6 @@ public class UpdateCandidateProfileForm {
     @ApiModelProperty(name = "password",required = true)
     private String password;
 
-    @NotEmpty(message = "oldPassword is required")
     @ApiModelProperty(name = "oldPassword", required = true)
     private String oldPassword;
     

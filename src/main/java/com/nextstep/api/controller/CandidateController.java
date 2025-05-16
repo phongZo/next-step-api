@@ -188,17 +188,34 @@ public class CandidateController extends ABasicController{
         if (updateCandidateProfileForm.getPassword() != null && !updateCandidateProfileForm.getPassword().isEmpty()) {
             account.setPassword(passwordEncoder.encode(updateCandidateProfileForm.getPassword()));
         }
-        
-        // Lưu thông tin tài khoản
+
         accountRepository.save(account);
-        
-        // Cập nhật thông tin ứng viên
+
         candidateMapper.updateFromUpdateCandidateProfileForm(candidate, updateCandidateProfileForm);
-        
-        // Lưu thông tin ứng viên
+
         candidateRepository.save(candidate);
         
         apiMessageDto.setMessage("Update profile successfully");
+        return apiMessageDto;
+    }
+
+    @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('CAN_D')")
+    @Transactional
+    public ApiMessageDto<String> deleteCandidate(@PathVariable Long id) {
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        
+        Candidate candidate = candidateRepository.findById(id).orElse(null);
+        if (candidate == null) {
+            throw new BadRequestException("Candidate not found", ErrorCode.CANDIDATE_ERROR_NOT_FOUND);
+        }
+        Account account = candidate.getAccount();
+        if (account != null) {
+            account.setStatus(NextStepConstant.STATUS_DELETE);
+            accountRepository.save(account);
+        }
+        candidateRepository.delete(candidate);
+        apiMessageDto.setMessage("Delete candidate successfully");
         return apiMessageDto;
     }
 }

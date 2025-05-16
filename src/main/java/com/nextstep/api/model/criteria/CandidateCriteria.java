@@ -17,7 +17,9 @@ import java.util.List;
 @Data
 public class CandidateCriteria implements Serializable {
     private Long id;
-    private String name;
+    private String jobTitle;
+    private Boolean isAutoApply;
+    private Boolean isJobSearching;
 
     public Specification<Candidate> getSpecification() {
         return new Specification<Candidate>(){
@@ -30,10 +32,19 @@ public class CandidateCriteria implements Serializable {
                 if (getId() != null) {
                     predicates.add(cb.equal(root.get("id"), getId()));
                 }
-                if (!StringUtils.isEmpty(getName())) {
-                    predicates.add(cb.like(cb.lower(root.get("account").get("username")), "%" + getName().toLowerCase() + "%"));
+                
+                if (!StringUtils.isEmpty(getJobTitle())) {
+                    predicates.add(cb.like(cb.lower(root.get("jobTitle")), "%" + getJobTitle().toLowerCase() + "%"));
                 }
-
+                
+                if (getIsAutoApply() != null) {
+                    predicates.add(cb.equal(root.get("isAutoApply"), getIsAutoApply()));
+                }
+                
+                if (getIsJobSearching() != null) {
+                    predicates.add(cb.equal(root.get("isJobSearching"), getIsJobSearching()));
+                }
+                
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };

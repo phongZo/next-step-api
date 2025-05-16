@@ -19,7 +19,8 @@ public class CandidateSignupForm {
     @ApiModelProperty(name = "password", required = true)
     private String password;
 
-    @ApiModelProperty(name = "email")
+    @NotEmpty(message = "email cant not be null")
+    @ApiModelProperty(name = "email",required = true)
     @Email
     private String email;
 

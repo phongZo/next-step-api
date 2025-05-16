@@ -457,7 +457,7 @@
     <changeSet author="NextStep" id="1746899298265-19">
     <insert tableName="db_permission">
         <column name="id" valueNumeric="8463747451748352"/>
-        <column name="name" value=" Get list candidate"/>
+        <column name="name" value="Get list candidate"/>
         <column name="action" value="/v1/candidate/list"/>
         <column name="show_menu" valueBoolean="false"/>
         <column name="description" value="Get list candidate"/>
@@ -483,6 +483,20 @@
         <column name="modified_by" value="Admin"/>
         <column name="modified_date" valueDate="2025-05-16 14:11:48"/>
     </insert>
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8463927407378432"/>
+            <column name="name" value="Delete candidate"/>
+            <column name="action" value="/v1/candidate/delete"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="Delete candidate"/>
+            <column name="name_group" value="Candidate"/>
+            <column name="p_code" value="CAN_D"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-16 15:42:56"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-16 15:42:56"/>
+        </insert>
     </changeSet>
     <changeSet author="NextStep" id="1746899298265-20">
         <insert tableName="db_permission_group">
@@ -492,6 +506,10 @@
         <insert tableName="db_permission_group">
             <column name="group_id" valueNumeric="15"/>
             <column name="permission_id" valueNumeric="8463748215209984"/>
+        </insert>
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8463927407378432"/>
         </insert>
     </changeSet>
 </databaseChangeLog>
