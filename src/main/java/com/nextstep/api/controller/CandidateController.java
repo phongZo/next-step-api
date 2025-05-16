@@ -90,7 +90,7 @@ public class CandidateController extends ABasicController{
         return apiMessageDto;
     }
 
-    @PostMapping(value = "/signup-candidate", produces= MediaType.APPLICATION_JSON_VALUE)
+    @PostMapping(value = "/signup", produces= MediaType.APPLICATION_JSON_VALUE)
     @Transactional
     public ApiMessageDto<String> signUpCandidate(@Valid @RequestBody CandidateSignupForm candidateSignupForm, BindingResult bindingResult)
     {
