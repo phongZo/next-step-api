@@ -31,6 +31,15 @@ public class NextStepConstant {
 
     public static final Integer CATEGORY_KIND_NEWS = 1;
 
+    public static final Integer POST_TYPE_HOME = 0;
+    public static final Integer POST_TYPE_OFFICE = 1;
+    public static final Integer POST_TYPE_REMOTE = 2;
+    public static final Integer POST_TYPE_HYBRID = 3;
+
+    public static final Integer POST_CONTRACT_TYPE_PART_TIME = 0;
+    public static final Integer POST_CONTRACT_TYPE_FULL_TIME = 1;
+    public static final Integer POST_CONTRACT_TYPE_COLLAB = 2;
+
     private NextStepConstant(){
         throw new IllegalStateException("Utility class");
     }

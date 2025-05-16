@@ -37,9 +37,9 @@ public interface CompanyMapper {
     @Named("fromEntityToCompanyDto")
     CompanyDto fromEntityToCompanyDto(Company company);
 
-    @IterableMapping(elementTargetType = EmployeeDto.class, qualifiedByName = "fromEntityToCompanyDto")
+    @IterableMapping(elementTargetType = CompanyDto.class, qualifiedByName = "fromEntityToCompanyDto")
     @Named("fromEntitiesToCompanyDtoList")
-    List<CompanyDto> fromEntitiesToCompanyDtoList(List<Company> employees);
+    List<CompanyDto> fromEntitiesToCompanyDtoList(List<Company> companies);
 
     @Mapping(source = "name", target = "name")
     @Mapping(source = "description", target = "description")

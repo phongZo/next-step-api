@@ -21,6 +21,7 @@ import com.nextstep.api.model.criteria.CompanyCriteria;
 import com.nextstep.api.model.criteria.EmployeeCriteria;
 import com.nextstep.api.repository.CompanyRepository;
 import com.nextstep.api.repository.EmployeeRepository;
+import com.nextstep.api.repository.PostRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,6 +47,10 @@ public class CompanyController extends ABasicController{
     CompanyRepository companyRepository;
     @Autowired
     CompanyMapper companyMapper;
+    @Autowired
+    EmployeeRepository employeeRepository;
+    @Autowired
+    PostRepository postRepository;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('COM_L')")
@@ -133,12 +138,16 @@ public class CompanyController extends ABasicController{
     @DeleteMapping(value = "/delete/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('COM_D')")
     @Transactional
-    public ApiMessageDto<String> deleteEmployee(@PathVariable Long id) {
+    public ApiMessageDto<String> deleteCompany(@PathVariable Long id) {
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
         Company company = companyRepository.findById(id).orElse(null);
         if (company == null) {
             throw new BadRequestException("Company not found",  ErrorCode.COMPANY_ERROR_NOT_FOUND);
         }
+        if (employeeRepository.existsByCompanyId(id)) {
+            throw new BadRequestException("Cannot delete company that has employees", ErrorCode.COMPANY_ERROR_HAS_EMPLOYEES);
+        }
+        postRepository.deleteAllByCompanyId(id);
         companyRepository.deleteById(id);
         apiMessageDto.setMessage("Delete company successfully");
         return apiMessageDto;

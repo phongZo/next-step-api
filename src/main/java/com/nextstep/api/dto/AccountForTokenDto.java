@@ -17,6 +17,8 @@ public class AccountForTokenDto {
     private String fullName;
     @ApiModelProperty(name = "isSuperAdmin")
     private Boolean isSuperAdmin;
+    @ApiModelProperty(name = "companyId")
+    private Long companyId;
 //    @ApiModelProperty(name = "group")
 //    private GroupDto group;
 //    @ApiModelProperty(name = "lastLogin")

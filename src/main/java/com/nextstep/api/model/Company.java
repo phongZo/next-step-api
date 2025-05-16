@@ -6,6 +6,8 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "db_company")
@@ -29,6 +31,5 @@ public class Company extends Auditable<String>{
     private String logo;
     @Column(name = "banner")
     private String banner;
-
 
 }

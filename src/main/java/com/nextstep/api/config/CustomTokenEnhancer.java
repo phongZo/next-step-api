@@ -96,11 +96,11 @@ public class CustomTokenEnhancer implements TokenEnhancer {
             Integer tabletKind = -1;
             Long orderId = -1L;
             Boolean isSuperAdmin = a.getIsSuperAdmin();
-            String tenantId = "";
+            Long companyId = a.getCompanyId() != null ? a.getCompanyId() : -1L;
             additionalInfo.put("user_id", a.getId());
             additionalInfo.put("user_kind", a.getKind());
             additionalInfo.put("grant_type", grantType == null ? SecurityConstant.GRANT_TYPE_EMPLOYEE : grantType);
-            additionalInfo.put("tenant_info", tenantId);
+            additionalInfo.put("company_id", companyId);
             String DELIM = "|";
             String additionalInfoStr = ZipUtils.zipString(userId + DELIM
                     + storeId + DELIM
@@ -112,7 +112,7 @@ public class CustomTokenEnhancer implements TokenEnhancer {
                     + tabletKind + DELIM
                     + orderId + DELIM
                     + isSuperAdmin + DELIM
-                    + tenantId);
+                    + companyId);
             additionalInfo.put("additional_info", additionalInfoStr);
         }
         return additionalInfo;
@@ -170,8 +170,10 @@ public class CustomTokenEnhancer implements TokenEnhancer {
 
     public AccountForTokenDto getUserByPhone(String phone) {
         try {
-            String query = "SELECT id, kind, username, email, full_name, is_super_admin " +
-                    "FROM db_account WHERE phone = ? and status = 1 limit 1";
+            String query = "SELECT a.id, a.kind, a.username, a.email, a.full_name, a.is_super_admin, e.company_id " +
+                    "FROM db_account a " +
+                    "LEFT JOIN db_employee e ON a.id = e.id " +
+                    "WHERE a.phone = ? AND a.status = 1 LIMIT 1";
             log.debug(query);
             List<AccountForTokenDto> dto = jdbcTemplate.query(query, new Object[]{phone},  new BeanPropertyRowMapper<>(AccountForTokenDto.class));
             if (dto.size() > 0)return dto.get(0);

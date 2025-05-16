@@ -29,4 +29,7 @@ public class CreateEmployeeForm {
     private String code;
     @ApiModelProperty(name = "isManager",required = true)
     private boolean isManager;
+    @ApiModelProperty(name = "companyId",required = true)
+    @NotNull(message = "companyId cant not be null")
+    private Long companyId;
 }

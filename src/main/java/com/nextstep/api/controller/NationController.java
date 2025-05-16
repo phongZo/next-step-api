@@ -9,7 +9,7 @@ import com.nextstep.api.dto.nation.NationDto;
 import com.nextstep.api.exception.BadRequestException;
 import com.nextstep.api.form.nation.CreateNationForm;
 import com.nextstep.api.form.nation.UpdateNationForm;
-import com.nextstep.api.mapper.NationMapper;;
+import com.nextstep.api.mapper.NationMapper;
 import com.nextstep.api.model.Nation;
 import com.nextstep.api.model.criteria.NationCriteria;
 import com.nextstep.api.repository.NationRepository;
