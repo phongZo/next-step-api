@@ -440,4 +440,58 @@
     <changeSet author="NextStep" id="1746899298265-17">
         <addForeignKeyConstraint baseColumnNames="id" baseTableName="db_candidate" constraintName="FKqhn5ab4y5vt0sdsbwfbrc2f45" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="db_account" validate="true"/>
     </changeSet>
+    <changeSet author="NextStep" id="1746899298265-18">
+        <insert tableName="db_group">
+            <column name="id" valueNumeric="8463682955345920"/>
+            <column name="name" value="ROLE CANDIDATE"/>
+            <column name="description" value="Role for candidate"/>
+            <column name="kind" valueNumeric="8"/>
+            <column name="is_system_role" valueBoolean="false"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-16 13:38:36"/>
+            <column name="modified_by" value="admin"/>
+            <column name="modified_date" valueDate="2025-05-16 13:38:36"/>
+        </insert>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-19">
+    <insert tableName="db_permission">
+        <column name="id" valueNumeric="8463747451748352"/>
+        <column name="name" value=" Get list candidate"/>
+        <column name="action" value="/v1/candidate/list"/>
+        <column name="show_menu" valueBoolean="false"/>
+        <column name="description" value="Get list candidate"/>
+        <column name="name_group" value="Candidate"/>
+        <column name="p_code" value="CAN_L"/>
+        <column name="status" valueNumeric="1"/>
+        <column name="created_by" value="Admin"/>
+        <column name="created_date" valueDate="2025-05-16 14:11:24"/>
+        <column name="modified_by" value="Admin"/>
+        <column name="modified_date" valueDate="2025-05-16 14:11:24"/>
+    </insert>
+    <insert tableName="db_permission">
+        <column name="id" valueNumeric="8463748215209984"/>
+        <column name="name" value="Get candidate"/>
+        <column name="action" value="/v1/candidate/get"/>
+        <column name="show_menu" valueBoolean="false"/>
+        <column name="description" value="Get candidate"/>
+        <column name="name_group" value="Candidate"/>
+        <column name="p_code" value="CAN_V"/>
+        <column name="status" valueNumeric="1"/>
+        <column name="created_by" value="Admin"/>
+        <column name="created_date" valueDate="2025-05-16 14:11:48"/>
+        <column name="modified_by" value="Admin"/>
+        <column name="modified_date" valueDate="2025-05-16 14:11:48"/>
+    </insert>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-20">
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8463747451748352"/>
+        </insert>
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8463748215209984"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
