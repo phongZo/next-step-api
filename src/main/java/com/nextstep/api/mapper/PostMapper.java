@@ -2,6 +2,7 @@ package com.nextstep.api.mapper;
 
 import com.nextstep.api.dto.company.CompanyDto;
 import com.nextstep.api.dto.employee.EmployeeDto;
+import com.nextstep.api.dto.post.PostAdminDto;
 import com.nextstep.api.dto.post.PostDto;
 import com.nextstep.api.form.employee.CreateEmployeeForm;
 import com.nextstep.api.form.employee.UpdateEmployeeForm;
@@ -41,12 +42,12 @@ public interface PostMapper {
     @Mapping(source = "experience", target = "experience")
     @Mapping(source = "company", target = "company", qualifiedByName = "fromEntityToCompanyDto")
     @BeanMapping(ignoreByDefault = true)
-    @Named("fromEntityToPostDto")
-    PostDto fromEntityToPostDto(Post post);
+    @Named("fromEntityToPostAdminDto")
+    PostAdminDto fromEntityToPostAdminDto(Post post);
 
-    @IterableMapping(elementTargetType = PostDto.class, qualifiedByName = "fromEntityToPostDto")
-    @Named("fromEntitiesToPostDtoList")
-    List<PostDto> fromEntitiesToPostDtoList(List<Post> posts);
+    @IterableMapping(elementTargetType = PostAdminDto.class, qualifiedByName = "fromEntityToPostAdminDto")
+    @Named("fromEntitiesToPostAdminDtoList")
+    List<PostAdminDto> fromEntitiesToPostAdminDtoList(List<Post> posts);
 
     @Mapping(source = "name", target = "name")
     @Mapping(source = "description", target = "description")
@@ -60,5 +61,22 @@ public interface PostMapper {
     @Named("updateFromUpdatePostForm")
     void updateFromUpdatePostForm(@MappingTarget Post post, UpdatePostForm updatePostForm);
 
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "contractType", target = "contractType")
+    @Mapping(source = "expireDate", target = "expireDate")
+    @Mapping(source = "tag", target = "tag")
+    @Mapping(source = "level", target = "level")
+    @Mapping(source = "type", target = "type")
+    @Mapping(source = "experience", target = "experience")
+    @Mapping(source = "company", target = "company", qualifiedByName = "fromEntityToCompanyDto")
+    @BeanMapping(ignoreByDefault = true)
+    @Named("fromEntityToPostDto")
+    PostDto fromEntityToPostDto(Post post);
+
+    @IterableMapping(elementTargetType = PostDto.class, qualifiedByName = "fromEntityToPostDto")
+    @Named("fromEntitiesToPostAdminDtoList")
+    List<PostDto> fromEntitiesToPostDtoList(List<Post> posts);
 
 }
