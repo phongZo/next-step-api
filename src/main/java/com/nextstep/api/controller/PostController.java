@@ -3,6 +3,7 @@ package com.nextstep.api.controller;
 import com.nextstep.api.dto.ApiMessageDto;
 import com.nextstep.api.dto.ErrorCode;
 import com.nextstep.api.dto.ResponseListDto;
+import com.nextstep.api.dto.post.PostAdminDto;
 import com.nextstep.api.dto.post.PostDto;
 import com.nextstep.api.exception.BadRequestException;
 import com.nextstep.api.form.post.CreatePostForm;
@@ -43,19 +44,19 @@ public class PostController extends ABasicController{
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('POST_L')")
-    public ApiMessageDto<ResponseListDto<List<PostDto>>> getPostList(
+    public ApiMessageDto<ResponseListDto<List<PostAdminDto>>> getPostList(
             PostCriteria postCriteria,
             Pageable pageable
     ) {
         Specification<Post> specification = postCriteria.getSpecification();
         Page<Post> page = postRepository.findAll(specification, pageable);
 
-        ResponseListDto<List<PostDto>> responseListDto = new ResponseListDto<>(
-                postMapper.fromEntitiesToPostDtoList(page.getContent()),
+        ResponseListDto<List<PostAdminDto>> responseListDto = new ResponseListDto<>(
+                postMapper.fromEntitiesToPostAdminDtoList(page.getContent()),
                 page.getTotalElements(),
                 page.getTotalPages()
         );
-        ApiMessageDto<ResponseListDto<List<PostDto>>> apiMessageDto = new ApiMessageDto<>();
+        ApiMessageDto<ResponseListDto<List<PostAdminDto>>> apiMessageDto = new ApiMessageDto<>();
         apiMessageDto.setData(responseListDto);
         apiMessageDto.setMessage("Get post list successfully");
         return apiMessageDto;
@@ -63,8 +64,8 @@ public class PostController extends ABasicController{
 
     @GetMapping(value = "/get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('POST_V')")
-    public ApiMessageDto<PostDto> getPost(@PathVariable Long id) {
-        ApiMessageDto<PostDto> apiMessageDto = new ApiMessageDto<>();
+    public ApiMessageDto<PostAdminDto> getPost(@PathVariable Long id) {
+        ApiMessageDto<PostAdminDto> apiMessageDto = new ApiMessageDto<>();
         Post post = postRepository.findById(id).orElse(null);
         if(post == null){
             throw new BadRequestException("Post not found", ErrorCode.POST_ERROR_NOT_FOUND);
@@ -77,7 +78,7 @@ public class PostController extends ABasicController{
             }
         }
         
-        apiMessageDto.setData(postMapper.fromEntityToPostDto(post));
+        apiMessageDto.setData(postMapper.fromEntityToPostAdminDto(post));
         apiMessageDto.setMessage("Get post successfully");
         return apiMessageDto;
     }
@@ -156,6 +157,45 @@ public class PostController extends ABasicController{
         
         postRepository.delete(post);
         apiMessageDto.setMessage("Delete Post successfully");
+        return apiMessageDto;
+    }
+
+    @GetMapping(value = "/client-get/{id}", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<PostDto> getForClientPost(@PathVariable Long id) {
+        ApiMessageDto<PostDto> apiMessageDto = new ApiMessageDto<>();
+        Post post = postRepository.findById(id).orElse(null);
+        if(post == null){
+            throw new BadRequestException("Post not found", ErrorCode.POST_ERROR_NOT_FOUND);
+        }
+
+        if (isEmployee()) {
+            Long currentCompanyId = getCurrentEmployeeCompanyId();
+            if (!post.getCompany().getId().equals(currentCompanyId)) {
+                throw new BadRequestException("You can only view posts of your company", ErrorCode.POST_ERROR_NOT_FOUND);
+            }
+        }
+
+        apiMessageDto.setData(postMapper.fromEntityToPostDto(post));
+        apiMessageDto.setMessage("Get post successfully");
+        return apiMessageDto;
+    }
+
+    @GetMapping(value = "/client-list", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<ResponseListDto<List<PostDto>>> getPostListForClient(
+            PostCriteria postCriteria,
+            Pageable pageable
+    ) {
+        Specification<Post> specification = postCriteria.getSpecification();
+        Page<Post> page = postRepository.findAll(specification, pageable);
+
+        ResponseListDto<List<PostDto>> responseListDto = new ResponseListDto<>(
+                postMapper.fromEntitiesToPostDtoList(page.getContent()),
+                page.getTotalElements(),
+                page.getTotalPages()
+        );
+        ApiMessageDto<ResponseListDto<List<PostDto>>> apiMessageDto = new ApiMessageDto<>();
+        apiMessageDto.setData(responseListDto);
+        apiMessageDto.setMessage("Get post list successfully");
         return apiMessageDto;
     }
 }
