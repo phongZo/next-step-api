@@ -40,6 +40,8 @@ public class CustomTokenEnhancer implements TokenEnhancer {
             } else if (grantType.equals(SecurityConstant.GRANT_TYPE_EMPLOYEE)) {
                 String phone = authentication.getOAuth2Request().getRequestParameters().get("phone");
                 additionalInfo = getAdditionalEmployeeInfo(phone, grantType);
+            }else if (grantType.equals(SecurityConstant.GRANT_TYPE_CANDIDATE)) {
+                additionalInfo = getAdditionalCandidateInfo(username, grantType);
             }
         }
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
@@ -113,6 +115,42 @@ public class CustomTokenEnhancer implements TokenEnhancer {
                     + orderId + DELIM
                     + isSuperAdmin + DELIM
                     + companyId);
+            additionalInfo.put("additional_info", additionalInfoStr);
+        }
+        return additionalInfo;
+    }
+
+    private Map<String, Object> getAdditionalCandidateInfo(String username, String grantType) {
+        Map<String, Object> additionalInfo = new HashMap<>();
+        AccountForTokenDto a = getAccountByUsername(username);
+
+        if (a != null) {
+            Long accountId = a.getId();
+            Long storeId = -1L;
+            String kind = a.getKind() + "";//token kind
+            Long deviceId = -1L;// id cua thiet bi, lưu ở table device để get firebase url..
+            String pemission = "<>";//empty string
+            Integer userKind = a.getKind(); //loại user là admin hay là gì
+            Integer tabletKind = -1;
+            Long orderId = -1L;
+            Boolean isSuperAdmin = a.getIsSuperAdmin();
+            String tenantId = "";
+            additionalInfo.put("user_id", accountId);
+            additionalInfo.put("user_kind", a.getKind());
+            additionalInfo.put("grant_type", grantType);
+            additionalInfo.put("tenant_info", tenantId);
+            String DELIM = "|";
+            String additionalInfoStr = ZipUtils.zipString(accountId + DELIM
+                    + storeId + DELIM
+                    + kind + DELIM
+                    + pemission + DELIM
+                    + deviceId + DELIM
+                    + userKind + DELIM
+                    + username + DELIM
+                    + tabletKind + DELIM
+                    + orderId + DELIM
+                    + isSuperAdmin + DELIM
+                    + tenantId);
             additionalInfo.put("additional_info", additionalInfoStr);
         }
         return additionalInfo;

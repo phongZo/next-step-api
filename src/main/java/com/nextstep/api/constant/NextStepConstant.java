@@ -10,6 +10,7 @@ public class NextStepConstant {
     public static final Integer USER_KIND_MANAGER = 2;
     public static final Integer USER_KIND_USER = 3;
     public static final Integer USER_KIND_EMPLOYEE = 4;
+    public static final Integer USER_KIND_CANDIDATE = 6;
 
     public static final Integer STATUS_ACTIVE = 1;
     public static final Integer STATUS_PENDING = 0;
@@ -24,6 +25,7 @@ public class NextStepConstant {
     public static final Integer GROUP_KIND_MANAGER = 2;
     public static final Integer GROUP_KIND_USER=3;
     public static final Integer GROUP_KIND_EMPLOYEE=7;
+    public static final Integer GROUP_KIND_CANDIDATE=8;
 
     public static final Integer MAX_ATTEMPT_FORGET_PWD = 5;
     public static final int MAX_TIME_FORGET_PWD = 5 * 60 * 1000; //5 minutes
@@ -39,6 +41,8 @@ public class NextStepConstant {
     public static final Integer POST_CONTRACT_TYPE_PART_TIME = 0;
     public static final Integer POST_CONTRACT_TYPE_FULL_TIME = 1;
     public static final Integer POST_CONTRACT_TYPE_COLLAB = 2;
+
+    public static final String ROOT_DIRECTORY = "C:/java/image";
 
     private NextStepConstant(){
         throw new IllegalStateException("Utility class");
