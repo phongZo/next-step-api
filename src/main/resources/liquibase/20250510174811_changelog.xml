@@ -512,4 +512,10 @@
             <column name="permission_id" valueNumeric="8463927407378432"/>
         </insert>
     </changeSet>
+    <changeSet author="NextStep" id="1746899298265-21">
+        <dropForeignKeyConstraint baseTableName="db_user" constraintName="FK30tks1lqufixlmk8b08gti667"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-22">
+        <dropTable tableName="db_user"/>
+    </changeSet>
 </databaseChangeLog>

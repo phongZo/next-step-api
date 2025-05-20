@@ -6,7 +6,6 @@ import com.nextstep.api.jwt.NextStepJwt;
 import com.nextstep.api.model.Account;
 import com.nextstep.api.repository.AccountRepository;
 import com.nextstep.api.repository.GroupRepository;
-import com.nextstep.api.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AnonymousAuthenticationToken;
@@ -49,8 +48,7 @@ public class UserServiceImpl implements UserDetailsService {
     @Autowired
     private GroupRepository groupRepository;
 
-    @Autowired
-    private UserRepository userRepository;
+
 
     @Override
     public UserDetails loadUserByUsername(String userId) {

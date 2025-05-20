@@ -55,8 +55,6 @@ public class AccountController extends ABasicController{
     @Autowired
     UserBaseApiService userBaseApiService;
 
-    @Autowired
-    UserRepository userRepository;
 
 
 //    @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -174,7 +172,6 @@ public class AccountController extends ABasicController{
         }
         //delete avatar file
         userBaseApiService.deleteFile(account.getAvatarPath());
-        userRepository.deleteAllByAccountId(id);
         accountRepository.deleteById(id);
         apiMessageDto.setMessage("Delete Account success");
         return apiMessageDto;
