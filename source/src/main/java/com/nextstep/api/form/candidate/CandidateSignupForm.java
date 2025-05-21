@@ -11,35 +11,23 @@ import javax.validation.constraints.Size;
 @Data
 public class CandidateSignupForm {
 
-    @NotEmpty(message = "username cant not be null")
-    @ApiModelProperty(name = "username", required = true)
-    private String username;
-
     @NotEmpty(message = "password cant not be null")
     @ApiModelProperty(name = "password", required = true)
     private String password;
 
-    @NotEmpty(message = "email cant not be null")
-    @ApiModelProperty(name = "email",required = true)
+    @ApiModelProperty(name = "email",required = false)
     @Email
     private String email;
 
-    @ApiModelProperty(name = "phone")
+    @NotEmpty(message = "phone cant not be null")
+    @ApiModelProperty(name = "phone", required = true)
     private String phone;
 
     @NotEmpty(message = "fullName cant not be null")
     @ApiModelProperty(name = "fullName",required = true)
     private String fullName;
     
-    @ApiModelProperty(name = "jobTitle")
-    private String jobTitle;
-    
-    @ApiModelProperty(name = "isAutoApply")
-    private Boolean isAutoApply = false;
-    
-    @ApiModelProperty(name = "isJobSearching")
-    private Boolean isJobSearching = false;
-    
-    @ApiModelProperty(name = "coverLetter")
-    private String coverLetter;
+
+
+
 } 

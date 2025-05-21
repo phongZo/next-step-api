@@ -41,7 +41,8 @@ public class CustomTokenEnhancer implements TokenEnhancer {
                 String phone = authentication.getOAuth2Request().getRequestParameters().get("phone");
                 additionalInfo = getAdditionalEmployeeInfo(phone, grantType);
             }else if (grantType.equals(SecurityConstant.GRANT_TYPE_CANDIDATE)) {
-                additionalInfo = getAdditionalCandidateInfo(username, grantType);
+                String phone = authentication.getOAuth2Request().getRequestParameters().get("phone");
+                additionalInfo = getAdditionalCandidateInfo(phone, grantType);
             }
         }
         ((DefaultOAuth2AccessToken) accessToken).setAdditionalInformation(additionalInfo);
@@ -120,9 +121,9 @@ public class CustomTokenEnhancer implements TokenEnhancer {
         return additionalInfo;
     }
 
-    private Map<String, Object> getAdditionalCandidateInfo(String username, String grantType) {
+    private Map<String, Object> getAdditionalCandidateInfo(String phone, String grantType) {
         Map<String, Object> additionalInfo = new HashMap<>();
-        AccountForTokenDto a = getAccountByUsername(username);
+        AccountForTokenDto a = getUserByPhone(phone);
 
         if (a != null) {
             Long accountId = a.getId();
@@ -146,7 +147,7 @@ public class CustomTokenEnhancer implements TokenEnhancer {
                     + pemission + DELIM
                     + deviceId + DELIM
                     + userKind + DELIM
-                    + username + DELIM
+                    + phone + DELIM
                     + tabletKind + DELIM
                     + orderId + DELIM
                     + isSuperAdmin + DELIM

@@ -180,7 +180,7 @@ public class UserServiceImpl implements UserDetailsService {
         return tokenServices.createAccessToken(auth);
     }
 
-    public OAuth2AccessToken getAccessTokenForCandidate(ClientDetails client, TokenRequest tokenRequest, String password, String username, AuthorizationServerTokenServices tokenServices) throws GeneralSecurityException, IOException {
+    public OAuth2AccessToken getAccessTokenForCandidate(ClientDetails client, TokenRequest tokenRequest, String password, String phone, AuthorizationServerTokenServices tokenServices) throws GeneralSecurityException, IOException {
         Map<String, String> requestParameters = new HashMap<>();
         requestParameters.put("grantType", SecurityConstant.GRANT_TYPE_CANDIDATE);
 
@@ -191,10 +191,10 @@ public class UserServiceImpl implements UserDetailsService {
 
         Map<String, Serializable> extensionProperties = new HashMap<>();
 
-        Account user = accountRepository.findAccountByUsername(username);
+        Account user = accountRepository.findAccountByPhone(phone);
         if(user == null || !Objects.equals(NextStepConstant.STATUS_ACTIVE, user.getStatus())){
-            log.error("Invalid username.");
-            throw new UsernameNotFoundException("Invalid username.");
+            log.error("Invalid phone.");
+            throw new UsernameNotFoundException("Invalid phone.");
         }
 
         if (user.getKind() != NextStepConstant.USER_KIND_CANDIDATE) {
@@ -213,11 +213,11 @@ public class UserServiceImpl implements UserDetailsService {
             enabled = false;
         }
 
-        requestParameters.put("username", user.getUsername());
+        requestParameters.put("phone", user.getPhone());
 
         Set<GrantedAuthority> grantedAuthorities = getAccountPermission(user);
 
-        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), enabled, true, true, true, grantedAuthorities);
+        UserDetails userDetails = new org.springframework.security.core.userdetails.User(user.getPhone(), user.getPassword(), enabled, true, true, true, grantedAuthorities);
         OAuth2Request oAuth2Request = new OAuth2Request(requestParameters, clientId,
                 userDetails.getAuthorities(), approved, client.getScope(),
                 client.getResourceIds(), null, responseTypes, extensionProperties);
