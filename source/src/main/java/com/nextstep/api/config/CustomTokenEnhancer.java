@@ -75,7 +75,6 @@ public class CustomTokenEnhancer implements TokenEnhancer {
                     + pemission + DELIM
                     + deviceId + DELIM
                     + userKind + DELIM
-                    + phone + DELIM
                     + tabletKind + DELIM
                     + orderId + DELIM
                     + isSuperAdmin + DELIM
@@ -111,7 +110,6 @@ public class CustomTokenEnhancer implements TokenEnhancer {
                     + pemission + DELIM
                     + deviceId + DELIM
                     + userKind + DELIM
-                    + phone + DELIM
                     + tabletKind + DELIM
                     + orderId + DELIM
                     + isSuperAdmin + DELIM
@@ -147,7 +145,6 @@ public class CustomTokenEnhancer implements TokenEnhancer {
                     + pemission + DELIM
                     + deviceId + DELIM
                     + userKind + DELIM
-                    + phone + DELIM
                     + tabletKind + DELIM
                     + orderId + DELIM
                     + isSuperAdmin + DELIM
