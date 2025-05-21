@@ -96,10 +96,6 @@ public class CandidateController extends ABasicController{
     {
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
 
-        if(accountRepository.existsByUsername(candidateSignupForm.getUsername())){
-            throw new BadRequestException("Username already in use", ErrorCode.ACCOUNT_ERROR_USERNAME_EXIST);
-        }
-
         if (candidateSignupForm.getPhone() != null && !candidateSignupForm.getPhone().isEmpty()) {
             if(accountRepository.existsByPhone(candidateSignupForm.getPhone())){
                 throw new BadRequestException("Phone number already in use", ErrorCode.ACCOUNT_ERROR_PHONE_EXIST);
@@ -113,7 +109,7 @@ public class CandidateController extends ABasicController{
 
         Account account = new Account();
         account.setKind(NextStepConstant.USER_KIND_CANDIDATE);
-        account.setUsername(candidateSignupForm.getUsername());
+        account.setUsername(null);
         account.setPassword(passwordEncoder.encode(candidateSignupForm.getPassword()));
         account.setPhone(candidateSignupForm.getPhone());
         account.setEmail(candidateSignupForm.getEmail());
@@ -124,10 +120,6 @@ public class CandidateController extends ABasicController{
 
         Candidate candidate = new Candidate();
         candidate.setAccount(savedAccount);
-        candidate.setJobTitle(candidateSignupForm.getJobTitle());
-        candidate.setIsAutoApply(candidateSignupForm.getIsAutoApply());
-        candidate.setIsJobSearching(candidateSignupForm.getIsJobSearching());
-        candidate.setCoverLetter(candidateSignupForm.getCoverLetter());
         candidateRepository.save(candidate);
         
         apiMessageDto.setMessage("Sign Up Success");
