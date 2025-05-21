@@ -518,4 +518,26 @@
     <changeSet author="NextStep" id="1746899298265-22">
         <dropTable tableName="db_user"/>
     </changeSet>
+    <changeSet author="NextStep" id="1746899298265-23">
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8476629979791360"/>
+            <column name="name" value="List account admin"/>
+            <column name="action" value="/v1/account/list-admin"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="List account admin"/>
+            <column name="name_group" value="Account"/>
+            <column name="p_code" value="ACC_L_AD"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-21 03:23:48"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-21 03:23:48"/>
+        </insert>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-24">
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8476629979791360"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>

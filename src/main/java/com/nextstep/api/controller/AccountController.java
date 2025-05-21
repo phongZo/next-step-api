@@ -299,4 +299,17 @@ public class AccountController extends ABasicController{
         apiMessageDto.setMessage("Change password success.");
         return  apiMessageDto;
     }
+
+
+    @GetMapping(value = "/list-admin", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('ACC_L_AD')")
+    public ApiResponse<ResponseListDto<AccountDto>> listAccountAdmin(Pageable pageable) {
+        ApiResponse<ResponseListDto<AccountDto>> apiMessageDto = new ApiResponse<>();
+        Page<Account> accounts = accountRepository.findAllByKind(NextStepConstant.USER_KIND_ADMIN , pageable);
+        ResponseListDto<AccountDto> responseListDto = new ResponseListDto(accounts.getContent(), accounts.getTotalElements(), accounts.getTotalPages());
+        apiMessageDto.setData(responseListDto);
+        apiMessageDto.setMessage("Get admin account list success");
+        return apiMessageDto;
+    }
+
 }
