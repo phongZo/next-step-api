@@ -21,6 +21,7 @@ import com.nextstep.api.model.criteria.CandidateCriteria;
 import com.nextstep.api.repository.AccountRepository;
 import com.nextstep.api.repository.CandidateRepository;
 import com.nextstep.api.repository.GroupRepository;
+import com.nextstep.api.service.feign.GoogleFeignClient;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -60,8 +61,8 @@ public class CandidateController extends ABasicController{
     @Autowired
     private PasswordEncoder passwordEncoder;
 
-    @Value("${google.userinfo.url}")
-    private String googleUserInfoUrl;
+    @Autowired
+    private GoogleFeignClient googleFeignClient;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('CAN_L')")
@@ -222,11 +223,10 @@ public class CandidateController extends ABasicController{
     public ApiMessageDto<GoogleVerifyDto> googleVerify(GoogleVerifyForm googleVerifyForm) {
         ApiMessageDto<GoogleVerifyDto> apiMessageDto = new ApiMessageDto<>();
 
-        RestTemplate restTemplate = new RestTemplate();
-        String url = googleUserInfoUrl + "?access_token=" + googleVerifyForm.getAccessToken();
+
         GoogleUserInfo userInfo;
         try {
-            userInfo = restTemplate.getForObject(url, GoogleUserInfo.class);
+            userInfo = googleFeignClient.getUserInfo("Bearer " + googleVerifyForm.getAccessToken());
         } catch (Exception e) {
             throw new BadRequestException("Invalid Google access token", ErrorCode.ACCOUNT_ERROR_TOKEN_INVALID);
         }

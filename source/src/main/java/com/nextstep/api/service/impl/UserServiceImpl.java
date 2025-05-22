@@ -48,6 +48,8 @@ public class UserServiceImpl implements UserDetailsService {
     @Autowired
     private GroupRepository groupRepository;
 
+    public String AUTH_SERVER_TOKEN = "";
+
 
 
     @Override
