@@ -6,17 +6,18 @@ import com.nextstep.api.dto.ErrorCode;
 import com.nextstep.api.dto.ResponseListDto;
 import com.nextstep.api.dto.candidate.CandidateAdminDto;
 import com.nextstep.api.dto.candidate.CandidateDto;
-import com.nextstep.api.dto.employee.EmployeeDto;
+import com.nextstep.api.dto.candidate.GoogleUserInfo;
+import com.nextstep.api.dto.candidate.GoogleVerifyDto;
 import com.nextstep.api.exception.BadRequestException;
 import com.nextstep.api.form.candidate.CandidateSignupForm;
+import com.nextstep.api.form.candidate.GoogleRegisterForm;
+import com.nextstep.api.form.candidate.GoogleVerifyForm;
 import com.nextstep.api.form.candidate.UpdateCandidateProfileForm;
 import com.nextstep.api.mapper.CandidateMapper;
 import com.nextstep.api.model.Account;
 import com.nextstep.api.model.Candidate;
-import com.nextstep.api.model.Employee;
 import com.nextstep.api.model.Group;
 import com.nextstep.api.model.criteria.CandidateCriteria;
-import com.nextstep.api.model.criteria.EmployeeCriteria;
 import com.nextstep.api.repository.AccountRepository;
 import com.nextstep.api.repository.CandidateRepository;
 import com.nextstep.api.repository.GroupRepository;
@@ -32,6 +33,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestTemplate;
+import org.springframework.beans.factory.annotation.Value;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -56,6 +59,9 @@ public class CandidateController extends ABasicController{
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Value("${google.userinfo.url}")
+    private String googleUserInfoUrl;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('CAN_L')")
@@ -208,6 +214,92 @@ public class CandidateController extends ABasicController{
         }
         candidateRepository.delete(candidate);
         apiMessageDto.setMessage("Delete candidate successfully");
+        return apiMessageDto;
+    }
+
+    @PostMapping(value = "/google-verify", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    public ApiMessageDto<GoogleVerifyDto> googleVerify(GoogleVerifyForm googleVerifyForm) {
+        ApiMessageDto<GoogleVerifyDto> apiMessageDto = new ApiMessageDto<>();
+
+        RestTemplate restTemplate = new RestTemplate();
+        String url = googleUserInfoUrl + "?access_token=" + googleVerifyForm.getAccessToken();
+        GoogleUserInfo userInfo;
+        try {
+            userInfo = restTemplate.getForObject(url, GoogleUserInfo.class);
+        } catch (Exception e) {
+            throw new BadRequestException("Invalid Google access token", ErrorCode.ACCOUNT_ERROR_TOKEN_INVALID);
+        }
+        if (userInfo == null || userInfo.email == null) {
+            throw new BadRequestException("Cannot get user info from Google", ErrorCode.ACCOUNT_ERROR_TOKEN_INVALID);
+        }
+
+        Account account = accountRepository.findAccountByEmail(userInfo.email);
+        Candidate candidate = null;
+        boolean isNew = false;
+        if (account == null) {
+            Group group = groupRepository.findFirstByKind(NextStepConstant.GROUP_KIND_CANDIDATE);
+            if (group == null) {
+                throw new BadRequestException("Group not found", ErrorCode.GROUP_ERROR_NOT_FOUND);
+            }
+            account = new Account();
+            account.setKind(NextStepConstant.USER_KIND_CANDIDATE);
+            account.setUsername(null);
+            account.setPassword("");
+            account.setPhone(null);
+            account.setEmail(userInfo.email);
+            account.setFullName(userInfo.name);
+            account.setGroup(group);
+            account.setStatus(NextStepConstant.STATUS_ACTIVE);
+            account = accountRepository.save(account);
+
+            candidate = new Candidate();
+            candidate.setAccount(account);
+            candidate = candidateRepository.save(candidate);
+            isNew = true;
+        } else {
+            candidate = candidateRepository.findById(account.getId()).orElse(null);
+            if (candidate == null) {
+                candidate = new Candidate();
+                candidate.setAccount(account);
+                candidate = candidateRepository.save(candidate);
+            }
+        }
+
+        GoogleVerifyDto response = new GoogleVerifyDto();
+        response.candidate = candidateMapper.fromEntityToCandidateDto(candidate);
+        response.isNew = isNew;
+        apiMessageDto.setData(response);
+        apiMessageDto.setMessage("Google verify success");
+        return apiMessageDto;
+    }
+
+    @PostMapping(value = "/google-register", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    public ApiMessageDto<CandidateDto> googleRegister(@Valid @RequestBody GoogleRegisterForm googleRegisterForm) {
+        ApiMessageDto<CandidateDto> apiMessageDto = new ApiMessageDto<>();
+
+        Candidate candidate = candidateRepository.findById(googleRegisterForm.getUserId()).orElse(null);
+        if (candidate == null) {
+            throw new BadRequestException("Candidate not found", ErrorCode.CANDIDATE_ERROR_NOT_FOUND);
+        }
+        Account account = candidate.getAccount();
+
+        if (googleRegisterForm.getFullName() != null) {
+            account.setFullName(googleRegisterForm.getFullName());
+        }
+        if (googleRegisterForm.getPhone() != null && !googleRegisterForm.getPhone().isEmpty()) {
+            if(accountRepository.existsByPhone(googleRegisterForm.getPhone())){
+                throw new BadRequestException("Phone number already in use", ErrorCode.ACCOUNT_ERROR_PHONE_EXIST);
+            }
+        }
+        account.setPhone(googleRegisterForm.getPhone());
+
+        accountRepository.save(account);
+        candidateRepository.save(candidate);
+
+        apiMessageDto.setData(candidateMapper.fromEntityToCandidateDto(candidate));
+        apiMessageDto.setMessage("Google register success");
         return apiMessageDto;
     }
 }
