@@ -9,10 +9,7 @@ import com.nextstep.api.dto.candidate.CandidateDto;
 import com.nextstep.api.dto.candidate.GoogleUserInfo;
 import com.nextstep.api.dto.candidate.GoogleVerifyDto;
 import com.nextstep.api.exception.BadRequestException;
-import com.nextstep.api.form.candidate.CandidateSignupForm;
-import com.nextstep.api.form.candidate.GoogleRegisterForm;
-import com.nextstep.api.form.candidate.GoogleVerifyForm;
-import com.nextstep.api.form.candidate.UpdateCandidateProfileForm;
+import com.nextstep.api.form.candidate.*;
 import com.nextstep.api.mapper.CandidateMapper;
 import com.nextstep.api.model.Account;
 import com.nextstep.api.model.Candidate;
@@ -300,4 +297,27 @@ public class CandidateController extends ABasicController{
         apiMessageDto.setMessage("Google register success");
         return apiMessageDto;
     }
+
+    @PutMapping(value = "/change-status", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('CAN_U_STATUS')")
+    @Transactional
+    public ApiMessageDto<String> changeCandidateStatus(@Valid @RequestBody UpdateCandidateStatusForm updateCandidateStatusForm, BindingResult bindingResult) {
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+
+        Account account = accountRepository.findByIdAndKind(updateCandidateStatusForm.getId(),NextStepConstant.USER_KIND_CANDIDATE).orElse(null);
+        if (account == null) {
+            throw new BadRequestException("Account not found", ErrorCode.ACCOUNT_ERROR_NOT_FOUND);
+        }
+
+        if (!updateCandidateStatusForm.getStatus().equals(NextStepConstant.STATUS_ACTIVE) && !updateCandidateStatusForm.getStatus().equals(NextStepConstant.STATUS_LOCK)) {
+            throw new BadRequestException("Invalid status. Only ACTIVE or LOCK allowed.", ErrorCode.ACCOUNT_ERROR_STATUS_INVALID);
+        }
+
+        account.setStatus(updateCandidateStatusForm.getStatus());
+        accountRepository.save(account);
+
+        apiMessageDto.setMessage("Change status successfully");
+        return apiMessageDto;
+    }
+
 }

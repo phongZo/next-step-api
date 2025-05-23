@@ -31,6 +31,8 @@ public class ErrorCode {
     public static final String ACCOUNT_ERROR_TOKEN_INVALID = "ERROR-ACCOUNT-0014";
     public static final String ACCOUNT_ERROR_ALREADY_EXIST = "ERROR-ACCOUNT-0015";
     public static final String ACCOUNT_ERROR_CODE_INVALID = "ERROR-ACCOUNT-0016";
+    public static final String ACCOUNT_ERROR_STATUS_INVALID = "ERROR-ACCOUNT-0017";
+
     /**
      * Starting error code Customer
      * */

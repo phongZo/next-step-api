@@ -21,4 +21,5 @@ public interface AccountRepository extends JpaRepository<Account, Long>, JpaSpec
     public Account findAccountByEmailAndKind(String phone,int kind);
     Optional<Account> findByIdAndStatus(Long id, Integer status);
     Optional<Account> findByEmailAndPlatform(String email, Integer platform);
+    Optional<Account> findByIdAndKind(Long id, Integer kind);
 }
