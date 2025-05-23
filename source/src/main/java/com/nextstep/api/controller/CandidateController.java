@@ -240,7 +240,7 @@ public class CandidateController extends ABasicController{
             throw new BadRequestException("Cannot get user info from Google", ErrorCode.ACCOUNT_ERROR_TOKEN_INVALID);
         }
 
-        Account account = accountRepository.findAccountByEmail(userInfo.email);
+        Account account = accountRepository.findByEmailAndPlatform(userInfo.email,NextStepConstant.ACCOUNT_PLATFORM_GOOGLE).orElse(null);
         if (account == null) {
             Group group = groupRepository.findFirstByKind(NextStepConstant.GROUP_KIND_CANDIDATE);
             if (group == null) {
@@ -249,13 +249,14 @@ public class CandidateController extends ABasicController{
             account = new Account();
             account.setKind(NextStepConstant.USER_KIND_CANDIDATE);
             account.setEmail(userInfo.email);
-            account.setFullName(userInfo.name);
-            account.setAvatarPath(userInfo.picture);
             account.setGroup(group);
             account.setResetPwdCode(resetCode);
             account.setStatus(NextStepConstant.STATUS_PENDING);
             account.setPlatform(NextStepConstant.ACCOUNT_PLATFORM_GOOGLE);
             account = accountRepository.save(account);
+            response.setPlatformUserId(account.getId());
+            response.setCode(account.getResetPwdCode());
+            response.setPlatform(account.getPlatform());
         } else {
             if (account.getStatus() == NextStepConstant.STATUS_ACTIVE) {
                 token = oauth2JWTTokenService.getAccessTokenForCandidate(account.getEmail());
@@ -264,9 +265,6 @@ public class CandidateController extends ABasicController{
                 }
             }
         }
-        response.setPlatformUserId(account.getId());
-        response.setCode(account.getResetPwdCode());
-        response.setPlatform(account.getPlatform());
         apiMessageDto.setData(response);
         apiMessageDto.setMessage("Google verify success");
         return apiMessageDto;
@@ -289,6 +287,8 @@ public class CandidateController extends ABasicController{
             throw new BadRequestException("Invalid verification code", ErrorCode.ACCOUNT_ERROR_CODE_INVALID);
         }
         account.setStatus(NextStepConstant.STATUS_ACTIVE);
+        account.setAvatarPath(googleRegisterForm.getAvatar());
+        account.setFullName(googleRegisterForm.getFullName());
         account.setResetPwdCode(null);
         account = accountRepository.save(account);
 

@@ -14,4 +14,8 @@ public class GoogleRegisterForm {
     @NotEmpty(message = "code cant not be null")
     @ApiModelProperty(name = "code", required = true)
     private String code;
+    @NotEmpty(message = "fullName cant not be null")
+    @ApiModelProperty(name = "fullName", required = true)
+    private String fullName;
+    private String avatar;
 }
