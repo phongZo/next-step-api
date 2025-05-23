@@ -13,4 +13,5 @@ public class ApiMessageDto<T> {
     private String firebaseUrl;
     private String urlBase;
     private String errorCode = null;
+    private String token = null;
 }

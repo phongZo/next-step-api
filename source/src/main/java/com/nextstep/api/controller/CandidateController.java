@@ -22,6 +22,7 @@ import com.nextstep.api.repository.AccountRepository;
 import com.nextstep.api.repository.CandidateRepository;
 import com.nextstep.api.repository.GroupRepository;
 import com.nextstep.api.service.feign.GoogleFeignClient;
+import com.nextstep.api.service.Oauth2JWTTokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +35,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.client.RestTemplate;
-import org.springframework.beans.factory.annotation.Value;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -63,6 +63,9 @@ public class CandidateController extends ABasicController{
 
     @Autowired
     private GoogleFeignClient googleFeignClient;
+
+    @Autowired
+    private Oauth2JWTTokenService oauth2JWTTokenService;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('CAN_L')")
@@ -223,7 +226,6 @@ public class CandidateController extends ABasicController{
     public ApiMessageDto<GoogleVerifyDto> googleVerify(GoogleVerifyForm googleVerifyForm) {
         ApiMessageDto<GoogleVerifyDto> apiMessageDto = new ApiMessageDto<>();
 
-
         GoogleUserInfo userInfo;
         try {
             userInfo = googleFeignClient.getUserInfo("Bearer " + googleVerifyForm.getAccessToken());
@@ -235,7 +237,6 @@ public class CandidateController extends ABasicController{
         }
 
         Account account = accountRepository.findAccountByEmail(userInfo.email);
-        Candidate candidate = null;
         boolean isNew = false;
         if (account == null) {
             Group group = groupRepository.findFirstByKind(NextStepConstant.GROUP_KIND_CANDIDATE);
@@ -250,24 +251,20 @@ public class CandidateController extends ABasicController{
             account.setEmail(userInfo.email);
             account.setFullName(userInfo.name);
             account.setGroup(group);
-            account.setStatus(NextStepConstant.STATUS_ACTIVE);
+            account.setStatus(NextStepConstant.STATUS_PENDING);
             account = accountRepository.save(account);
 
-            candidate = new Candidate();
-            candidate.setAccount(account);
-            candidate = candidateRepository.save(candidate);
             isNew = true;
         } else {
-            candidate = candidateRepository.findById(account.getId()).orElse(null);
-            if (candidate == null) {
-                candidate = new Candidate();
-                candidate.setAccount(account);
-                candidate = candidateRepository.save(candidate);
+            if (account.getStatus() == NextStepConstant.STATUS_ACTIVE) {
+                OAuth2AccessToken token = oauth2JWTTokenService.getAccessTokenForCandidate(account.getEmail());
+                if (token != null) {
+                    apiMessageDto.setToken(token.getValue());
+                }
             }
         }
 
         GoogleVerifyDto response = new GoogleVerifyDto();
-        response.candidate = candidateMapper.fromEntityToCandidateDto(candidate);
         response.isNew = isNew;
         apiMessageDto.setData(response);
         apiMessageDto.setMessage("Google verify success");
@@ -279,12 +276,10 @@ public class CandidateController extends ABasicController{
     public ApiMessageDto<CandidateDto> googleRegister(@Valid @RequestBody GoogleRegisterForm googleRegisterForm) {
         ApiMessageDto<CandidateDto> apiMessageDto = new ApiMessageDto<>();
 
-        Candidate candidate = candidateRepository.findById(googleRegisterForm.getUserId()).orElse(null);
-        if (candidate == null) {
-            throw new BadRequestException("Candidate not found", ErrorCode.CANDIDATE_ERROR_NOT_FOUND);
+        Account account = accountRepository.findById(googleRegisterForm.getUserId()).orElse(null);
+        if (account == null) {
+            throw new BadRequestException("Account not found", ErrorCode.ACCOUNT_ERROR_NOT_FOUND);
         }
-        Account account = candidate.getAccount();
-
         if (googleRegisterForm.getFullName() != null) {
             account.setFullName(googleRegisterForm.getFullName());
         }
@@ -294,9 +289,12 @@ public class CandidateController extends ABasicController{
             }
         }
         account.setPhone(googleRegisterForm.getPhone());
+        account.setStatus(NextStepConstant.STATUS_ACTIVE);
+        account = accountRepository.save(account);
 
-        accountRepository.save(account);
-        candidateRepository.save(candidate);
+        Candidate candidate = new Candidate();
+        candidate.setAccount(account);
+        candidate = candidateRepository.save(candidate);
 
         apiMessageDto.setData(candidateMapper.fromEntityToCandidateDto(candidate));
         apiMessageDto.setMessage("Google register success");
