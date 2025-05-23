@@ -22,9 +22,9 @@ TARTGET_BRANCH_DEPLOY="dev"
 
 node{
     try {
-        if (_BRANCH_NAME.matches(TARTGET_BRANCH_DEPLOY)) {
-            notifyBuild("STARTED", SLACK_CHANNEL_NAME)
-        }
+        // if (_BRANCH_NAME.matches(TARTGET_BRANCH_DEPLOY)) {
+        //     notifyBuild("STARTED", SLACK_CHANNEL_NAME)
+        // }
 
         stage ("Checkout source") {
             checkout scm
@@ -50,7 +50,7 @@ node{
                               "\n*Duration:* ${duration}" +
                               "\n*Change Log (DESC):*\n${getChangeLog()}"
 
-            notifyBuild(currentBuild.result, SLACK_CHANNEL_NAME, buildDetail)
+            //notifyBuild(currentBuild.result, SLACK_CHANNEL_NAME, buildDetail)
         }
     }
 
