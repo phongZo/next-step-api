@@ -77,7 +77,7 @@ def buildDev(){
             remote.host = HOST_DEV
             remote.allowAnyHosts = true
 
-            withCredentials([sshUserPrivateKey(credentialsId: 'ssh_credentials', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'userName')]) {
+            withCredentials([sshUserPrivateKey(credentialsId: 'ssh_credentials', keyFileVariable: 'identity', passphraseVariable: '', usernameVariable: 'root')]) {
                 remote.user = userName
                 remote.identityFile = identity
 
