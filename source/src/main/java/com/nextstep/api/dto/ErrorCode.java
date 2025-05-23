@@ -29,8 +29,8 @@ public class ErrorCode {
     public static final String ACCOUNT_ERROR_NOT_ALLOW_DELETE_SUPPER_ADMIN = "ERROR-ACCOUNT-0012";
     public static final String ACCOUNT_ERROR_PHONE_EXIST = "ERROR-ACCOUNT-0013";
     public static final String ACCOUNT_ERROR_TOKEN_INVALID = "ERROR-ACCOUNT-0014";
-
-
+    public static final String ACCOUNT_ERROR_ALREADY_EXIST = "ERROR-ACCOUNT-0015";
+    public static final String ACCOUNT_ERROR_CODE_INVALID = "ERROR-ACCOUNT-0016";
     /**
      * Starting error code Customer
      * */

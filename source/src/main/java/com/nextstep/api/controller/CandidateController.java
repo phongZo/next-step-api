@@ -225,15 +225,17 @@ public class CandidateController extends ABasicController{
     @Transactional
     public ApiMessageDto<GoogleVerifyDto> googleVerify(GoogleVerifyForm googleVerifyForm) {
         ApiMessageDto<GoogleVerifyDto> apiMessageDto = new ApiMessageDto<>();
-
+        GoogleVerifyDto response = new GoogleVerifyDto();
         GoogleUserInfo userInfo;
         OAuth2AccessToken token = null;
         String resetCode = com.nextstep.api.utils.StringUtils.generateRandomString(6);
+
         try {
             userInfo = googleFeignClient.getUserInfo("Bearer " + googleVerifyForm.getAccessToken());
         } catch (Exception e) {
             throw new BadRequestException("Invalid Google access token", ErrorCode.ACCOUNT_ERROR_TOKEN_INVALID);
         }
+
         if (userInfo == null || userInfo.email == null) {
             throw new BadRequestException("Cannot get user info from Google", ErrorCode.ACCOUNT_ERROR_TOKEN_INVALID);
         }
@@ -252,23 +254,24 @@ public class CandidateController extends ABasicController{
             account.setGroup(group);
             account.setResetPwdCode(resetCode);
             account.setStatus(NextStepConstant.STATUS_PENDING);
+            account.setPlatform(NextStepConstant.ACCOUNT_PLATFORM_GOOGLE);
             account = accountRepository.save(account);
         } else {
             if (account.getStatus() == NextStepConstant.STATUS_ACTIVE) {
                 token = oauth2JWTTokenService.getAccessTokenForCandidate(account.getEmail());
                 if (token != null) {
-                    apiMessageDto.setToken(token.getValue());
+                    response.setOAuth2AccessToken(token);
                 }
             }
         }
-        GoogleVerifyDto response = new GoogleVerifyDto();
         response.setPlatformUserId(account.getId());
+        response.setCode(account.getResetPwdCode());
         response.setPlatform(account.getPlatform());
-        response.setOAuth2AccessToken(token);
         apiMessageDto.setData(response);
         apiMessageDto.setMessage("Google verify success");
         return apiMessageDto;
     }
+
 
     @PostMapping(value = "/google-register", produces = MediaType.APPLICATION_JSON_VALUE)
     @Transactional
@@ -279,9 +282,14 @@ public class CandidateController extends ABasicController{
         if (account == null) {
             throw new BadRequestException("Account not found", ErrorCode.ACCOUNT_ERROR_NOT_FOUND);
         }
-
-        //account.setPhone(googleRegisterForm.getPhone());
+        if (account.getPhone() != null && account.getPlatform() == null) {
+            throw new BadRequestException("Account was registered manually, not allowed for Google register", ErrorCode.ACCOUNT_ERROR_ALREADY_EXIST);
+        }
+        if (account.getResetPwdCode() == null || !account.getResetPwdCode().equals(googleRegisterForm.getCode())) {
+            throw new BadRequestException("Invalid verification code", ErrorCode.ACCOUNT_ERROR_CODE_INVALID);
+        }
         account.setStatus(NextStepConstant.STATUS_ACTIVE);
+        account.setResetPwdCode(null);
         account = accountRepository.save(account);
 
         Candidate candidate = new Candidate();
