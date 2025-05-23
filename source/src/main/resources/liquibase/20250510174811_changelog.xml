@@ -540,4 +540,9 @@
             <column name="permission_id" valueNumeric="8476629979791360"/>
         </insert>
     </changeSet>
+    <changeSet author="NextStep" id="1746899298265-25">
+        <addColumn tableName="db_account">
+            <column name="platform" type="integer" afterColumn="phone"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

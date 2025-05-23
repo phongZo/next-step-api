@@ -6,6 +6,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
+import java.util.Optional;
+
 public interface AccountRepository extends JpaRepository<Account, Long>, JpaSpecificationExecutor<Account> {
 
     public Account findAccountByUsername(String username);
@@ -17,5 +19,5 @@ public interface AccountRepository extends JpaRepository<Account, Long>, JpaSpec
     boolean existsByUsername(String username);
     boolean existsByPhone(String phone);
     public Account findAccountByEmailAndKind(String phone,int kind);
-
+    Optional<Account> findByIdAndStatus(Long id, Integer status);
 }

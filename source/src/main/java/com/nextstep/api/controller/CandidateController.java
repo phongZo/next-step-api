@@ -227,6 +227,8 @@ public class CandidateController extends ABasicController{
         ApiMessageDto<GoogleVerifyDto> apiMessageDto = new ApiMessageDto<>();
 
         GoogleUserInfo userInfo;
+        OAuth2AccessToken token = null;
+        String resetCode = com.nextstep.api.utils.StringUtils.generateRandomString(6);
         try {
             userInfo = googleFeignClient.getUserInfo("Bearer " + googleVerifyForm.getAccessToken());
         } catch (Exception e) {
@@ -237,7 +239,6 @@ public class CandidateController extends ABasicController{
         }
 
         Account account = accountRepository.findAccountByEmail(userInfo.email);
-        boolean isNew = false;
         if (account == null) {
             Group group = groupRepository.findFirstByKind(NextStepConstant.GROUP_KIND_CANDIDATE);
             if (group == null) {
@@ -245,27 +246,25 @@ public class CandidateController extends ABasicController{
             }
             account = new Account();
             account.setKind(NextStepConstant.USER_KIND_CANDIDATE);
-            account.setUsername(null);
-            account.setPassword("");
-            account.setPhone(null);
             account.setEmail(userInfo.email);
             account.setFullName(userInfo.name);
+            account.setAvatarPath(userInfo.picture);
             account.setGroup(group);
+            account.setResetPwdCode(resetCode);
             account.setStatus(NextStepConstant.STATUS_PENDING);
             account = accountRepository.save(account);
-
-            isNew = true;
         } else {
             if (account.getStatus() == NextStepConstant.STATUS_ACTIVE) {
-                OAuth2AccessToken token = oauth2JWTTokenService.getAccessTokenForCandidate(account.getEmail());
+                token = oauth2JWTTokenService.getAccessTokenForCandidate(account.getEmail());
                 if (token != null) {
                     apiMessageDto.setToken(token.getValue());
                 }
             }
         }
-
         GoogleVerifyDto response = new GoogleVerifyDto();
-        response.isNew = isNew;
+        response.setPlatformUserId(account.getId());
+        response.setPlatform(account.getPlatform());
+        response.setOAuth2AccessToken(token);
         apiMessageDto.setData(response);
         apiMessageDto.setMessage("Google verify success");
         return apiMessageDto;
@@ -276,19 +275,12 @@ public class CandidateController extends ABasicController{
     public ApiMessageDto<CandidateDto> googleRegister(@Valid @RequestBody GoogleRegisterForm googleRegisterForm) {
         ApiMessageDto<CandidateDto> apiMessageDto = new ApiMessageDto<>();
 
-        Account account = accountRepository.findById(googleRegisterForm.getUserId()).orElse(null);
+        Account account = accountRepository.findByIdAndStatus(googleRegisterForm.getPlatformUserId(),NextStepConstant.STATUS_PENDING).orElse(null);
         if (account == null) {
             throw new BadRequestException("Account not found", ErrorCode.ACCOUNT_ERROR_NOT_FOUND);
         }
-        if (googleRegisterForm.getFullName() != null) {
-            account.setFullName(googleRegisterForm.getFullName());
-        }
-        if (googleRegisterForm.getPhone() != null && !googleRegisterForm.getPhone().isEmpty()) {
-            if(accountRepository.existsByPhone(googleRegisterForm.getPhone())){
-                throw new BadRequestException("Phone number already in use", ErrorCode.ACCOUNT_ERROR_PHONE_EXIST);
-            }
-        }
-        account.setPhone(googleRegisterForm.getPhone());
+
+        //account.setPhone(googleRegisterForm.getPhone());
         account.setStatus(NextStepConstant.STATUS_ACTIVE);
         account = accountRepository.save(account);
 
