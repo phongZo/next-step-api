@@ -51,6 +51,9 @@ public class AccountCriteria implements Serializable{
                 if(!StringUtils.isEmpty(getFullName())){
                     predicates.add(cb.like(cb.lower(root.get("fullName")), "%"+getFullName().toLowerCase()+"%"));
                 }
+                if(!StringUtils.isEmpty(getPhone())){
+                    predicates.add(cb.like(cb.lower(root.get("phone")), "%" + getPhone().toLowerCase() + "%"));
+                }
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };

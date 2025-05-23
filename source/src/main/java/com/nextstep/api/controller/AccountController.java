@@ -305,6 +305,7 @@ public class AccountController extends ABasicController{
     @PreAuthorize("hasRole('ACC_L_AD')")
     public ApiResponse<ResponseListDto<AccountDto>> listAccountAdmin(AccountCriteria accountCriteria,Pageable pageable) {
         ApiResponse<ResponseListDto<AccountDto>> apiMessageDto = new ApiResponse<>();
+        accountCriteria.setKind(NextStepConstant.USER_KIND_ADMIN);
         Page<Account> accounts = accountRepository.findAll(accountCriteria.getSpecification(), pageable);
         ResponseListDto<AccountDto> responseListDto = new ResponseListDto(accounts.getContent(), accounts.getTotalElements(), accounts.getTotalPages());
         apiMessageDto.setData(responseListDto);
