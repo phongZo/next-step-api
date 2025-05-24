@@ -48,6 +48,8 @@ public class UserServiceImpl implements UserDetailsService {
     @Autowired
     private GroupRepository groupRepository;
 
+    public String AUTH_SERVER_TOKEN = "";
+
 
 
     @Override
@@ -65,6 +67,24 @@ public class UserServiceImpl implements UserDetailsService {
         Set<GrantedAuthority> grantedAuthorities = getAccountPermission(user);
         return new org.springframework.security.core.userdetails.User(user.getUsername(), user.getPassword(), enabled, true, true, true, grantedAuthorities);
     }
+
+    public UserDetails loadUserByEmailAndKind(String email, Integer kind) {
+        Account user = accountRepository.findAccountByEmailAndKind(email,kind);
+        if (user == null) {
+            log.error("Invalid username or password.");
+            throw new UsernameNotFoundException("Invalid username or password.");
+        }
+        String password = "";
+        boolean enabled = true;
+        if (user.getStatus() != 1) {
+            log.error("User had been locked");
+            enabled = false;
+        }
+        Set<GrantedAuthority> grantedAuthorities = getAccountPermission(user);
+        return new org.springframework.security.core.userdetails.User(user.getEmail(), password, enabled, true, true, true, grantedAuthorities);
+    }
+
+
 
     private Set<GrantedAuthority> getAccountPermission(Account user){
         List<String> roles = new ArrayList<>();

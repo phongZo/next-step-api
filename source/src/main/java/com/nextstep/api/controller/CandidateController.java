@@ -6,20 +6,20 @@ import com.nextstep.api.dto.ErrorCode;
 import com.nextstep.api.dto.ResponseListDto;
 import com.nextstep.api.dto.candidate.CandidateAdminDto;
 import com.nextstep.api.dto.candidate.CandidateDto;
-import com.nextstep.api.dto.employee.EmployeeDto;
+import com.nextstep.api.dto.candidate.GoogleUserInfo;
+import com.nextstep.api.dto.candidate.GoogleVerifyDto;
 import com.nextstep.api.exception.BadRequestException;
-import com.nextstep.api.form.candidate.CandidateSignupForm;
-import com.nextstep.api.form.candidate.UpdateCandidateProfileForm;
+import com.nextstep.api.form.candidate.*;
 import com.nextstep.api.mapper.CandidateMapper;
 import com.nextstep.api.model.Account;
 import com.nextstep.api.model.Candidate;
-import com.nextstep.api.model.Employee;
 import com.nextstep.api.model.Group;
 import com.nextstep.api.model.criteria.CandidateCriteria;
-import com.nextstep.api.model.criteria.EmployeeCriteria;
 import com.nextstep.api.repository.AccountRepository;
 import com.nextstep.api.repository.CandidateRepository;
 import com.nextstep.api.repository.GroupRepository;
+import com.nextstep.api.service.feign.GoogleFeignClient;
+import com.nextstep.api.service.Oauth2JWTTokenService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +32,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.security.oauth2.common.OAuth2AccessToken;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -56,6 +57,12 @@ public class CandidateController extends ABasicController{
 
     @Autowired
     private PasswordEncoder passwordEncoder;
+
+    @Autowired
+    private GoogleFeignClient googleFeignClient;
+
+    @Autowired
+    private Oauth2JWTTokenService oauth2JWTTokenService;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('CAN_L')")
@@ -210,4 +217,107 @@ public class CandidateController extends ABasicController{
         apiMessageDto.setMessage("Delete candidate successfully");
         return apiMessageDto;
     }
+
+    @PostMapping(value = "/google-verify", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    public ApiMessageDto<GoogleVerifyDto> googleVerify(GoogleVerifyForm googleVerifyForm) {
+        ApiMessageDto<GoogleVerifyDto> apiMessageDto = new ApiMessageDto<>();
+        GoogleVerifyDto response = new GoogleVerifyDto();
+        GoogleUserInfo userInfo;
+        OAuth2AccessToken token = null;
+        String resetCode = com.nextstep.api.utils.StringUtils.generateRandomString(6);
+
+        try {
+            userInfo = googleFeignClient.getUserInfo("Bearer " + googleVerifyForm.getAccessToken());
+        } catch (Exception e) {
+            throw new BadRequestException("Invalid Google access token", ErrorCode.ACCOUNT_ERROR_TOKEN_INVALID);
+        }
+
+        if (userInfo == null || userInfo.email == null) {
+            throw new BadRequestException("Cannot get user info from Google", ErrorCode.ACCOUNT_ERROR_TOKEN_INVALID);
+        }
+
+        Account account = accountRepository.findByEmailAndPlatform(userInfo.email,NextStepConstant.ACCOUNT_PLATFORM_GOOGLE).orElse(null);
+        if (account == null) {
+            Group group = groupRepository.findFirstByKind(NextStepConstant.GROUP_KIND_CANDIDATE);
+            if (group == null) {
+                throw new BadRequestException("Group not found", ErrorCode.GROUP_ERROR_NOT_FOUND);
+            }
+            account = new Account();
+            account.setKind(NextStepConstant.USER_KIND_CANDIDATE);
+            account.setEmail(userInfo.email);
+            account.setGroup(group);
+            account.setResetPwdCode(resetCode);
+            account.setStatus(NextStepConstant.STATUS_PENDING);
+            account.setPlatform(NextStepConstant.ACCOUNT_PLATFORM_GOOGLE);
+            account = accountRepository.save(account);
+            response.setPlatformUserId(account.getId());
+            response.setCode(account.getResetPwdCode());
+            response.setPlatform(account.getPlatform());
+        } else {
+            if (account.getStatus() == NextStepConstant.STATUS_ACTIVE) {
+                token = oauth2JWTTokenService.getAccessTokenForCandidate(account.getEmail());
+                if (token != null) {
+                    response.setOAuth2AccessToken(token);
+                }
+            }
+        }
+        apiMessageDto.setData(response);
+        apiMessageDto.setMessage("Google verify success");
+        return apiMessageDto;
+    }
+
+
+    @PostMapping(value = "/google-register", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    public ApiMessageDto<CandidateDto> googleRegister(@Valid @RequestBody GoogleRegisterForm googleRegisterForm) {
+        ApiMessageDto<CandidateDto> apiMessageDto = new ApiMessageDto<>();
+
+        Account account = accountRepository.findByIdAndStatus(googleRegisterForm.getPlatformUserId(),NextStepConstant.STATUS_PENDING).orElse(null);
+        if (account == null) {
+            throw new BadRequestException("Account not found", ErrorCode.ACCOUNT_ERROR_NOT_FOUND);
+        }
+        if (account.getPhone() != null && account.getPlatform() == null) {
+            throw new BadRequestException("Account was registered manually, not allowed for Google register", ErrorCode.ACCOUNT_ERROR_ALREADY_EXIST);
+        }
+        if (account.getResetPwdCode() == null || !account.getResetPwdCode().equals(googleRegisterForm.getCode())) {
+            throw new BadRequestException("Invalid verification code", ErrorCode.ACCOUNT_ERROR_CODE_INVALID);
+        }
+        account.setStatus(NextStepConstant.STATUS_ACTIVE);
+        account.setAvatarPath(googleRegisterForm.getAvatar());
+        account.setFullName(googleRegisterForm.getFullName());
+        account.setResetPwdCode(null);
+        account = accountRepository.save(account);
+
+        Candidate candidate = new Candidate();
+        candidate.setAccount(account);
+        candidate = candidateRepository.save(candidate);
+
+        apiMessageDto.setData(candidateMapper.fromEntityToCandidateDto(candidate));
+        apiMessageDto.setMessage("Google register success");
+        return apiMessageDto;
+    }
+
+    @PutMapping(value = "/change-status", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('CAN_U_STATUS')")
+    @Transactional
+    public ApiMessageDto<String> changeCandidateStatus(@Valid @RequestBody UpdateCandidateStatusForm updateCandidateStatusForm, BindingResult bindingResult) {
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+
+        Account account = accountRepository.findByIdAndKind(updateCandidateStatusForm.getId(),NextStepConstant.USER_KIND_CANDIDATE).orElse(null);
+        if (account == null) {
+            throw new BadRequestException("Account not found", ErrorCode.ACCOUNT_ERROR_NOT_FOUND);
+        }
+
+        if (!updateCandidateStatusForm.getStatus().equals(NextStepConstant.STATUS_ACTIVE) && !updateCandidateStatusForm.getStatus().equals(NextStepConstant.STATUS_LOCK)) {
+            throw new BadRequestException("Invalid status. Only ACTIVE or LOCK allowed.", ErrorCode.ACCOUNT_ERROR_STATUS_INVALID);
+        }
+
+        account.setStatus(updateCandidateStatusForm.getStatus());
+        accountRepository.save(account);
+
+        apiMessageDto.setMessage("Change status successfully");
+        return apiMessageDto;
+    }
+
 }

@@ -52,4 +52,7 @@ public class Account extends Auditable<String> {
 
     @Column(name = "is_super_admin")
     private Boolean isSuperAdmin = false;
+
+    @Column(name = "platform")
+    private Integer platform ; // ( 1 : google)
 }

@@ -42,6 +42,8 @@ public class NextStepConstant {
     public static final Integer POST_CONTRACT_TYPE_FULL_TIME = 1;
     public static final Integer POST_CONTRACT_TYPE_COLLAB = 2;
 
+    public static final Integer ACCOUNT_PLATFORM_GOOGLE = 1;
+
     public static final String ROOT_DIRECTORY = "C:/java/image";
 
     private NextStepConstant(){

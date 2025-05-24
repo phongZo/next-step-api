@@ -540,4 +540,31 @@
             <column name="permission_id" valueNumeric="8476629979791360"/>
         </insert>
     </changeSet>
+    <changeSet author="NextStep" id="1746899298265-25">
+        <addColumn tableName="db_account">
+            <column name="platform" type="integer" afterColumn="phone"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-26">
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8483124763820032"/>
+            <column name="name" value="Update candidate status"/>
+            <column name="action" value="/v1/candidate/change-status"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="Update candidate status"/>
+            <column name="name_group" value="Candidate"/>
+            <column name="p_code" value="CAN_U_STATUS"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-23 10:27:13"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-23 10:27:13"/>
+        </insert>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-27">
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8483124763820032"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
