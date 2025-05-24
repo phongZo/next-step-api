@@ -20,6 +20,8 @@ public class CandidateCriteria implements Serializable {
     private String jobTitle;
     private Boolean isAutoApply;
     private Boolean isJobSearching;
+    private String fullName;
+    private String phone;
 
     public Specification<Candidate> getSpecification() {
         return new Specification<Candidate>(){
@@ -44,7 +46,14 @@ public class CandidateCriteria implements Serializable {
                 if (getIsJobSearching() != null) {
                     predicates.add(cb.equal(root.get("isJobSearching"), getIsJobSearching()));
                 }
-                
+                if (!StringUtils.isEmpty(getFullName())) {
+                    predicates.add(cb.like(cb.lower(root.get("account").get("fullName")), "%" + getFullName().toLowerCase() + "%"));
+                }
+
+                if (!StringUtils.isEmpty(getPhone())) {
+                    predicates.add(cb.like(cb.lower(root.get("account").get("phone")), "%" + getPhone().toLowerCase() + "%"));
+                }
+
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };
