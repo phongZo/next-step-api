@@ -36,4 +36,19 @@ public class Candidate extends Auditable<String> {
 
     @Column(name = "cover_letter", columnDefinition = "LONGTEXT")
     private String coverLetter;
+
+    @Column(name = "code")
+    private String code;
+
+    @Column(name = "experience")
+    private Integer experience;
+
+    @Column(name = "speciality")
+    private String speciality;
+
+    @Column(name = "work_area")
+    private String workArea;
+
+    @Column(name = "allow_company_contact")
+    private Boolean allowCompanyContact = false;
 } 

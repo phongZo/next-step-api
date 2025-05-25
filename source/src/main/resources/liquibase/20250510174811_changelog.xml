@@ -567,4 +567,29 @@
             <column name="permission_id" valueNumeric="8483124763820032"/>
         </insert>
     </changeSet>
+    <changeSet author="NextStep" id="1746899298265-28">
+        <addColumn tableName="db_candidate">
+            <column name="allow_company_contact" type="bit" afterColumn="job_title"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-29">
+        <addColumn tableName="db_candidate">
+            <column name="code" type="varchar(255)" afterColumn="allow_company_contact"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-30">
+        <addColumn tableName="db_candidate">
+            <column name="experience" type="integer" afterColumn="code"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-31">
+        <addColumn tableName="db_candidate">
+            <column name="speciality" type="varchar(255)" afterColumn="experience"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-32">
+        <addColumn tableName="db_candidate">
+            <column name="work_area" type="varchar(255)" afterColumn="speciality"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

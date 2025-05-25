@@ -103,8 +103,8 @@ public class Oauth2JWTTokenService {
 
     private OAuth2Authentication convertAuthentication(UserDetails userPrincipal, OauthClientDetailsDto oauthClientDetailsDto, String grantType) {
         Map<String, String> requestParameters = new HashMap<>();
-        requestParameters.put("grant_type", grantType);
-        requestParameters.put("username", userPrincipal.getUsername());
+        requestParameters.put("grantType", grantType);
+        requestParameters.put("phone", userPrincipal.getUsername());
 
         Set<GrantedAuthority> authorities = new HashSet<>(userPrincipal.getAuthorities());
 

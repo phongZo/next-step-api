@@ -154,6 +154,7 @@ public class CustomTokenEnhancer implements TokenEnhancer {
         return additionalInfo;
     }
 
+
     private Map<String, Object> getAdditionalInfo(String username, String grantType) {
         Map<String, Object> additionalInfo = new HashMap<>();
         AccountForTokenDto a = getAccountByUsername(username);
@@ -209,9 +210,9 @@ public class CustomTokenEnhancer implements TokenEnhancer {
             String query = "SELECT a.id, a.kind, a.username, a.email, a.full_name, a.is_super_admin, e.company_id " +
                     "FROM db_account a " +
                     "LEFT JOIN db_employee e ON a.id = e.id " +
-                    "WHERE a.phone = ? AND a.status = 1 LIMIT 1";
+                    "WHERE (a.phone = ? OR a.email = ?) AND a.status = 1 LIMIT 1";
             log.debug(query);
-            List<AccountForTokenDto> dto = jdbcTemplate.query(query, new Object[]{phone},  new BeanPropertyRowMapper<>(AccountForTokenDto.class));
+            List<AccountForTokenDto> dto = jdbcTemplate.query(query, new Object[]{phone,phone},  new BeanPropertyRowMapper<>(AccountForTokenDto.class));
             if (dto.size() > 0)return dto.get(0);
             return null;
         } catch (Exception e) {

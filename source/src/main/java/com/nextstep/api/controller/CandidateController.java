@@ -103,6 +103,7 @@ public class CandidateController extends ABasicController{
     {
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
 
+        String code = com.nextstep.api.utils.StringUtils.generateRandomString(7);
         if (candidateSignupForm.getPhone() != null && !candidateSignupForm.getPhone().isEmpty()) {
             if(accountRepository.existsByPhone(candidateSignupForm.getPhone())){
                 throw new BadRequestException("Phone number already in use", ErrorCode.ACCOUNT_ERROR_PHONE_EXIST);
@@ -126,6 +127,7 @@ public class CandidateController extends ABasicController{
         Account savedAccount = accountRepository.save(account);
 
         Candidate candidate = new Candidate();
+        candidate.setCode(code);
         candidate.setAccount(savedAccount);
         candidateRepository.save(candidate);
         
@@ -274,6 +276,7 @@ public class CandidateController extends ABasicController{
         ApiMessageDto<CandidateDto> apiMessageDto = new ApiMessageDto<>();
 
         Account account = accountRepository.findByIdAndStatus(googleRegisterForm.getPlatformUserId(),NextStepConstant.STATUS_PENDING).orElse(null);
+        String code = com.nextstep.api.utils.StringUtils.generateRandomString(7);
         if (account == null) {
             throw new BadRequestException("Account not found", ErrorCode.ACCOUNT_ERROR_NOT_FOUND);
         }
@@ -291,6 +294,7 @@ public class CandidateController extends ABasicController{
 
         Candidate candidate = new Candidate();
         candidate.setAccount(account);
+        candidate.setCode(code);
         candidate = candidateRepository.save(candidate);
 
         apiMessageDto.setData(candidateMapper.fromEntityToCandidateDto(candidate));
@@ -317,6 +321,23 @@ public class CandidateController extends ABasicController{
         accountRepository.save(account);
 
         apiMessageDto.setMessage("Change status successfully");
+        return apiMessageDto;
+    }
+
+    @PutMapping(value = "/update-detail", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    public ApiMessageDto<String> updateCandidateDetail(@RequestBody UpdateCandidateDetailForm updateCandidateDetailForm) {
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+
+        Long candidateId = getCurrentUser();
+        Candidate candidate = candidateRepository.findById(candidateId).orElse(null);
+        if (candidate == null) {
+            throw new BadRequestException("Candidate not found", ErrorCode.CANDIDATE_ERROR_NOT_FOUND);
+        }
+        candidateMapper.updateFromUpdateCandidateDetailForm(candidate, updateCandidateDetailForm);
+        candidateRepository.save(candidate);
+
+        apiMessageDto.setMessage("Update candidate detail successfully");
         return apiMessageDto;
     }
 

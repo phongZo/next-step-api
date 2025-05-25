@@ -1,11 +1,12 @@
 package com.nextstep.api.dto.candidate;
 
+import com.nextstep.api.dto.ABasicAdminDto;
 import com.nextstep.api.dto.account.AccountDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-public class CandidateAdminDto {
+public class CandidateAdminDto extends ABasicAdminDto {
     @ApiModelProperty(name = "id")
     private Long id;
 
