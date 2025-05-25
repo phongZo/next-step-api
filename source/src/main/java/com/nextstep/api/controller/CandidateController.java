@@ -320,6 +320,12 @@ public class CandidateController extends ABasicController{
         account.setStatus(updateCandidateStatusForm.getStatus());
         accountRepository.save(account);
 
+        Candidate candidate = candidateRepository.findByAccount(account);
+        if (candidate != null) {
+            candidate.setStatus(updateCandidateStatusForm.getStatus());
+            candidateRepository.save(candidate);
+        }
+
         apiMessageDto.setMessage("Change status successfully");
         return apiMessageDto;
     }
