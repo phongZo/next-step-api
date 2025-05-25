@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 import javax.persistence.Column;
 
 @Data
-public class CandidateDto  extends ABasicAdminDto {
+public class CandidateDto extends ABasicAdminDto {
     @ApiModelProperty(name = "id")
     private Long id;
     

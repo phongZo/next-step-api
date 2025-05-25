@@ -6,7 +6,7 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 @Data
-public class CandidateAdminDto  extends ABasicAdminDto {
+public class CandidateAdminDto extends ABasicAdminDto {
     @ApiModelProperty(name = "id")
     private Long id;
 
