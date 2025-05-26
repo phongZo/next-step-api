@@ -19,4 +19,8 @@ public class CompanyDto {
     private String logo;
     @ApiModelProperty(name = "banner")
     private String banner;
+    @ApiModelProperty(name = "address")
+    private String address;
+    @ApiModelProperty(name = "websiteUrl")
+    private String websiteUrl;
 }

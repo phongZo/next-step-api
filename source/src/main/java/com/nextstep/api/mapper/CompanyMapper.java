@@ -22,6 +22,8 @@ public interface CompanyMapper {
     @Mapping(source = "hotline", target = "hotline")
     @Mapping(source = "logo", target = "logo")
     @Mapping(source = "banner", target = "banner")
+    @Mapping(source = "address", target = "address")
+    @Mapping(source = "websiteUrl", target = "websiteUrl")
     @BeanMapping(ignoreByDefault = true)
     @Named("fromCreateCompanyFormToEntity")
     Company fromCreateCompanyFormToEntity(CreateCompanyForm createCompanyForm);
@@ -33,6 +35,8 @@ public interface CompanyMapper {
     @Mapping(source = "hotline", target = "hotline")
     @Mapping(source = "logo", target = "logo")
     @Mapping(source = "banner", target = "banner")
+    @Mapping(source = "address", target = "address")
+    @Mapping(source = "websiteUrl", target = "websiteUrl")
     @BeanMapping(ignoreByDefault = true)
     @Named("fromEntityToCompanyDto")
     CompanyDto fromEntityToCompanyDto(Company company);
@@ -47,6 +51,8 @@ public interface CompanyMapper {
     @Mapping(source = "hotline", target = "hotline")
     @Mapping(source = "logo", target = "logo")
     @Mapping(source = "banner", target = "banner")
+    @Mapping(source = "address", target = "address")
+    @Mapping(source = "websiteUrl", target = "websiteUrl")
     @BeanMapping(ignoreByDefault = true)
     @Named("updateFromUpdateCompanyForm")
     void updateFromUpdateCompanyForm(@MappingTarget Company company, UpdateCompanyForm updateCompanyForm);
