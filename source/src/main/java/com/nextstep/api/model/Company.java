@@ -31,5 +31,9 @@ public class Company extends Auditable<String>{
     private String logo;
     @Column(name = "banner")
     private String banner;
+    @Column(name = "address")
+    private String address;
+    @Column(name = "website_url")
+    private String websiteUrl;
 
 }

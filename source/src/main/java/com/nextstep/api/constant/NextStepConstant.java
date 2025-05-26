@@ -32,6 +32,7 @@ public class NextStepConstant {
     public static final Integer MAX_ATTEMPT_LOGIN = 5;
 
     public static final Integer CATEGORY_KIND_NEWS = 1;
+    public static final Integer CATEGORY_KIND_SKILL = 2;
 
     public static final Integer POST_TYPE_HOME = 0;
     public static final Integer POST_TYPE_OFFICE = 1;

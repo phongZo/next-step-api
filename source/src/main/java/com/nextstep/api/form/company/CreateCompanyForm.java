@@ -27,4 +27,10 @@ public class CreateCompanyForm {
     @NotBlank(message = "banner cant not be null")
     @ApiModelProperty(name = "banner", required = true)
     private String banner;
+    @NotBlank(message = "address cant not be null")
+    @ApiModelProperty(name = "address", required = true)
+    private String address;
+    @NotBlank(message = "websiteUrl cant not be null")
+    @ApiModelProperty(name = "websiteUrl", required = true)
+    private String websiteUrl;
 }

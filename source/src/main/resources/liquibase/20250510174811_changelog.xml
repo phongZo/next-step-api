@@ -592,4 +592,14 @@
             <column name="work_area" type="varchar(255)" afterColumn="speciality"/>
         </addColumn>
     </changeSet>
+    <changeSet author="NextStep" id="1746899298265-33">
+        <addColumn tableName="db_company">
+            <column name="address" type="varchar(255)" afterColumn="logo"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-34">
+        <addColumn tableName="db_company">
+            <column name="website_url" type="varchar(255)" afterColumn="address"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
