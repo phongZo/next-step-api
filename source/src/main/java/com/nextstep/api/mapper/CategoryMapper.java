@@ -17,6 +17,7 @@ public interface CategoryMapper {
     @Mapping(source = "image", target = "image")
     @Mapping(source = "ordering", target = "ordering")
     @Mapping(source = "kind", target = "kind")
+    @Mapping(source = "tag", target = "tag")
     @Named("fromCreateCategory")
     @BeanMapping(ignoreByDefault = true)
     Category fromCreateCategory(CreateCategoryForm createCategoryForm);
@@ -25,6 +26,7 @@ public interface CategoryMapper {
     @Mapping(source = "description", target = "description")
     @Mapping(source = "image", target = "image")
     @Mapping(source = "ordering", target = "ordering")
+    @Mapping(source = "tag", target = "tag")
     @Named("mappingForUpdateCategory")
     @BeanMapping(ignoreByDefault = true)
     void mappingForUpdateServiceCategory(UpdateCategoryForm updateServiceCategoryForm, @MappingTarget Category category);
@@ -38,6 +40,7 @@ public interface CategoryMapper {
     @Mapping(source = "modifiedDate", target = "modifiedDate")
     @Mapping(source = "createdDate", target = "createdDate")
     @Mapping(source = "status", target = "status")
+    @Mapping(source = "tag", target = "tag")
     @Named("fromEntityToCategoryDto")
     @BeanMapping(ignoreByDefault = true)
     CategoryDto fromEntityToCategoryDto(Category category);
@@ -49,6 +52,7 @@ public interface CategoryMapper {
     @Mapping(source = "name", target = "name")
     @Mapping(source = "description", target = "description")
     @Mapping(source = "image", target = "image")
+    @Mapping(source = "tag", target = "tag")
     @BeanMapping(ignoreByDefault = true)
     @Named("fromCategoryToCompleteDto")
     CategoryDto fromCategoryToCompleteDto(Category category);

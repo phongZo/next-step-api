@@ -11,4 +11,5 @@ public class CategoryDto extends ABasicAdminDto {
     private String image;
     private Integer ordering;
     private Integer kind;
+    private String tag;
 }
