@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.InputStreamResource;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -32,7 +33,11 @@ import java.util.List;
 @Slf4j
 public class FileService {
 
-    static final String[] UPLOAD_TYPES = new String[]{"LOGO", "AVATAR","IMAGE", "DOCUMENT"};
+    static final String[] UPLOAD_TYPES = new String[]{"LOGO", "AVATAR", "IMAGE", "DOCUMENT", "CV"};
+    static final String[] ALLOWED_EXTENSIONS = new String[]{"pdf", "doc", "docx"};
+
+    @Value("${file.upload-dir}")
+    private String uploadDir;
 
     @Autowired
     RestTemplate restTemplate;
@@ -56,16 +61,27 @@ public class FileService {
             boolean contains = Arrays.stream(UPLOAD_TYPES).anyMatch(uploadFileForm.getType()::equalsIgnoreCase);
             if (!contains) {
                 apiMessageDto.setResult(false);
-                apiMessageDto.setMessage("Type is required in AVATAR or LOGO");
+                apiMessageDto.setMessage("Type is required in AVATAR, LOGO, IMAGE, DOCUMENT or CV");
                 return apiMessageDto;
             }
+
             String fileName = StringUtils.cleanPath(uploadFileForm.getFile().getOriginalFilename());
-            String ext = FilenameUtils.getExtension(fileName);
+            String ext = FilenameUtils.getExtension(fileName).toLowerCase();
+
+            if (uploadFileForm.getType().equals("CV")) {
+                boolean isValidExt = Arrays.stream(ALLOWED_EXTENSIONS).anyMatch(ext::equals);
+                if (!isValidExt) {
+                    apiMessageDto.setResult(false);
+                    apiMessageDto.setMessage("CV file must be PDF, DOC or DOCX");
+                    return apiMessageDto;
+                }
+            }
+
             //upload to uploadFolder/TYPE/id
             String finalFile = uploadFileForm.getType() + "_" + RandomStringUtils.randomAlphanumeric(10) + "." + ext;
             String typeFolder = File.separator + uploadFileForm.getType();
 
-            Path fileStorageLocation = Paths.get(NextStepConstant.ROOT_DIRECTORY + typeFolder).toAbsolutePath().normalize();
+            Path fileStorageLocation = Paths.get(uploadDir + typeFolder).toAbsolutePath().normalize();
             Files.createDirectories(fileStorageLocation);
             Path targetLocation = fileStorageLocation.resolve(finalFile);
             Files.copy(uploadFileForm.getFile().getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
@@ -79,12 +95,11 @@ public class FileService {
             apiMessageDto.setMessage("" + e.getMessage());
         }
 
-
         return apiMessageDto;
     }
 
     public void deleteFile(String filePath) {
-        File file = new File(NextStepConstant.ROOT_DIRECTORY + filePath);
+        File file = new File(uploadDir + filePath);
 //        file.deleteOnExit();
         if(file.exists()) file.delete();
     }
@@ -92,7 +107,7 @@ public class FileService {
     public Resource loadFileAsResource(String folder, String fileName) {
 
         try {
-            Path fileStorageLocation = Paths.get(NextStepConstant.ROOT_DIRECTORY + File.separator + folder).toAbsolutePath().normalize();
+            Path fileStorageLocation = Paths.get(uploadDir + File.separator + folder).toAbsolutePath().normalize();
             Path fP = fileStorageLocation.resolve(fileName).normalize();
             Resource resource = new UrlResource(fP.toUri());
             if (resource.exists()) {
@@ -108,7 +123,7 @@ public class FileService {
     public InputStreamResource loadFileAsResourceExt(String folder, String fileName) {
 
         try {
-            File file = new File(NextStepConstant.ROOT_DIRECTORY + File.separator + folder + File.separator + fileName);
+            File file = new File(uploadDir + File.separator + folder + File.separator + fileName);
             InputStreamResource inputStreamResource = new InputStreamResource(new FileInputStream(file));
             if (inputStreamResource.exists()) {
                 return inputStreamResource;
@@ -119,7 +134,6 @@ public class FileService {
         }
         return null;
     }
-
 
     public String getOTPForgetPassword(){
         return OTPService.generate(4);

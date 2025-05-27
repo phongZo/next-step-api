@@ -46,8 +46,6 @@ public class NextStepConstant {
 
     public static final Integer ACCOUNT_PLATFORM_GOOGLE = 1;
 
-    public static final String ROOT_DIRECTORY = "C:/java/image";
-
     private NextStepConstant(){
         throw new IllegalStateException("Utility class");
     }
