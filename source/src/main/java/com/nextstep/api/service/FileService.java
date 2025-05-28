@@ -5,6 +5,7 @@ import com.nextstep.api.dto.ApiMessageDto;
 import com.nextstep.api.dto.UploadFileDto;
 import com.nextstep.api.form.file.UploadFileForm;
 import com.nextstep.api.model.Permission;
+import com.nextstep.api.service.impl.UserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -28,6 +29,7 @@ import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 @Slf4j
@@ -47,6 +49,9 @@ public class FileService {
 
     @Autowired
     CommonAsyncService commonAsyncService;
+    
+    @Autowired
+    UserServiceImpl userService;
 
     /**
      * return file path
@@ -75,11 +80,21 @@ public class FileService {
                     apiMessageDto.setMessage("CV file must be PDF, DOC or DOCX");
                     return apiMessageDto;
                 }
+                
+                if (!Objects.equals(userService.getAddInfoFromToken().getUserKind(), NextStepConstant.USER_KIND_CANDIDATE)) {
+                    apiMessageDto.setResult(false);
+                    apiMessageDto.setMessage("Only candidates can upload CV");
+                    return apiMessageDto;
+                }
             }
 
-            //upload to uploadFolder/TYPE/id
             String finalFile = uploadFileForm.getType() + "_" + RandomStringUtils.randomAlphanumeric(10) + "." + ext;
             String typeFolder = File.separator + uploadFileForm.getType();
+
+            if (uploadFileForm.getType().equals("CV")) {
+                Long candidateId = userService.getAddInfoFromToken().getAccountId();
+                typeFolder = typeFolder + File.separator + candidateId;
+            }
 
             Path fileStorageLocation = Paths.get(uploadDir + typeFolder).toAbsolutePath().normalize();
             Files.createDirectories(fileStorageLocation);

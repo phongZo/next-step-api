@@ -683,4 +683,10 @@
             <column name="permission_id" valueNumeric="8493788330328064"/>
         </insert>
     </changeSet>
+    <changeSet author="NextStep" id="1746899298265-38">
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="8463682955345920"/>
+            <column name="permission_id" valueNumeric="6778614941024270"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
