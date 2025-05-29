@@ -92,6 +92,9 @@ public class PostController extends ABasicController{
     ){
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
 
+        if (createPostForm.getMinSalary().compareTo(createPostForm.getMaxSalary()) > 0) {
+            throw new BadRequestException("minSalary must be less than or equal to maxSalary",ErrorCode.POST_ERROR_INVALID_SALARY);
+        }
         Long companyId = getCurrentEmployeeCompanyId();
         Company company = companyRepository.findById(companyId).orElse(null);
         
@@ -122,6 +125,9 @@ public class PostController extends ABasicController{
         Post post = postRepository.findById(updatePostForm.getId()).orElse(null);
         if(post == null){
             throw new BadRequestException("Post not found", ErrorCode.POST_ERROR_NOT_FOUND);
+        }
+        if (updatePostForm.getMinSalary().compareTo(updatePostForm.getMaxSalary()) > 0) {
+            throw new BadRequestException("minSalary must be less than or equal to maxSalary",ErrorCode.POST_ERROR_INVALID_SALARY);
         }
         
         Long currentCompanyId = getCurrentEmployeeCompanyId();

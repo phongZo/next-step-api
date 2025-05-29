@@ -6,6 +6,7 @@ import lombok.Data;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -30,4 +31,10 @@ public class PostDto {
     private Integer contractType;
     @ApiModelProperty(name = "company")
     private CompanyDto company;
+    @ApiModelProperty(name = "totalSlot")
+    private Integer totalSlot;
+    @ApiModelProperty(name = "minSalary")
+    private BigDecimal minSalary;
+    @ApiModelProperty(name = "maxSalary")
+    private BigDecimal maxSalary;
 }

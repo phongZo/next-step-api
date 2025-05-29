@@ -7,6 +7,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -38,5 +39,11 @@ public class Post extends Auditable<String>{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "company_id", nullable = false)
     private Company company;
+    @Column(name = "totalSlot")
+    private Integer totalSlot;
+    @Column(name = "minSalary")
+    private BigDecimal minSalary;
+    @Column(name = "maxSalary")
+    private BigDecimal maxSalary;
 
 }

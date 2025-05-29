@@ -34,6 +34,8 @@ public class NextStepConstant {
     public static final Integer CATEGORY_KIND_NEWS = 1;
     public static final Integer CATEGORY_KIND_SKILL = 2;
     public static final Integer CATEGORY_KIND_JOB = 3;
+    public static final Integer CATEGORY_KIND_LEVEL = 4;
+    public static final Integer CATEGORY_KIND_EDUCATION = 5;
 
     public static final Integer POST_TYPE_HOME = 0;
     public static final Integer POST_TYPE_OFFICE = 1;

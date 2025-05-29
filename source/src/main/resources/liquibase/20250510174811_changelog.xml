@@ -689,4 +689,19 @@
             <column name="permission_id" valueNumeric="6778614941024270"/>
         </insert>
     </changeSet>
+    <changeSet author="NextStep" id="1746899298265-40">
+        <addColumn tableName="db_post">
+            <column name="min_salary" type="decimal(19, 2)" afterColumn="type"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-39">
+        <addColumn tableName="db_post">
+            <column name="max_salary" type="decimal(19, 2)" afterColumn="min_salary"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-41">
+        <addColumn tableName="db_post">
+            <column name="total_slot" type="integer"  afterColumn="max_salary"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>

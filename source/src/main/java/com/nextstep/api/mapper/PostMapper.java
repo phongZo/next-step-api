@@ -27,6 +27,9 @@ public interface PostMapper {
     @Mapping(source = "type", target = "type")
     @Mapping(source = "contractType", target = "contractType")
     @Mapping(source = "experience", target = "experience")
+    @Mapping(source = "totalSlot", target = "totalSlot")
+    @Mapping(source = "minSalary", target = "minSalary")
+    @Mapping(source = "maxSalary", target = "maxSalary")
     @BeanMapping(ignoreByDefault = true)
     @Named("fromCreatePostFormToEntity")
     Post fromCreatePostFormToEntity(CreatePostForm createPostForm);
@@ -41,6 +44,9 @@ public interface PostMapper {
     @Mapping(source = "type", target = "type")
     @Mapping(source = "experience", target = "experience")
     @Mapping(source = "company", target = "company", qualifiedByName = "fromEntityToCompanyDto")
+    @Mapping(source = "totalSlot", target = "totalSlot")
+    @Mapping(source = "minSalary", target = "minSalary")
+    @Mapping(source = "maxSalary", target = "maxSalary")
     @BeanMapping(ignoreByDefault = true)
     @Named("fromEntityToPostAdminDto")
     PostAdminDto fromEntityToPostAdminDto(Post post);
@@ -57,6 +63,9 @@ public interface PostMapper {
     @Mapping(source = "level", target = "level")
     @Mapping(source = "type", target = "type")
     @Mapping(source = "experience", target = "experience")
+    @Mapping(source = "totalSlot", target = "totalSlot")
+    @Mapping(source = "minSalary", target = "minSalary")
+    @Mapping(source = "maxSalary", target = "maxSalary")
     @BeanMapping(ignoreByDefault = true)
     @Named("updateFromUpdatePostForm")
     void updateFromUpdatePostForm(@MappingTarget Post post, UpdatePostForm updatePostForm);
@@ -71,6 +80,9 @@ public interface PostMapper {
     @Mapping(source = "type", target = "type")
     @Mapping(source = "experience", target = "experience")
     @Mapping(source = "company", target = "company", qualifiedByName = "fromEntityToCompanyDto")
+    @Mapping(source = "totalSlot", target = "totalSlot")
+    @Mapping(source = "minSalary", target = "minSalary")
+    @Mapping(source = "maxSalary", target = "maxSalary")
     @BeanMapping(ignoreByDefault = true)
     @Named("fromEntityToPostDto")
     PostDto fromEntityToPostDto(Post post);
