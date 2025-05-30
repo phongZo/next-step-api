@@ -29,4 +29,7 @@ public class UpdateCategoryForm {
     @ApiModelProperty(name = "ordering", required = false)
     private Integer ordering;
 
+    @ApiModelProperty(name = "tag", required = false)
+    private String tag;
+
 }

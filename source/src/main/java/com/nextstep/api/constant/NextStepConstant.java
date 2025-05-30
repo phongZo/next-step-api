@@ -33,6 +33,9 @@ public class NextStepConstant {
 
     public static final Integer CATEGORY_KIND_NEWS = 1;
     public static final Integer CATEGORY_KIND_SKILL = 2;
+    public static final Integer CATEGORY_KIND_JOB = 3;
+    public static final Integer CATEGORY_KIND_LEVEL = 4;
+    public static final Integer CATEGORY_KIND_EDUCATION = 5;
 
     public static final Integer POST_TYPE_HOME = 0;
     public static final Integer POST_TYPE_OFFICE = 1;
@@ -44,8 +47,6 @@ public class NextStepConstant {
     public static final Integer POST_CONTRACT_TYPE_COLLAB = 2;
 
     public static final Integer ACCOUNT_PLATFORM_GOOGLE = 1;
-
-    public static final String ROOT_DIRECTORY = "C:/java/image";
 
     private NextStepConstant(){
         throw new IllegalStateException("Utility class");

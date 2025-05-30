@@ -16,8 +16,12 @@ public class UploadFileForm {
      */
     @NotEmpty(message = "type is required")
     @ApiModelProperty(name = "type", required = true)
-    private String type ;
+    private String type;
+    
     @NotNull(message = "file is required")
     @ApiModelProperty(name = "file", required = true)
     private MultipartFile file;
+    
+    @ApiModelProperty(name = "candidateId")
+    private Long candidateId;
 }

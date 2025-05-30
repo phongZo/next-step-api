@@ -28,4 +28,7 @@ public class CreateCategoryForm {
     @CategoryKind(allowNull = false)
     private Integer kind;
 
+    @ApiModelProperty(name = "tag", required = true)
+    private String tag;
+
 }

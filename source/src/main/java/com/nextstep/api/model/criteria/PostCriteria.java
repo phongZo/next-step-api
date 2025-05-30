@@ -1,16 +1,14 @@
 package com.nextstep.api.model.criteria;
 
 
+import com.nextstep.api.model.Company;
 import com.nextstep.api.model.Employee;
 import com.nextstep.api.model.Post;
 import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
 
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
+import javax.persistence.criteria.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -23,6 +21,7 @@ public class PostCriteria {
     private String level;
     private Integer type;
     private Integer contractType;
+    private String companyName;
 
     public Specification<Post> getSpecification() {
         return new Specification<Post>(){
@@ -55,6 +54,12 @@ public class PostCriteria {
                 if (getContractType() != null) {
                     predicates.add(cb.equal(root.get("contractType"), getContractType()));
                 }
+                
+                if (!StringUtils.isEmpty(getCompanyName())) {
+                    Join<Post, Company> companyJoin = root.join("company", JoinType.INNER);
+                    predicates.add(cb.like(cb.lower(companyJoin.get("name")), "%" + getCompanyName().toLowerCase() + "%"));
+                }
+                
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };

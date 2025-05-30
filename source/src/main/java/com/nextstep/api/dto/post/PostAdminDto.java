@@ -4,6 +4,7 @@ import com.nextstep.api.dto.company.CompanyDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -28,4 +29,10 @@ public class PostAdminDto {
     private Integer contractType;
     @ApiModelProperty(name = "company")
     private CompanyDto company;
+    @ApiModelProperty(name = "totalSlot")
+    private Integer totalSlot;
+    @ApiModelProperty(name = "minSalary")
+    private BigDecimal minSalary;
+    @ApiModelProperty(name = "maxSalary")
+    private BigDecimal maxSalary;
 }

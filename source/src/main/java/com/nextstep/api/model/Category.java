@@ -24,4 +24,5 @@ public class Category extends Auditable<String>{
     private String image;
     private Integer ordering;
     private Integer kind;
+    private String tag;
 }

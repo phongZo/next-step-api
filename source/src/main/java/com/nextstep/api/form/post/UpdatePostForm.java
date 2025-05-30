@@ -7,8 +7,10 @@ import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
 import javax.validation.constraints.Future;
+import javax.validation.constraints.Min;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.math.BigDecimal;
 import java.util.Date;
 
 @Data
@@ -44,4 +46,14 @@ public class UpdatePostForm {
     @ApiModelProperty(name = "contractType",required = true)
     @PostContractType(allowNull = false)
     private Integer contractType;
+    @NotNull(message = "totalSlot can not be null")
+    @Min(value = 1, message = "totalSlot must be at least 1")
+    @ApiModelProperty(name = "totalSlot", required = true)
+    private Integer totalSlot;
+    @NotNull(message = "minSalary can not be null")
+    @ApiModelProperty(name = "minSalary", required = true)
+    private BigDecimal minSalary;
+    @NotNull(message = "maxSalary can not be null")
+    @ApiModelProperty(name = "maxSalary", required = true)
+    private BigDecimal maxSalary;
 }
