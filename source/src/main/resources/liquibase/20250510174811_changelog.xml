@@ -704,4 +704,26 @@
             <column name="total_slot" type="integer"  afterColumn="max_salary"/>
         </addColumn>
     </changeSet>
+    <changeSet author="NextStep" id="1746899298265-42">
+        <insert tableName="db_permission">
+            <column name="id" valueNumeric="8505479974617088"/>
+            <column name="name" value="Upload file for company"/>
+            <column name="action" value="/v1/file/upload/company"/>
+            <column name="show_menu" valueBoolean="false"/>
+            <column name="description" value="Upload file for company"/>
+            <column name="name_group" value="File"/>
+            <column name="p_code" value="FILE_U_COM"/>
+            <column name="status" valueNumeric="1"/>
+            <column name="created_by" value="Admin"/>
+            <column name="created_date" valueDate="2025-05-31 07:57:40"/>
+            <column name="modified_by" value="Admin"/>
+            <column name="modified_date" valueDate="2025-05-31 07:57:40"/>
+        </insert>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-43">
+        <insert tableName="db_permission_group">
+            <column name="group_id" valueNumeric="15"/>
+            <column name="permission_id" valueNumeric="8505479974617088"/>
+        </insert>
+    </changeSet>
 </databaseChangeLog>
