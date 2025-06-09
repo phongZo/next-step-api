@@ -91,6 +91,14 @@ public class FileService {
             String finalFile = uploadFileForm.getType() + "_" + RandomStringUtils.randomAlphanumeric(10) + "." + ext;
             String typeFolder = File.separator + uploadFileForm.getType();
 
+            // Add company ID to path for LOGO type
+            if (uploadFileForm.getType().equals("LOGO")) {
+                Long companyId = userService.getAddInfoFromToken().getStoreId();
+                if (companyId != null) {
+                    typeFolder = "/" + companyId + typeFolder;
+                }
+            }
+
             if (uploadFileForm.getType().equals("CV")) {
                 Long candidateId = userService.getAddInfoFromToken().getAccountId();
                 typeFolder = typeFolder + File.separator + candidateId;
