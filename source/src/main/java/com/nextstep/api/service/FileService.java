@@ -5,6 +5,7 @@ import com.nextstep.api.dto.ApiMessageDto;
 import com.nextstep.api.dto.UploadFileDto;
 import com.nextstep.api.form.file.UploadFileForm;
 import com.nextstep.api.model.Permission;
+import com.nextstep.api.repository.CompanyRepository;
 import com.nextstep.api.service.impl.UserServiceImpl;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
@@ -52,6 +53,9 @@ public class FileService {
     
     @Autowired
     UserServiceImpl userService;
+
+    @Autowired
+    CompanyRepository companyRepository;
 
     /**
      * return file path
@@ -121,6 +125,48 @@ public class FileService {
         return apiMessageDto;
     }
 
+    public ApiMessageDto<UploadFileDto> storeCompanyFile(Long companyId, UploadFileForm uploadFileForm) {
+        ApiMessageDto<UploadFileDto> apiMessageDto = new ApiMessageDto<>();
+
+        try {
+            if (!companyRepository.existsById(companyId)) {
+                apiMessageDto.setResult(false);
+                apiMessageDto.setMessage("Company ID does not exist");
+                return apiMessageDto;
+            }
+
+            if (!Arrays.asList("LOGO", "IMAGE","AVATAR").contains(uploadFileForm.getType().toUpperCase())) {
+                apiMessageDto.setResult(false);
+                apiMessageDto.setMessage("Only LOGO or IMAGE or AVATAR can be uploaded for a company");
+                return apiMessageDto;
+            }
+
+            String fileName = StringUtils.cleanPath(uploadFileForm.getFile().getOriginalFilename());
+            String ext = FilenameUtils.getExtension(fileName).toLowerCase();
+
+            String typeFolder = File.separator + uploadFileForm.getType() + File.separator + companyId;
+            String finalFile = uploadFileForm.getType() + "_" + RandomStringUtils.randomAlphanumeric(10) + "." + ext;
+
+            Path fileStorageLocation = Paths.get(uploadDir + typeFolder).toAbsolutePath().normalize();
+            Files.createDirectories(fileStorageLocation);
+            Path targetLocation = fileStorageLocation.resolve(finalFile);
+            Files.copy(uploadFileForm.getFile().getInputStream(), targetLocation, StandardCopyOption.REPLACE_EXISTING);
+
+            UploadFileDto uploadFileDto = new UploadFileDto();
+            uploadFileDto.setFilePath(typeFolder + File.separator + finalFile);
+            apiMessageDto.setData(uploadFileDto);
+            apiMessageDto.setMessage("Upload file success");
+
+        } catch (IOException e) {
+            log.error(e.getMessage(), e);
+            apiMessageDto.setResult(false);
+            apiMessageDto.setMessage("File upload failed: " + e.getMessage());
+        }
+
+        return apiMessageDto;
+    }
+
+
     public void deleteFile(String filePath) {
         File file = new File(uploadDir + filePath);
 //        file.deleteOnExit();
@@ -128,17 +174,20 @@ public class FileService {
     }
 
     public Resource loadFileAsResource(String folder, String fileName) {
-
         try {
-            Path fileStorageLocation = Paths.get(uploadDir + File.separator + folder).toAbsolutePath().normalize();
-            Path fP = fileStorageLocation.resolve(fileName).normalize();
-            Resource resource = new UrlResource(fP.toUri());
+            // Handle nested paths by combining folder and fileName
+            String fullPath = folder;
+            if (fileName != null && !fileName.isEmpty()) {
+                fullPath = folder + File.separator + fileName;
+            }
+            
+            Path fileStorageLocation = Paths.get(uploadDir + File.separator + fullPath).toAbsolutePath().normalize();
+            Resource resource = new UrlResource(fileStorageLocation.toUri());
             if (resource.exists()) {
                 return resource;
             }
         } catch (MalformedURLException ex) {
             log.error(ex.getMessage(), ex);
-
         }
         return null;
     }
