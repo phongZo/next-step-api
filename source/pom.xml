@@ -238,6 +238,10 @@
 			<artifactId>liquibase-core</artifactId>
 			<version>${liquibase.version}</version>
 		</dependency>
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-amqp</artifactId>
+		</dependency>
 	</dependencies>
 
 	<dependencyManagement>
@@ -295,9 +299,15 @@
 					<diffChangeLogFile>${basedir}/src/main/resources/liquibase/${maven.build.timestamp}_changelog.xml</diffChangeLogFile>
 					<outputChangeLogFile>${basedir}/src/main/resources/liquibase/db.changelog-1.0.0.xml</outputChangeLogFile>
 					<driver>com.mysql.cj.jdbc.Driver</driver>
-					<url>jdbc:mysql://localhost:3306/db_nextstep</url>
-					<username>root</username>
-					<password>12345</password>
+<!--					<url>jdbc:mysql://localhost:3306/db_nextstep</url>-->
+<!--					<username>root</username>-->
+<!--					<password>12345</password>-->
+					<!--suppress UnresolvedMavenProperty -->
+					<url>${liquibase.url}</url>
+					<!--suppress UnresolvedMavenProperty -->
+					<username>${liquibase.username}</username>
+					<!--suppress UnresolvedMavenProperty -->
+					<password>${liquibase.password}</password>
 					<referenceUrl>hibernate:spring:com.nextstep.api.model,com.nextstep.api.repository?dialect=org.hibernate.dialect.MySQL5InnoDBDialect&amp;hibernate.physical_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringPhysicalNamingStrategy&amp;hibernate.implicit_naming_strategy=org.springframework.boot.orm.jpa.hibernate.SpringImplicitNamingStrategy</referenceUrl>
 					<verbose>true</verbose>
 					<logging>debug</logging>
@@ -404,5 +414,23 @@
 			</snapshots>
 		</pluginRepository>
 	</pluginRepositories>
+	<profiles>
+		<profile>
+			<id>dev</id>
+			<properties>
+				<liquibase.url>jdbc:mysql://localhost:3306/db_nextstep</liquibase.url>
+				<liquibase.username>root</liquibase.username>
+				<liquibase.password>12345</liquibase.password>
+			</properties>
+		</profile>
 
+		<profile>
+			<id>test</id>
+			<properties>
+				<liquibase.url>jdbc:mysql://localhost:3307/db_nextstep_test</liquibase.url>
+				<liquibase.username>root</liquibase.username>
+				<liquibase.password>12345</liquibase.password>
+			</properties>
+		</profile>
+	</profiles>
 </project>

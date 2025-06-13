@@ -21,6 +21,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
 import java.util.concurrent.TimeUnit;
 
 @RestController
@@ -43,7 +44,7 @@ public class FileController {
     @GetMapping("/download/{folder}/{fileName:.+}")
     @Cacheable("images")
     public ResponseEntity<Resource> downloadFile(@PathVariable String folder,@PathVariable String fileName, HttpServletRequest request) throws FileNotFoundException {
-        Resource  resource= fileService.loadFileAsResource(folder , fileName);
+        Resource resource = fileService.loadFileAsResource(folder, fileName);
         String contentType = null;
         try {
             contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
@@ -57,10 +58,44 @@ public class FileController {
         return ResponseEntity.ok()
                 .cacheControl(CacheControl.maxAge(7776000, TimeUnit.SECONDS))
                 .contentType(MediaType.parseMediaType(contentType))
-                //.header(HttpHeaders.EXPIRES, expires)
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
                 .body(resource);
     }
 
+    @GetMapping("/download-nested/{type}/{id}/{fileName:.+}")
+    @Cacheable("images")
+    public ResponseEntity<Resource> downloadNestedFile(
+            @PathVariable String type,
+            @PathVariable String id,
+            @PathVariable String fileName,
+            HttpServletRequest request) throws FileNotFoundException {
+        String folder = type + "/" + id;
+        Resource resource = fileService.loadFileAsResource(folder, fileName);
+        String contentType = null;
+        try {
+            contentType = request.getServletContext().getMimeType(resource.getFile().getAbsolutePath());
+        } catch (IOException ex) {
+            log.info("Could not determine file type.");
+        }
+        if(contentType == null) {
+            contentType = "application/octet-stream";
+        }
+
+        return ResponseEntity.ok()
+                .cacheControl(CacheControl.maxAge(7776000, TimeUnit.SECONDS))
+                .contentType(MediaType.parseMediaType(contentType))
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + resource.getFilename() + "\"")
+                .body(resource);
+    }
+
+    @PostMapping(value = "/upload/{companyId}" ,consumes = MediaType.MULTIPART_FORM_DATA_VALUE, produces= MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('FILE_U_COM')")
+    public ApiMessageDto<UploadFileDto> uploadCompanyFile(@PathVariable Long companyId,@Valid UploadFileForm uploadFileForm, BindingResult bindingResult) {
+
+        ApiMessageDto<UploadFileDto> apiMessageDto = fileService.storeCompanyFile(companyId,uploadFileForm);
+        apiMessageDto.setResult(true);
+        return apiMessageDto;
+
+    }
 
 }
