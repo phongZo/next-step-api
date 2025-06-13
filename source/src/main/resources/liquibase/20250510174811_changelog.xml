@@ -726,4 +726,15 @@
             <column name="permission_id" valueNumeric="8505479974617088"/>
         </insert>
     </changeSet>
+    <changeSet author="NextStep" id="1746899298265-44">
+        <createTable tableName="db_post_embedding">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="db_post_embeddingPK"/>
+            </column>
+            <column name="description" type="LONGTEXT"/>
+            <column name="embedding" type="LONGTEXT"/>
+            <column name="post_id" type="BIGINT"/>
+            <column name="status" type="INT"/>
+        </createTable>
+    </changeSet>
 </databaseChangeLog>
