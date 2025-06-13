@@ -9,11 +9,6 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitConfiguration {
-  /*  @Value("${rabbitmq.notification.queue}")
-    private String notificationQueue;
-    @Value("${rabbitmq.process-tables.queue}")
-    private String processTableQueue;*/
-
     @Value("${rabbitmq.queue.cv-upload}")
     private String cvUploadQueue;
 
@@ -21,16 +16,6 @@ public class RabbitConfiguration {
     public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
         return new RabbitAdmin(connectionFactory);
     }
-
-   /* @Bean
-    public Queue notificationQueue() {
-        return new Queue(notificationQueue, true);
-    }
-
-    @Bean
-    public Queue processTableQueue() {
-        return new Queue(processTableQueue, true);
-    }*/
 
     @Bean
     public Queue uploadCvQueue() {
