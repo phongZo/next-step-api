@@ -7,6 +7,7 @@ import com.nextstep.api.form.file.UploadFileForm;
 import com.nextstep.api.model.Permission;
 import com.nextstep.api.repository.CompanyRepository;
 import com.nextstep.api.service.impl.UserServiceImpl;
+import com.nextstep.api.service.rabbit.RabbitService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.io.FilenameUtils;
 import org.apache.commons.lang3.RandomStringUtils;
@@ -57,6 +58,9 @@ public class FileService {
     @Autowired
     CompanyRepository companyRepository;
 
+    @Autowired
+    private RabbitService rabbitService;
+
     /**
      * return file path
      *
@@ -102,9 +106,9 @@ public class FileService {
                     typeFolder = "/" + companyId + typeFolder;
                 }
             }
-
+            Long candidateId= null;;
             if (uploadFileForm.getType().equals("CV")) {
-                Long candidateId = userService.getAddInfoFromToken().getAccountId();
+                candidateId = userService.getAddInfoFromToken().getAccountId();
                 typeFolder = typeFolder + File.separator + candidateId;
             }
 
@@ -116,6 +120,9 @@ public class FileService {
             uploadFileDto.setFilePath(typeFolder + File.separator + finalFile);
             apiMessageDto.setData(uploadFileDto);
             apiMessageDto.setMessage("Upload file success");
+            if ("CV".equalsIgnoreCase(uploadFileForm.getType()) && candidateId != null) {
+                rabbitService.send(uploadFileDto, candidateId);
+            }
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             apiMessageDto.setResult(false);
