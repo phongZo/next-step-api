@@ -48,6 +48,11 @@ public class NextStepConstant {
 
     public static final Integer ACCOUNT_PLATFORM_GOOGLE = 1;
 
+    public static final Integer POST_EMBEDDING_STATE_PENDING = 0;
+    public static final Integer POST_EMBEDDING_STATE_DONE = 1;
+
+    public static final String PROCESS_EMBEDDING = "PROCESS_EMBEDDING";
+
     private NextStepConstant(){
         throw new IllegalStateException("Utility class");
     }

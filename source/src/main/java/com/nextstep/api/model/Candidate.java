@@ -51,4 +51,7 @@ public class Candidate extends Auditable<String> {
 
     @Column(name = "allow_company_contact")
     private Boolean allowCompanyContact = false;
+
+    @Column(name = "cv")
+    private String cv;
 } 

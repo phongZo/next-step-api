@@ -45,5 +45,7 @@ public class Post extends Auditable<String>{
     private BigDecimal minSalary;
     @Column(name = "maxSalary")
     private BigDecimal maxSalary;
+    @Column(name = "state")
+    private Integer state; // (0: pending, 1: done)
 
 }

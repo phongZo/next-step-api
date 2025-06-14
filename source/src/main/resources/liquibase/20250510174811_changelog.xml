@@ -737,4 +737,50 @@
             <column name="status" type="INT"/>
         </createTable>
     </changeSet>
+    <changeSet author="NextStep" id="1746899298265-45">
+        <createTable tableName="db_job_recommend">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="db_job_recommendPK"/>
+            </column>
+            <column name="matching" type="LONGTEXT"/>
+            <column name="matching_score" type="DOUBLE PRECISION"/>
+            <column name="summary_cv" type="LONGTEXT"/>
+            <column name="candidate_id" type="BIGINT"/>
+            <column name="post_id" type="BIGINT"/>
+            <column name="created_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-46">
+        <addColumn tableName="db_candidate">
+            <column name="cv" type="varchar(255)" afterColumn="work_area"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-47">
+        <addColumn tableName="db_post">
+            <column name="state" type="integer" afterColumn="total_slot"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-48">
+        <addForeignKeyConstraint baseColumnNames="post_id" baseTableName="db_job_recommend" constraintName="FK7vlrwu4m3hknwslmmn7kl4l82" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="db_post" validate="true"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-49">
+        <addForeignKeyConstraint baseColumnNames="candidate_id" baseTableName="db_job_recommend" constraintName="FKm8nnaa0hrgkj5qf9b0cynv401" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="db_candidate" validate="true"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-50">
+        <dropTable tableName="db_post_embedding"/>
+    </changeSet>
 </databaseChangeLog>

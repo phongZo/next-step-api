@@ -2,6 +2,7 @@ package com.nextstep.api.service.rabbit;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nextstep.api.constant.NextStepConstant;
 import com.nextstep.api.dto.UploadFileDto;
 import com.nextstep.api.form.BaseSendMsgForm;
 import lombok.extern.slf4j.Slf4j;
@@ -19,8 +20,8 @@ public class RabbitService {
     private ObjectMapper objectMapper;
     @Autowired
     private com.nextstep.api.service.rabbit.RabbitSender rabbitSender;
-    @Value("${rabbitmq.queue.cv-upload}")
-    private String cvUploadQueue;
+    @Value("${rabbitmq.queue.process-cv}")
+    private String processCvQueue;
 
     public  <T> void handleSendMsg(String appName, String queueName, T data, String cmd, String subCmd,String responseCode, String token) {
         BaseSendMsgForm<T> form = new BaseSendMsgForm<>();
@@ -43,6 +44,20 @@ public class RabbitService {
         // push msg
         rabbitSender.send(queueName, msg);
     }
+    public void processCvEmbeddingQueue(Long postId, String description, String token) {
+        Map<String,Object> data = new HashMap<>();
+        data.put("postId", postId);
+        data.put("description", description);
+        handleSendMsg(
+                "nextstep-api",
+                processCvQueue,
+                data,
+                NextStepConstant.PROCESS_EMBEDDING,
+                NextStepConstant.PROCESS_EMBEDDING,
+                "200",
+                token
+        );
+    }
 
     public void send(UploadFileDto fileDto, Long candidateId) {
 
@@ -58,9 +73,9 @@ public class RabbitService {
             throw new RuntimeException("Could not serialize message", e);
         }
 
-        createQueueIfNotExist(cvUploadQueue);
+        createQueueIfNotExist(processCvQueue);
 
-        rabbitSender.send(cvUploadQueue, msg);
+        rabbitSender.send(processCvQueue, msg);
     }
 
     private void createQueueIfNotExist(String queueName) {
