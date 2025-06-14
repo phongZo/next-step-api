@@ -11,6 +11,8 @@ import org.springframework.context.annotation.Configuration;
 public class RabbitConfiguration {
     @Value("${rabbitmq.queue.cv-upload}")
     private String cvUploadQueue;
+    @Value("${rabbitmq.queue.data-embedding}")
+    private String dataEmbeddingQueue;
 
     @Bean
     public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
@@ -20,5 +22,10 @@ public class RabbitConfiguration {
     @Bean
     public Queue uploadCvQueue() {
         return new Queue(cvUploadQueue, true);
+    }
+
+    @Bean
+    public Queue dataEmbeddingQueue() {
+        return new Queue(dataEmbeddingQueue, true);
     }
 }

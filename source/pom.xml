@@ -416,21 +416,21 @@
 	</pluginRepositories>
 	<profiles>
 		<profile>
-			<id>dev</id>
+			<id>local</id>
 			<properties>
 				<liquibase.url>jdbc:mysql://localhost:3306/db_nextstep</liquibase.url>
 				<liquibase.username>root</liquibase.username>
 				<liquibase.password>12345</liquibase.password>
 			</properties>
 		</profile>
-
 		<profile>
-			<id>test</id>
+			<id>dev</id>
 			<properties>
-				<liquibase.url>jdbc:mysql://localhost:3307/db_nextstep_test</liquibase.url>
+				<liquibase.url>jdbc:mysql://localhost:3307/db_nextstep_dev</liquibase.url>
 				<liquibase.username>root</liquibase.username>
 				<liquibase.password>12345</liquibase.password>
 			</properties>
 		</profile>
 	</profiles>
+
 </project>
