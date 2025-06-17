@@ -54,4 +54,7 @@ public class Candidate extends Auditable<String> {
 
     @Column(name = "cv")
     private String cv;
+
+    @Column(name = "cvState")
+    private Integer cvState; //(0: pending, 1: done, 2: error)
 } 

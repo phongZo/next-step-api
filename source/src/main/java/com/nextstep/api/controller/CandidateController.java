@@ -20,6 +20,7 @@ import com.nextstep.api.repository.CandidateRepository;
 import com.nextstep.api.repository.GroupRepository;
 import com.nextstep.api.service.feign.GoogleFeignClient;
 import com.nextstep.api.service.Oauth2JWTTokenService;
+import com.nextstep.api.service.rabbit.RabbitService;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -63,6 +64,9 @@ public class CandidateController extends ABasicController{
 
     @Autowired
     private Oauth2JWTTokenService oauth2JWTTokenService;
+
+    @Autowired
+    private RabbitService rabbitService;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('CAN_L')")
@@ -344,6 +348,25 @@ public class CandidateController extends ABasicController{
         candidateRepository.save(candidate);
 
         apiMessageDto.setMessage("Update candidate detail successfully");
+        return apiMessageDto;
+    }
+    @PutMapping(value = "/create-cv", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    public ApiMessageDto<String> createCv(@RequestBody CreateCvForm createCvForm) {
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+
+        Long candidateId = getCurrentUser();
+        String token = getCurrentToken();
+        Candidate candidate = candidateRepository.findById(candidateId).orElse(null);
+        if (candidate == null) {
+            throw new BadRequestException("Candidate not found", ErrorCode.CANDIDATE_ERROR_NOT_FOUND);
+        }
+        candidate.setCv(createCvForm.getCv());
+        candidate.setCvState(NextStepConstant.CV_EMBEDDING_STATE_PENDING);
+        rabbitService.processExtractCvEmbeddingQueue(candidate.getId(),candidate.getCv(),token);
+        candidateRepository.save(candidate);
+
+        apiMessageDto.setMessage("Create Cv success");
         return apiMessageDto;
     }
 

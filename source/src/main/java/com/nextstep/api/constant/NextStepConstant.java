@@ -50,8 +50,16 @@ public class NextStepConstant {
 
     public static final Integer POST_EMBEDDING_STATE_PENDING = 0;
     public static final Integer POST_EMBEDDING_STATE_DONE = 1;
+    public static final Integer POST_EMBEDDING_STATE_ERROR = 2;
+
+    public static final Integer CV_EMBEDDING_STATE_PENDING = 0;
+    public static final Integer CV_EMBEDDING_STATE_DONE = 1;
+    public static final Integer CV_EMBEDDING_STATE_ERROR = 2;
 
     public static final String PROCESS_EMBEDDING = "PROCESS_EMBEDDING";
+    public static final String EXTRACT_CV = " EXTRACT_CV";
+
+    public static final String RESPONSE_CODE_SUCCESS = "200";
 
     private NextStepConstant(){
         throw new IllegalStateException("Utility class");

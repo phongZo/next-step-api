@@ -120,9 +120,6 @@ public class FileService {
             uploadFileDto.setFilePath(typeFolder + File.separator + finalFile);
             apiMessageDto.setData(uploadFileDto);
             apiMessageDto.setMessage("Upload file success");
-            if ("CV".equalsIgnoreCase(uploadFileForm.getType()) && candidateId != null) {
-                rabbitService.send(uploadFileDto, candidateId);
-            }
         } catch (IOException e) {
             log.error(e.getMessage(), e);
             apiMessageDto.setResult(false);

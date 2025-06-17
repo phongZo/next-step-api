@@ -4,6 +4,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nextstep.api.constant.NextStepConstant;
 import com.nextstep.api.dto.UploadFileDto;
+import com.nextstep.api.dto.cvembedding.CvEmbeddingDto;
 import com.nextstep.api.form.BaseSendMsgForm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,29 +54,24 @@ public class RabbitService {
                 processCvQueue,
                 data,
                 NextStepConstant.PROCESS_EMBEDDING,
-                NextStepConstant.PROCESS_EMBEDDING,
+                null,
                 "200",
                 token
         );
     }
-
-    public void send(UploadFileDto fileDto, Long candidateId) {
-
-        Map<String, Object> message = new HashMap<>();
-        message.put("filePath", fileDto.getFilePath());
-        message.put("candidateId", candidateId);
-
-        String msg;
-        try {
-            msg = objectMapper.writeValueAsString(message);
-        } catch (JsonProcessingException e) {
-            log.error("Failed to serialize CV upload payload", e);
-            throw new RuntimeException("Could not serialize message", e);
-        }
-
-        createQueueIfNotExist(processCvQueue);
-
-        rabbitSender.send(processCvQueue, msg);
+    public void processExtractCvEmbeddingQueue(Long candidateId, String cv, String token) {
+        CvEmbeddingDto data = new CvEmbeddingDto();
+        data.setCandidateId(candidateId);
+        data.setCv(cv);
+        handleSendMsg(
+                "nextstep-api",
+                processCvQueue,
+                data,
+                NextStepConstant.EXTRACT_CV,
+                null,
+                "200",
+                token
+        );
     }
 
     private void createQueueIfNotExist(String queueName) {

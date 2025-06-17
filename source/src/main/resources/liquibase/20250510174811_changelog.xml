@@ -783,4 +783,9 @@
     <changeSet author="NextStep" id="1746899298265-50">
         <dropTable tableName="db_post_embedding"/>
     </changeSet>
+    <changeSet author="NextStep" id="1746899298265-51">
+        <addColumn tableName="db_candidate">
+            <column name="cv_state" type="integer" afterColumn="cv"/>
+        </addColumn>
+    </changeSet>
 </databaseChangeLog>
