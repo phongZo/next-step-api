@@ -5,6 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.nextstep.api.constant.NextStepConstant;
 import com.nextstep.api.dto.UploadFileDto;
 import com.nextstep.api.dto.cvembedding.CvEmbeddingDto;
+import com.nextstep.api.dto.postembedding.PostEmbeddingDto;
 import com.nextstep.api.form.BaseSendMsgForm;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -46,9 +47,9 @@ public class RabbitService {
         rabbitSender.send(queueName, msg);
     }
     public void processCvEmbeddingQueue(Long postId, String description, String token) {
-        Map<String,Object> data = new HashMap<>();
-        data.put("postId", postId);
-        data.put("description", description);
+        PostEmbeddingDto data = new PostEmbeddingDto();
+        data.setPostId(postId);
+        data.setDescription(description);
         handleSendMsg(
                 "nextstep-api",
                 processCvQueue,
