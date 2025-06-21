@@ -53,4 +53,6 @@ public class CreatePostForm {
     @NotNull(message = "maxSalary can not be null")
     @ApiModelProperty(name = "maxSalary", required = true)
     private BigDecimal maxSalary;
+    @ApiModelProperty(name = "areaId")
+    private Long areaId;
 }

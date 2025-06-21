@@ -11,9 +11,11 @@ import com.nextstep.api.form.post.CreatePostForm;
 import com.nextstep.api.form.post.UpdatePostForm;
 import com.nextstep.api.mapper.PostMapper;
 import com.nextstep.api.model.Company;
+import com.nextstep.api.model.Nation;
 import com.nextstep.api.model.Post;
 import com.nextstep.api.model.criteria.PostCriteria;
 import com.nextstep.api.repository.CompanyRepository;
+import com.nextstep.api.repository.NationRepository;
 import com.nextstep.api.repository.PostRepository;
 import com.nextstep.api.service.rabbit.RabbitService;
 import lombok.extern.slf4j.Slf4j;
@@ -41,6 +43,8 @@ public class PostController extends ABasicController{
     PostRepository postRepository;
     @Autowired
     CompanyRepository companyRepository;
+    @Autowired
+    NationRepository nationRepository;
     @Autowired
     PostMapper postMapper;
     @Autowired
@@ -105,11 +109,21 @@ public class PostController extends ABasicController{
         if (company == null) {
             throw new BadRequestException("Company not found", ErrorCode.COMPANY_ERROR_NOT_FOUND);
         }
+
+        Nation area = null;
+        if (createPostForm.getAreaId() != null) {
+            area = nationRepository.findById(createPostForm.getAreaId()).orElse(null);
+            if (area == null) {
+                throw new BadRequestException("Area not found", ErrorCode.NATION_ERROR_NOT_FOUND);
+            }
+        }
+        
         String token = getCurrentToken();
         
         Post post = postMapper.fromCreatePostFormToEntity(createPostForm);
         post.setState(NextStepConstant.POST_EMBEDDING_STATE_PENDING);
         post.setCompany(company);
+        post.setArea(area);
         postRepository.save(post);
         rabbitService.processCvEmbeddingQueue(post.getId(), post.getDescription(), token);
         apiMessageDto.setMessage("Create post successfully");
@@ -141,7 +155,14 @@ public class PostController extends ABasicController{
         if (!post.getCompany().getId().equals(currentCompanyId)) {
             throw new BadRequestException("You can only update posts of your company", ErrorCode.POST_ERROR_NOT_FOUND);
         }
-        
+
+        if (updatePostForm.getAreaId() != null) {
+            Nation area = nationRepository.findById(updatePostForm.getAreaId()).orElse(null);
+            if (area == null) {
+                throw new BadRequestException("Area not found", ErrorCode.NATION_ERROR_NOT_FOUND);
+            }
+            post.setArea(area);
+        }
         postMapper.updateFromUpdatePostForm(post, updatePostForm);
         postRepository.save(post);
         apiMessageDto.setMessage("Update post successfully");

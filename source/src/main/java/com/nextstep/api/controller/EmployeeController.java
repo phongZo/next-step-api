@@ -9,16 +9,19 @@ import com.nextstep.api.dto.employee.EmployeeDto;
 import com.nextstep.api.exception.BadRequestException;
 import com.nextstep.api.form.employee.CreateEmployeeForm;
 import com.nextstep.api.form.employee.UpdateEmployeeForm;
+import com.nextstep.api.form.employee.UpdateEmployeePermissionForm;
 import com.nextstep.api.mapper.EmployeeMapper;
 import com.nextstep.api.model.Account;
 import com.nextstep.api.model.Company;
 import com.nextstep.api.model.Employee;
 import com.nextstep.api.model.Group;
+import com.nextstep.api.model.Permission;
 import com.nextstep.api.model.criteria.EmployeeCriteria;
 import com.nextstep.api.repository.AccountRepository;
 import com.nextstep.api.repository.CompanyRepository;
 import com.nextstep.api.repository.EmployeeRepository;
 import com.nextstep.api.repository.GroupRepository;
+import com.nextstep.api.repository.PermissionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -53,6 +56,8 @@ public class EmployeeController extends ABasicController {
     private PasswordEncoder passwordEncoder;
     @Autowired
     CompanyRepository companyRepository;
+    @Autowired
+    PermissionRepository permissionRepository;
 
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
@@ -175,6 +180,27 @@ public class EmployeeController extends ABasicController {
         employee.setManager(updateEmployeeForm.isManager());
         employeeRepository.save(employee);
         apiMessageDto.setMessage("Update employee successfully");
+        return apiMessageDto;
+    }
+
+    @PutMapping(value = "/update-permission", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('EMP_U_P')")
+    @Transactional
+    public ApiMessageDto<String> updatePermission(
+            @Valid @RequestBody UpdateEmployeePermissionForm updateEmployeePermissionForm,
+            BindingResult bindingResult
+    ) {
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+        Employee employee = employeeRepository.findById(updateEmployeePermissionForm.getEmployeeId()).orElse(null);
+        if (employee == null) {
+            throw new BadRequestException("Employee not found", ErrorCode.EMPLOYEE_ERROR_NOT_FOUND);
+        }
+
+        List<Permission> permissions = permissionRepository.findAllById(updateEmployeePermissionForm.getPermissionIds());
+        employee.setPermissions(permissions);
+        employeeRepository.save(employee);
+
+        apiMessageDto.setMessage("Update employee permissions successfully");
         return apiMessageDto;
     }
 

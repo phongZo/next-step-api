@@ -22,7 +22,7 @@ public class CreateNationForm{
     private Integer kind;
     @NotNull(message = "status cant not be null")
     @ApiModelProperty(name = "status", required = true)
-    private Long status;
+    private int status;
     @ApiModelProperty(name = "parentId")
     private Long parentId;
 }

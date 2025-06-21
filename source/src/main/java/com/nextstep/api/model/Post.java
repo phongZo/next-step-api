@@ -47,5 +47,8 @@ public class Post extends Auditable<String>{
     private BigDecimal maxSalary;
     @Column(name = "state")
     private Integer state; // (0: pending, 1: done, 2: error)
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "nation_id", nullable = true)
+    private Nation area;
 
 }

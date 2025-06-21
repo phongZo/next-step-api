@@ -1,6 +1,7 @@
 package com.nextstep.api.dto.post;
 
 import com.nextstep.api.dto.company.CompanyDto;
+import com.nextstep.api.dto.nation.NationDto;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
 
@@ -37,4 +38,6 @@ public class PostDto {
     private BigDecimal minSalary;
     @ApiModelProperty(name = "maxSalary")
     private BigDecimal maxSalary;
+    @ApiModelProperty(name = "area")
+    private NationDto area;
 }

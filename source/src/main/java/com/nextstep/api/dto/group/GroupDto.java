@@ -1,5 +1,6 @@
 package com.nextstep.api.dto.group;
 
+import com.nextstep.api.dto.permission.PermissionDto;
 import com.nextstep.api.model.Permission;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -17,5 +18,5 @@ public class GroupDto {
     @ApiModelProperty(name = "kind")
     private int kind;
     @ApiModelProperty(name = "permissions")
-    private List<Permission> permissions ;
+    private List<PermissionDto> permissions ;
 }

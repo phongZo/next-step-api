@@ -2,21 +2,24 @@ package com.nextstep.api.mapper;
 
 import com.nextstep.api.dto.company.CompanyDto;
 import com.nextstep.api.dto.employee.EmployeeDto;
+import com.nextstep.api.dto.nation.NationDto;
 import com.nextstep.api.dto.post.PostAdminDto;
 import com.nextstep.api.dto.post.PostDto;
 import com.nextstep.api.form.employee.CreateEmployeeForm;
 import com.nextstep.api.form.employee.UpdateEmployeeForm;
 import com.nextstep.api.form.post.CreatePostForm;
 import com.nextstep.api.form.post.UpdatePostForm;
+import com.nextstep.api.mapper.NationMapper;
 import com.nextstep.api.model.Company;
 import com.nextstep.api.model.Employee;
+import com.nextstep.api.model.Nation;
 import com.nextstep.api.model.Post;
 import org.mapstruct.*;
 
 import java.util.List;
 
 @Mapper(componentModel = "spring",unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, uses = {NationMapper.class})
 public interface PostMapper {
 
     @Mapping(source = "name", target = "name")
@@ -47,6 +50,7 @@ public interface PostMapper {
     @Mapping(source = "totalSlot", target = "totalSlot")
     @Mapping(source = "minSalary", target = "minSalary")
     @Mapping(source = "maxSalary", target = "maxSalary")
+    @Mapping(source = "area", target = "area")
     @BeanMapping(ignoreByDefault = true)
     @Named("fromEntityToPostAdminDto")
     PostAdminDto fromEntityToPostAdminDto(Post post);
@@ -83,6 +87,7 @@ public interface PostMapper {
     @Mapping(source = "totalSlot", target = "totalSlot")
     @Mapping(source = "minSalary", target = "minSalary")
     @Mapping(source = "maxSalary", target = "maxSalary")
+    @Mapping(source = "area", target = "area")
     @BeanMapping(ignoreByDefault = true)
     @Named("fromEntityToPostDto")
     PostDto fromEntityToPostDto(Post post);

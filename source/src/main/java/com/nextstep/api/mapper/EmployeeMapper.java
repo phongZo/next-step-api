@@ -1,6 +1,7 @@
 package com.nextstep.api.mapper;
 
 import com.nextstep.api.dto.employee.EmployeeDto;
+import com.nextstep.api.dto.permission.PermissionDto;
 import com.nextstep.api.form.employee.CreateEmployeeForm;
 import com.nextstep.api.form.employee.UpdateEmployeeForm;
 import com.nextstep.api.model.Employee;
@@ -9,7 +10,7 @@ import org.mapstruct.*;
 import java.util.List;
 
 @Mapper(componentModel = "spring",unmappedTargetPolicy = ReportingPolicy.IGNORE,
-        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE)
+        nullValuePropertyMappingStrategy = NullValuePropertyMappingStrategy.IGNORE, uses = {PermissionMapper.class})
 public interface EmployeeMapper {
 
     @Mapping(source = "name", target = "name")
@@ -22,6 +23,7 @@ public interface EmployeeMapper {
     @Mapping(source = "name", target = "name")
     @Mapping(source = "code", target = "code")
     @Mapping(source = "account", target = "account", qualifiedByName = "fromAccountToDto")
+    @Mapping(source = "permissions", target = "permissions", qualifiedByName = "fromEntityToPermissionDto")
     @BeanMapping(ignoreByDefault = true)
     @Named("fromEntityToEmployeeDto")
     EmployeeDto fromEntityToEmployeeDto(Employee employee);

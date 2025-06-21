@@ -5,10 +5,19 @@ import com.nextstep.api.validation.CategoryKind;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
+import java.util.List;
 import java.util.Objects;
 
 public class CategoryKindValidation implements ConstraintValidator<CategoryKind, Integer> {
     private boolean allowNull;
+    private static final List<Integer> VALID_KIND_VALUES = List.of(
+            NextStepConstant.CATEGORY_KIND_NEWS,
+            NextStepConstant.CATEGORY_KIND_SKILL,
+            NextStepConstant.CATEGORY_KIND_JOB,
+            NextStepConstant.CATEGORY_KIND_LEVEL,
+            NextStepConstant.CATEGORY_KIND_EDUCATION,
+            NextStepConstant.CATEGORY_KIND_SPECIALIZATION
+    );
 
     @Override
     public void initialize(CategoryKind constraintAnnotation) {
@@ -20,9 +29,9 @@ public class CategoryKindValidation implements ConstraintValidator<CategoryKind,
         if (kind == null && allowNull) {
             return true;
         }
-        if (!Objects.equals(kind, NextStepConstant.CATEGORY_KIND_NEWS)) {
+        if (kind == null) {
             return false;
         }
-        return true;
+        return VALID_KIND_VALUES.contains(kind);
     }
 }

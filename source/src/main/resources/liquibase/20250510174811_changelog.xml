@@ -788,4 +788,28 @@
             <column name="cv_state" type="integer" afterColumn="cv"/>
         </addColumn>
     </changeSet>
+    <changeSet author="NextStep" id="1746899298265-52">
+        <createTable tableName="db_permission_employee">
+            <column name="employee_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="permission_id" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-53">
+        <addColumn tableName="db_post">
+            <column name="nation_id" type="bigint" afterColumn="company_id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-54">
+        <addForeignKeyConstraint baseColumnNames="employee_id" baseTableName="db_permission_employee" constraintName="FK7aqr2b5kr9sjljdih7neucxo2" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="db_employee" validate="true"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-55">
+        <addForeignKeyConstraint baseColumnNames="permission_id" baseTableName="db_permission_employee" constraintName="FK7tn5sq6xkrs83j3i0iwtxa14f" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="db_permission" validate="true"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-56">
+        <addForeignKeyConstraint baseColumnNames="nation_id" baseTableName="db_post" constraintName="FKska0fy3ohoril5e24wxcmajny" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="db_nation" validate="true"/>
+    </changeSet>
 </databaseChangeLog>

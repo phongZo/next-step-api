@@ -2,6 +2,9 @@ package com.nextstep.api.dto.permission;
 
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+
 
 @Data
 public class PermissionDto {
@@ -17,6 +20,6 @@ public class PermissionDto {
     private String description;
     @ApiModelProperty(name = "nameGroup")
     private String nameGroup;
-
-    private String pCode;
+    @ApiModelProperty(name = "PCode")
+    private String PCode;
 }

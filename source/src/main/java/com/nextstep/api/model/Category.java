@@ -23,6 +23,6 @@ public class Category extends Auditable<String>{
     private String description;
     private String image;
     private Integer ordering;
-    private Integer kind;
+    private Integer kind; // (1:news, 2:skill, 3:job, 4:level, 5:education, 6: specialization)
     private String tag;
 }
