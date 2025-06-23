@@ -9,10 +9,10 @@ import org.springframework.context.annotation.Configuration;
 
 @Configuration
 public class RabbitConfiguration {
-    @Value("${rabbitmq.queue.cv-upload}")
-    private String cvUploadQueue;
-    @Value("${rabbitmq.queue.data-embedding}")
-    private String dataEmbeddingQueue;
+    @Value("${rabbitmq.queue.process-cv}")
+    private String processCvQueue;
+    @Value("${rabbitmq.queue.complete-process-cv}")
+    private String completeProcessCvQueue;
 
     @Bean
     public RabbitAdmin rabbitAdmin(ConnectionFactory connectionFactory) {
@@ -21,11 +21,11 @@ public class RabbitConfiguration {
 
     @Bean
     public Queue uploadCvQueue() {
-        return new Queue(cvUploadQueue, true);
+        return new Queue(processCvQueue, true);
     }
 
     @Bean
-    public Queue dataEmbeddingQueue() {
-        return new Queue(dataEmbeddingQueue, true);
+    public Queue completeProcessEmbeddingQueue() {
+        return new Queue(completeProcessCvQueue, true);
     }
 }

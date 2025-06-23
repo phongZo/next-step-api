@@ -1,15 +1,21 @@
 package com.nextstep.api.controller;
 
 import com.nextstep.api.dto.ApiMessageDto;
+import com.nextstep.api.dto.ResponseListDto;
+import com.nextstep.api.dto.permission.PermissionDto;
 import com.nextstep.api.form.permission.CreatePermissionForm;
+import com.nextstep.api.mapper.PermissionMapper;
 import com.nextstep.api.model.Permission;
+import com.nextstep.api.model.criteria.PermissionCriteria;
 import com.nextstep.api.repository.PermissionRepository;
 import com.nextstep.api.exception.UnauthorizationException;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.validation.BindingResult;
@@ -25,6 +31,8 @@ import java.util.List;
 public class PermissionController extends ABasicController{
     @Autowired
     PermissionRepository permissionRepository;
+    @Autowired
+    PermissionMapper permissionMapper;
 
     @PostMapping(value = "/create", produces= MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('PER_C')")
@@ -51,14 +59,26 @@ public class PermissionController extends ABasicController{
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('PER_L')")
-    public ApiMessageDto<List<Permission>> list() {
-        ApiMessageDto<List<Permission>> apiMessageDto = new ApiMessageDto<>();
-        if(!isSuperAdmin()){
-            throw new UnauthorizationException("Not allowed list.");
+    public ApiMessageDto<ResponseListDto<List<PermissionDto>>> getPermissionList(
+            PermissionCriteria permissionCriteria,
+            Pageable pageable
+    ) {
+        if (!isSuperAdmin()) {
+            throw new UnauthorizationException("Not allowed to list.");
         }
-        Page<Permission> accounts = permissionRepository.findAll(PageRequest.of(0, 1000, Sort.by(new Sort.Order(Sort.Direction.DESC, "createdDate"))));
-        apiMessageDto.setData(accounts.getContent());
-        apiMessageDto.setMessage("Get permissions list success");
+
+        Specification<Permission> specification = PermissionCriteria.getSpecification(permissionCriteria);
+        Page<Permission> page = permissionRepository.findAll(specification, pageable);
+
+        ResponseListDto<List<PermissionDto>> responseListDto = new ResponseListDto<>(
+                permissionMapper.fromEntityToPermissionDtoList(page.getContent()),
+                page.getTotalElements(),
+                page.getTotalPages()
+        );
+
+        ApiMessageDto<ResponseListDto<List<PermissionDto>>> apiMessageDto = new ApiMessageDto<>();
+        apiMessageDto.setData(responseListDto);
+        apiMessageDto.setMessage("Get permission list successfully");
+
         return apiMessageDto;
-    }
-}
+}}
