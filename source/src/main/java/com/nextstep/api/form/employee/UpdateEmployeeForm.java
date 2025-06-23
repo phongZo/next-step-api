@@ -8,6 +8,7 @@ import lombok.Data;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotEmpty;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Data
 public class UpdateEmployeeForm {
@@ -38,4 +39,7 @@ public class UpdateEmployeeForm {
     @ApiModelProperty(name = "status", example = "1", required = true)
     @AccountStatus(allowNull = false)
     private Integer status;
+    @ApiModelProperty(name = "permissionIds", required = true)
+    private List<Long> permissionIds;
+
 }

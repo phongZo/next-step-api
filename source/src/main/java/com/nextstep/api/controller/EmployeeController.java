@@ -175,32 +175,15 @@ public class EmployeeController extends ABasicController {
         accountRepository.save(account);
 
         employeeMapper.updateFromUpdateEmployeeForm(employee, updateEmployeeForm);
-
+        
+        if (updateEmployeeForm.getPermissionIds() != null) {
+            List<Permission> permissions = permissionRepository.findAllById(updateEmployeeForm.getPermissionIds());
+            employee.setPermissions(permissions);
+        }
 
         employee.setManager(updateEmployeeForm.isManager());
         employeeRepository.save(employee);
         apiMessageDto.setMessage("Update employee successfully");
-        return apiMessageDto;
-    }
-
-    @PutMapping(value = "/update-permission", produces = MediaType.APPLICATION_JSON_VALUE)
-    @PreAuthorize("hasRole('EMP_U_P')")
-    @Transactional
-    public ApiMessageDto<String> updatePermission(
-            @Valid @RequestBody UpdateEmployeePermissionForm updateEmployeePermissionForm,
-            BindingResult bindingResult
-    ) {
-        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
-        Employee employee = employeeRepository.findById(updateEmployeePermissionForm.getEmployeeId()).orElse(null);
-        if (employee == null) {
-            throw new BadRequestException("Employee not found", ErrorCode.EMPLOYEE_ERROR_NOT_FOUND);
-        }
-
-        List<Permission> permissions = permissionRepository.findAllById(updateEmployeePermissionForm.getPermissionIds());
-        employee.setPermissions(permissions);
-        employeeRepository.save(employee);
-
-        apiMessageDto.setMessage("Update employee permissions successfully");
         return apiMessageDto;
     }
 
