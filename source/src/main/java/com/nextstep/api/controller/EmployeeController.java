@@ -9,7 +9,6 @@ import com.nextstep.api.dto.employee.EmployeeDto;
 import com.nextstep.api.exception.BadRequestException;
 import com.nextstep.api.form.employee.CreateEmployeeForm;
 import com.nextstep.api.form.employee.UpdateEmployeeForm;
-import com.nextstep.api.form.employee.UpdateEmployeePermissionForm;
 import com.nextstep.api.mapper.EmployeeMapper;
 import com.nextstep.api.model.Account;
 import com.nextstep.api.model.Company;
