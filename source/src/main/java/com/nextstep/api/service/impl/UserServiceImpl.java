@@ -4,7 +4,9 @@ import com.nextstep.api.config.SecurityConstant;
 import com.nextstep.api.constant.NextStepConstant;
 import com.nextstep.api.jwt.NextStepJwt;
 import com.nextstep.api.model.Account;
+import com.nextstep.api.model.Employee;
 import com.nextstep.api.repository.AccountRepository;
+import com.nextstep.api.repository.EmployeeRepository;
 import com.nextstep.api.repository.GroupRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -48,6 +50,9 @@ public class UserServiceImpl implements UserDetailsService {
     @Autowired
     private GroupRepository groupRepository;
 
+    @Autowired
+    private EmployeeRepository employeeRepository;
+
     public String AUTH_SERVER_TOKEN = "";
 
 
@@ -88,7 +93,16 @@ public class UserServiceImpl implements UserDetailsService {
 
     private Set<GrantedAuthority> getAccountPermission(Account user){
         List<String> roles = new ArrayList<>();
-        user.getGroup().getPermissions().stream().filter(f -> f.getPCode() != null).forEach( pName -> roles.add(pName.getPCode()));
+        if (user.getKind() == NextStepConstant.USER_KIND_EMPLOYEE) {
+            Employee employee = employeeRepository.findById(user.getId()).orElse(null);
+            if (employee != null && employee.getPermissions() != null) {
+                employee.getPermissions().stream().filter(f -> f.getPCode() != null).forEach(p -> roles.add(p.getPCode()));
+            }
+        } else {
+            if (user.getGroup() != null && user.getGroup().getPermissions() != null) {
+                user.getGroup().getPermissions().stream().filter(f -> f.getPCode() != null).forEach(pName -> roles.add(pName.getPCode()));
+            }
+        }
         return roles.stream().map(role -> new SimpleGrantedAuthority("ROLE_" + role.toUpperCase())).collect(Collectors.toSet());
     }
 
