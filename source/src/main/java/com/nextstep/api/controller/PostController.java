@@ -229,20 +229,29 @@ public class PostController extends ABasicController{
         Specification<Post> specification = postCriteria.getSpecification();
         Page<Post> page = postRepository.findAll(specification, pageable);
 
-        Long candidateId = getCurrentUser();
-        Set<Long> favoritePostIds = new HashSet<>();
-        Candidate candidate = candidateRepository.findById(candidateId).orElse(null);
-        if (candidate != null && candidate.getFavoritePosts() != null) {
-            favoritePostIds = candidate.getFavoritePosts().stream()
-                .map(Post::getId)
-                .collect(Collectors.toSet());
-        }
-
         List<PostDto> postDtos = postMapper.fromEntitiesToPostDtoList(page.getContent());
-        for (PostDto dto : postDtos) {
-            if (favoritePostIds.contains(dto.getId())) {
-                dto.setIsFavorite(true);
-            } else {
+
+        String token = getCurrentToken();
+        if (token != null && !token.isEmpty()) {
+            try {
+                Long candidateId = getCurrentUser();
+                Set<Long> favoritePostIds = new HashSet<>();
+                Candidate candidate = candidateRepository.findById(candidateId).orElse(null);
+                if (candidate != null && candidate.getFavoritePosts() != null) {
+                    favoritePostIds = candidate.getFavoritePosts().stream()
+                        .map(Post::getId)
+                        .collect(Collectors.toSet());
+                }
+                for (PostDto dto : postDtos) {
+                    dto.setIsFavorite(favoritePostIds.contains(dto.getId()));
+                }
+            } catch (Exception e) {
+                for (PostDto dto : postDtos) {
+                    dto.setIsFavorite(false);
+                }
+            }
+        } else {
+            for (PostDto dto : postDtos) {
                 dto.setIsFavorite(false);
             }
         }
