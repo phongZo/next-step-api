@@ -383,6 +383,7 @@ public class CandidateController extends ABasicController{
     }
 
     @PutMapping(value = "/update-favorite", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('CAN_FAV')")
     @Transactional
     public ApiMessageDto<String> updateFavoritePost(@Valid @RequestBody UpdateFavoritePostForm updateFavoritePostForm, BindingResult bindingResult) {
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
@@ -420,6 +421,7 @@ public class CandidateController extends ABasicController{
     }
 
     @GetMapping(value = "/favorite-posts", produces = MediaType.APPLICATION_JSON_VALUE)
+    @PreAuthorize("hasRole('CAN_FAV')")
     public ApiMessageDto<ResponseListDto<List<PostDto>>> getFavoritePosts(Pageable pageable) {
         Long candidateId = getCurrentUser();
         Candidate candidate = candidateRepository.findById(candidateId).orElse(null);

@@ -228,34 +228,18 @@ public class PostController extends ABasicController{
     ) {
         Specification<Post> specification = postCriteria.getSpecification();
         Page<Post> page = postRepository.findAll(specification, pageable);
-
         List<PostDto> postDtos = postMapper.fromEntitiesToPostDtoList(page.getContent());
-
         String token = getCurrentToken();
         if (token != null && !token.isEmpty()) {
-            try {
-                Long candidateId = getCurrentUser();
-                Set<Long> favoritePostIds = new HashSet<>();
-                Candidate candidate = candidateRepository.findById(candidateId).orElse(null);
-                if (candidate != null && candidate.getFavoritePosts() != null) {
-                    favoritePostIds = candidate.getFavoritePosts().stream()
+            Long candidateId = getCurrentUser();
+            Candidate candidate = candidateRepository.findById(candidateId).orElse(null);
+            if (candidate != null && candidate.getFavoritePosts() != null) {
+                Set<Long> favoritePostIds = candidate.getFavoritePosts().stream()
                         .map(Post::getId)
                         .collect(Collectors.toSet());
-                }
-                for (PostDto dto : postDtos) {
-                    dto.setIsFavorite(favoritePostIds.contains(dto.getId()));
-                }
-            } catch (Exception e) {
-                for (PostDto dto : postDtos) {
-                    dto.setIsFavorite(false);
-                }
-            }
-        } else {
-            for (PostDto dto : postDtos) {
-                dto.setIsFavorite(false);
+                postDtos.forEach(dto -> dto.setIsFavorite(favoritePostIds.contains(dto.getId())));
             }
         }
-
         ResponseListDto<List<PostDto>> responseListDto = new ResponseListDto<>(
                 postDtos,
                 page.getTotalElements(),
