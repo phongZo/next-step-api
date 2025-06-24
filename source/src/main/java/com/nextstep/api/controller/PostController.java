@@ -14,9 +14,11 @@ import com.nextstep.api.model.Company;
 import com.nextstep.api.model.Nation;
 import com.nextstep.api.model.Post;
 import com.nextstep.api.model.criteria.PostCriteria;
+import com.nextstep.api.model.Candidate;
 import com.nextstep.api.repository.CompanyRepository;
 import com.nextstep.api.repository.NationRepository;
 import com.nextstep.api.repository.PostRepository;
+import com.nextstep.api.repository.CandidateRepository;
 import com.nextstep.api.service.rabbit.RabbitService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +33,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/post")
@@ -49,6 +54,8 @@ public class PostController extends ABasicController{
     PostMapper postMapper;
     @Autowired
     RabbitService rabbitService;
+    @Autowired
+    private CandidateRepository candidateRepository;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('POST_L')")
@@ -222,8 +229,26 @@ public class PostController extends ABasicController{
         Specification<Post> specification = postCriteria.getSpecification();
         Page<Post> page = postRepository.findAll(specification, pageable);
 
+        Long candidateId = getCurrentUser();
+        Set<Long> favoritePostIds = new HashSet<>();
+        Candidate candidate = candidateRepository.findById(candidateId).orElse(null);
+        if (candidate != null && candidate.getFavoritePosts() != null) {
+            favoritePostIds = candidate.getFavoritePosts().stream()
+                .map(Post::getId)
+                .collect(Collectors.toSet());
+        }
+
+        List<PostDto> postDtos = postMapper.fromEntitiesToPostDtoList(page.getContent());
+        for (PostDto dto : postDtos) {
+            if (favoritePostIds.contains(dto.getId())) {
+                dto.setIsFavorite(true);
+            } else {
+                dto.setIsFavorite(false);
+            }
+        }
+
         ResponseListDto<List<PostDto>> responseListDto = new ResponseListDto<>(
-                postMapper.fromEntitiesToPostDtoList(page.getContent()),
+                postDtos,
                 page.getTotalElements(),
                 page.getTotalPages()
         );

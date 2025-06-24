@@ -14,10 +14,12 @@ import com.nextstep.api.mapper.CandidateMapper;
 import com.nextstep.api.model.Account;
 import com.nextstep.api.model.Candidate;
 import com.nextstep.api.model.Group;
+import com.nextstep.api.model.Post;
 import com.nextstep.api.model.criteria.CandidateCriteria;
 import com.nextstep.api.repository.AccountRepository;
 import com.nextstep.api.repository.CandidateRepository;
 import com.nextstep.api.repository.GroupRepository;
+import com.nextstep.api.repository.PostRepository;
 import com.nextstep.api.service.feign.GoogleFeignClient;
 import com.nextstep.api.service.Oauth2JWTTokenService;
 import com.nextstep.api.service.rabbit.RabbitService;
@@ -26,6 +28,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.PageImpl;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.MediaType;
 import org.springframework.security.access.prepost.PreAuthorize;
@@ -34,8 +37,11 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.security.oauth2.common.OAuth2AccessToken;
+import com.nextstep.api.dto.post.PostDto;
+import com.nextstep.api.mapper.PostMapper;
 
 import javax.validation.Valid;
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -46,10 +52,10 @@ public class CandidateController extends ABasicController{
 
     @Autowired
     AccountRepository accountRepository;
-    
+
     @Autowired
     GroupRepository groupRepository;
-    
+
     @Autowired
     CandidateRepository candidateRepository;
 
@@ -67,6 +73,12 @@ public class CandidateController extends ABasicController{
 
     @Autowired
     private RabbitService rabbitService;
+
+    @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
+    private PostMapper postMapper;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('CAN_L')")
@@ -134,7 +146,7 @@ public class CandidateController extends ABasicController{
         candidate.setCode(code);
         candidate.setAccount(savedAccount);
         candidateRepository.save(candidate);
-        
+
         apiMessageDto.setMessage("Sign Up Success");
         return apiMessageDto;
     }
@@ -199,7 +211,7 @@ public class CandidateController extends ABasicController{
         candidateMapper.updateFromUpdateCandidateProfileForm(candidate, updateCandidateProfileForm);
 
         candidateRepository.save(candidate);
-        
+
         apiMessageDto.setMessage("Update profile successfully");
         return apiMessageDto;
     }
@@ -209,7 +221,7 @@ public class CandidateController extends ABasicController{
     @Transactional
     public ApiMessageDto<String> deleteCandidate(@PathVariable Long id) {
         ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
-        
+
         Candidate candidate = candidateRepository.findById(id).orElse(null);
         if (candidate == null) {
             throw new BadRequestException("Candidate not found", ErrorCode.CANDIDATE_ERROR_NOT_FOUND);
@@ -367,6 +379,69 @@ public class CandidateController extends ABasicController{
         candidateRepository.save(candidate);
 
         apiMessageDto.setMessage("Create Cv success");
+        return apiMessageDto;
+    }
+
+    @PutMapping(value = "/update-favorite", produces = MediaType.APPLICATION_JSON_VALUE)
+    @Transactional
+    public ApiMessageDto<String> updateFavoritePost(@Valid @RequestBody UpdateFavoritePostForm updateFavoritePostForm, BindingResult bindingResult) {
+        ApiMessageDto<String> apiMessageDto = new ApiMessageDto<>();
+
+        Long candidateId = getCurrentUser();
+        Candidate candidate = candidateRepository.findById(candidateId).orElse(null);
+        if (candidate == null) {
+            throw new BadRequestException("Candidate not found", ErrorCode.CANDIDATE_ERROR_NOT_FOUND);
+        }
+
+        Post post = postRepository.findById(updateFavoritePostForm.getPostId()).orElse(null);
+        if (post == null) {
+            throw new BadRequestException("Post not found", ErrorCode.POST_ERROR_NOT_FOUND);
+        }
+        if (candidate.getFavoritePosts() == null) {
+            candidate.setFavoritePosts(new ArrayList<>());
+        }
+
+        boolean exists = candidate.getFavoritePosts().stream()
+            .anyMatch(p -> p.getId().equals(post.getId()));
+        if (updateFavoritePostForm.getState()) {
+            if (!exists) {
+                candidate.getFavoritePosts().add(post);
+            }
+        } else {
+            if (exists) {
+                candidate.getFavoritePosts().removeIf(p -> p.getId().equals(post.getId()));
+            } else {
+                throw new BadRequestException("Post is not in your favorite list", ErrorCode.POST_ERROR_NOT_FOUND);
+            }
+        }
+        candidateRepository.save(candidate);
+        apiMessageDto.setMessage(updateFavoritePostForm.getState() ? "Added to favorites successfully" : "Removed from favorites successfully");
+        return apiMessageDto;
+    }
+
+    @GetMapping(value = "/favorite-posts", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<ResponseListDto<List<PostDto>>> getFavoritePosts(Pageable pageable) {
+        Long candidateId = getCurrentUser();
+        Candidate candidate = candidateRepository.findById(candidateId).orElse(null);
+        if (candidate == null) {
+            throw new BadRequestException("Candidate not found", ErrorCode.CANDIDATE_ERROR_NOT_FOUND);
+        }
+        List<Post> favoritePosts = candidate.getFavoritePosts() != null ? candidate.getFavoritePosts() : new ArrayList<>();
+        List<PostDto> favoritePostDtos = postMapper.fromEntitiesToPostDtoList(favoritePosts);
+
+        int start = (int) pageable.getOffset();
+        int end = Math.min((start + pageable.getPageSize()), favoritePostDtos.size());
+        List<PostDto> pageContent = favoritePostDtos.subList(start, end);
+        Page<PostDto> page = new PageImpl<>(pageContent, pageable, favoritePostDtos.size());
+
+        ResponseListDto<List<PostDto>> responseListDto = new ResponseListDto<>(
+                page.getContent(),
+                page.getTotalElements(),
+                page.getTotalPages()
+        );
+        ApiMessageDto<ResponseListDto<List<PostDto>>> apiMessageDto = new ApiMessageDto<>();
+        apiMessageDto.setData(responseListDto);
+        apiMessageDto.setMessage("Get favorite posts successfully");
         return apiMessageDto;
     }
 

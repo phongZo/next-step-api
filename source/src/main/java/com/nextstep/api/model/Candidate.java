@@ -8,6 +8,7 @@ import org.hibernate.annotations.GenericGenerator;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Table(name = "db_candidate")
@@ -57,4 +58,10 @@ public class Candidate extends Auditable<String> {
 
     @Column(name = "cvState")
     private Integer cvState; //(0: pending, 1: done, 2: error)
+
+    @ManyToMany(fetch = FetchType.LAZY)
+    @JoinTable(name = "db_favorite_post_candidate",
+            joinColumns = @JoinColumn(name = "candidate_id", referencedColumnName = "id"),
+            inverseJoinColumns = @JoinColumn(name = "post_id", referencedColumnName = "id"))
+    private List<Post> favoritePosts;
 } 
