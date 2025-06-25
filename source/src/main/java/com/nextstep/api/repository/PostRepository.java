@@ -15,4 +15,10 @@ public interface PostRepository extends JpaRepository<Post, Long>, JpaSpecificat
     void deleteAllByCompanyId(@Param("companyId") Long companyId);
     
     List<Post> findAllByCompanyId(Long companyId);
+
+    @Query(value = "SELECT p.company.id, COUNT(p.id) " +
+            "FROM Post p " +
+            "WHERE p.company.id IN :companyIds " +
+            "GROUP BY p.company.id")
+    List<Object[]> countPostsByCompanyIds(@Param("companyIds") List<Long> companyIds);
 }

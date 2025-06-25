@@ -4,6 +4,7 @@ import com.nextstep.api.constant.NextStepConstant;
 import com.nextstep.api.dto.ApiMessageDto;
 import com.nextstep.api.dto.ErrorCode;
 import com.nextstep.api.dto.ResponseListDto;
+import com.nextstep.api.dto.company.CompanyClientDto;
 import com.nextstep.api.dto.company.CompanyDto;
 import com.nextstep.api.dto.employee.EmployeeDto;
 import com.nextstep.api.exception.BadRequestException;
@@ -36,6 +37,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/company")
@@ -150,6 +153,47 @@ public class CompanyController extends ABasicController{
         postRepository.deleteAllByCompanyId(id);
         companyRepository.deleteById(id);
         apiMessageDto.setMessage("Delete company successfully");
+        return apiMessageDto;
+    }
+
+    @GetMapping(value = "/client-list", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ApiMessageDto<ResponseListDto<List<CompanyClientDto>>> getCompanyClientList(
+            CompanyCriteria companyCriteria,
+            Pageable pageable
+    ) {
+        // Get companies with pagination
+        Specification<Company> specification = companyCriteria.getSpecification();
+        Page<Company> page = companyRepository.findAll(specification, pageable);
+        
+        // Get post counts for all companies in the page in a single query
+        List<Long> companyIds = page.getContent().stream()
+                .map(Company::getId)
+                .collect(Collectors.toList());
+        
+        // Use a single query to get post counts for all companies
+        List<Object[]> postCounts = postRepository.countPostsByCompanyIds(companyIds);
+        Map<Long, Long> companyPostCountMap = postCounts.stream()
+                .collect(Collectors.toMap(
+                        row -> (Long) row[0],
+                        row -> (Long) row[1]
+                ));
+
+        List<CompanyClientDto> companyClientDtos = companyMapper.fromEntitiesToCompanyClientDtoList(page.getContent());
+        
+        // Set post count for each company
+        for (CompanyClientDto companyDto : companyClientDtos) {
+            Long postCount = companyPostCountMap.getOrDefault(companyDto.getId(), 0L);
+            companyDto.setPostCount(postCount);
+        }
+
+        ResponseListDto<List<CompanyClientDto>> responseListDto = new ResponseListDto<>(
+                companyClientDtos,
+                page.getTotalElements(),
+                page.getTotalPages()
+        );
+        ApiMessageDto<ResponseListDto<List<CompanyClientDto>>> apiMessageDto = new ApiMessageDto<>();
+        apiMessageDto.setData(responseListDto);
+        apiMessageDto.setMessage("Get company client list successfully");
         return apiMessageDto;
     }
 }

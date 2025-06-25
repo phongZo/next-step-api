@@ -1,6 +1,7 @@
 package com.nextstep.api.model.criteria;
 
 
+import com.nextstep.api.model.Category;
 import com.nextstep.api.model.Company;
 import com.nextstep.api.model.Employee;
 import com.nextstep.api.model.Post;
@@ -22,6 +23,8 @@ public class PostCriteria {
     private Integer type;
     private Integer contractType;
     private String companyName;
+    private Long categoryId;
+    private Integer categoryKind;
 
     public Specification<Post> getSpecification() {
         return new Specification<Post>(){
@@ -59,7 +62,12 @@ public class PostCriteria {
                     Join<Post, Company> companyJoin = root.join("company", JoinType.INNER);
                     predicates.add(cb.like(cb.lower(companyJoin.get("name")), "%" + getCompanyName().toLowerCase() + "%"));
                 }
-                
+                if (getCategoryId() != null) {
+                    predicates.add(cb.equal(root.get("category").get("id"), getCategoryId()));
+                }
+                if (getCategoryKind() != null) {
+                    predicates.add(cb.equal(root.get("category").get("kind"), getCategoryKind()));
+                }
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
         };

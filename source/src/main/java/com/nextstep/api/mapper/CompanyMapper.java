@@ -1,6 +1,7 @@
 package com.nextstep.api.mapper;
 
 
+import com.nextstep.api.dto.company.CompanyClientDto;
 import com.nextstep.api.dto.company.CompanyDto;
 import com.nextstep.api.dto.employee.EmployeeDto;
 import com.nextstep.api.form.company.CreateCompanyForm;
@@ -56,4 +57,22 @@ public interface CompanyMapper {
     @BeanMapping(ignoreByDefault = true)
     @Named("updateFromUpdateCompanyForm")
     void updateFromUpdateCompanyForm(@MappingTarget Company company, UpdateCompanyForm updateCompanyForm);
+
+    @Mapping(source = "id", target = "id")
+    @Mapping(source = "name", target = "name")
+    @Mapping(source = "description", target = "description")
+    @Mapping(source = "shortDescription", target = "shortDescription")
+    @Mapping(source = "hotline", target = "hotline")
+    @Mapping(source = "logo", target = "logo")
+    @Mapping(source = "banner", target = "banner")
+    @Mapping(source = "address", target = "address")
+    @Mapping(source = "websiteUrl", target = "websiteUrl")
+    @BeanMapping(ignoreByDefault = true)
+    @Named("fromEntityToCompanyClientDto")
+    CompanyClientDto fromEntityToCompanyClientDto(Company company);
+
+    @IterableMapping(elementTargetType = CompanyDto.class, qualifiedByName = "fromEntityToCompanyClientDto")
+    @Named("fromEntitiesToCompanyClientDtoList")
+    List<CompanyClientDto> fromEntitiesToCompanyClientDtoList(List<Company> companies);
+
 }

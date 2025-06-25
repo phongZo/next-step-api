@@ -206,10 +206,8 @@ public class CandidateController extends ABasicController{
 
         account.setFullName(updateCandidateProfileForm.getFullName());
 
-        if (StringUtils.isNotBlank(updateCandidateProfileForm.getAvatar())) {
-            if(!updateCandidateProfileForm.getAvatar().equals(account.getAvatarPath())){
-                fileService.deleteFile(account.getAvatarPath());
-            }
+        if (StringUtils.isNotBlank(updateCandidateProfileForm.getAvatar()) && !updateCandidateProfileForm.getAvatar().equals(account.getAvatarPath())) {
+            fileService.deleteFile(account.getAvatarPath());
             account.setAvatarPath(updateCandidateProfileForm.getAvatar());
         }
 

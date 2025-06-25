@@ -55,4 +55,6 @@ public class CreatePostForm {
     private BigDecimal maxSalary;
     @ApiModelProperty(name = "areaId")
     private Long areaId;
+    @ApiModelProperty(name = "categoryId")
+    private Long categoryId;
 }
