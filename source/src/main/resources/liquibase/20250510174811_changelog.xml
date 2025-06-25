@@ -828,4 +828,46 @@
     <changeSet author="NextStep" id="1746899298265-59">
         <addForeignKeyConstraint baseColumnNames="candidate_id" baseTableName="db_favorite_post_candidate" constraintName="FKe1tx1ad7sgs7xc2frptrwg8ew" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="db_candidate" validate="true"/>
     </changeSet>
+    <changeSet author="NextStep" id="1746899298265-60">
+        <createTable tableName="db_job_application">
+            <column name="id" type="BIGINT">
+                <constraints nullable="false" primaryKey="true" primaryKeyName="db_job_applicationPK"/>
+            </column>
+            <column name="candidate_info" type="LONGTEXT"/>
+            <column name="cover_letter" type="LONGTEXT"/>
+            <column name="cv" type="VARCHAR(255)"/>
+            <column name="state" type="INT"/>
+            <column name="candidate_id" type="BIGINT"/>
+            <column name="post_id" type="BIGINT"/>
+            <column name="created_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="created_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_by" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="modified_date" type="datetime">
+                <constraints nullable="false"/>
+            </column>
+            <column name="status" type="INT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-61">
+        <addForeignKeyConstraint baseColumnNames="post_id" baseTableName="db_job_application" constraintName="FKdk79q884x0l84bwm0g6vldbns" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="db_post" validate="true"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-62">
+        <addForeignKeyConstraint baseColumnNames="candidate_id" baseTableName="db_job_application" constraintName="FKlnw92nmqw88lqh6iwkbxpdg3u" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="db_candidate" validate="true"/>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-63">
+        <addColumn tableName="db_post">
+            <column name="category_id" type="bigint" afterColumn="nation_id"/>
+        </addColumn>
+    </changeSet>
+    <changeSet author="NextStep" id="1746899298265-64">
+        <addForeignKeyConstraint baseColumnNames="category_id" baseTableName="db_post" constraintName="FK3ljtyuhrkf6vmwgllcwfdqu8t" deferrable="false" initiallyDeferred="false" referencedColumnNames="id" referencedTableName="db_category" validate="true"/>
+    </changeSet>
 </databaseChangeLog>
