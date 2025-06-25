@@ -20,6 +20,7 @@ import com.nextstep.api.repository.AccountRepository;
 import com.nextstep.api.repository.CandidateRepository;
 import com.nextstep.api.repository.GroupRepository;
 import com.nextstep.api.repository.PostRepository;
+import com.nextstep.api.service.FileService;
 import com.nextstep.api.service.feign.GoogleFeignClient;
 import com.nextstep.api.service.Oauth2JWTTokenService;
 import com.nextstep.api.service.rabbit.RabbitService;
@@ -79,6 +80,9 @@ public class CandidateController extends ABasicController{
 
     @Autowired
     private PostMapper postMapper;
+
+    @Autowired
+    private FileService fileService;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('CAN_L')")
@@ -203,6 +207,9 @@ public class CandidateController extends ABasicController{
         account.setFullName(updateCandidateProfileForm.getFullName());
 
         if (StringUtils.isNotBlank(updateCandidateProfileForm.getAvatar())) {
+            if(!updateCandidateProfileForm.getAvatar().equals(account.getAvatarPath())){
+                fileService.deleteFile(account.getAvatarPath());
+            }
             account.setAvatarPath(updateCandidateProfileForm.getAvatar());
         }
 
