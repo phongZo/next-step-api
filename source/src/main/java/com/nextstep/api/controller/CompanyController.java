@@ -161,16 +161,13 @@ public class CompanyController extends ABasicController{
             CompanyCriteria companyCriteria,
             Pageable pageable
     ) {
-        // Get companies with pagination
         Specification<Company> specification = companyCriteria.getSpecification();
         Page<Company> page = companyRepository.findAll(specification, pageable);
-        
-        // Get post counts for all companies in the page in a single query
+
         List<Long> companyIds = page.getContent().stream()
                 .map(Company::getId)
                 .collect(Collectors.toList());
-        
-        // Use a single query to get post counts for all companies
+
         List<Object[]> postCounts = postRepository.countPostsByCompanyIds(companyIds);
         Map<Long, Long> companyPostCountMap = postCounts.stream()
                 .collect(Collectors.toMap(
@@ -179,8 +176,7 @@ public class CompanyController extends ABasicController{
                 ));
 
         List<CompanyClientDto> companyClientDtos = companyMapper.fromEntitiesToCompanyClientDtoList(page.getContent());
-        
-        // Set post count for each company
+
         for (CompanyClientDto companyDto : companyClientDtos) {
             Long postCount = companyPostCountMap.getOrDefault(companyDto.getId(), 0L);
             companyDto.setPostCount(postCount);
