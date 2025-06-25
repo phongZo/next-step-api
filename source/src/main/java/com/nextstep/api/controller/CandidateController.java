@@ -202,6 +202,10 @@ public class CandidateController extends ABasicController{
 
         account.setFullName(updateCandidateProfileForm.getFullName());
 
+        if (StringUtils.isNotBlank(updateCandidateProfileForm.getAvatar())) {
+            account.setAvatarPath(updateCandidateProfileForm.getAvatar());
+        }
+
         if (updateCandidateProfileForm.getPassword() != null && !updateCandidateProfileForm.getPassword().isEmpty()) {
             account.setPassword(passwordEncoder.encode(updateCandidateProfileForm.getPassword()));
         }

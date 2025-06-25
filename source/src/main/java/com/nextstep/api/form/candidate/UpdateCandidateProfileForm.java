@@ -29,4 +29,7 @@ public class UpdateCandidateProfileForm {
     
     @ApiModelProperty(name = "coverLetter",required = true)
     private String coverLetter;
+
+    @ApiModelProperty(name = "avatar", required = true)
+    private String avatar;
 } 
