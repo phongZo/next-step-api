@@ -11,6 +11,7 @@ import com.nextstep.api.model.Candidate;
 import com.nextstep.api.model.Post;
 import com.nextstep.api.repository.CandidateRepository;
 import com.nextstep.api.repository.PostRepository;
+import com.nextstep.api.service.FileService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +28,9 @@ public class RabbitMQListener {
     private CandidateRepository candidateRepository;
     @Autowired
     private ObjectMapper objectMapper;
+    @Autowired
+    private FileService fileService;
+    
     @RabbitListener(queues = "${rabbitmq.queue.complete-process-cv}")
     public void handleListenCompleteProcessEmbeddingCv(String json) {
         try {
@@ -59,13 +63,16 @@ public class RabbitMQListener {
                 Candidate candidate = candidateRepository.findById(candidateId)
                         .orElseThrow(() -> new BadRequestException(
                                 "Candidate not found", ErrorCode.CANDIDATE_ERROR_NOT_FOUND));
-
-
                 candidate.setCvState(
                         success
                                 ? NextStepConstant.CV_EMBEDDING_STATE_DONE
                                 : NextStepConstant.CV_EMBEDDING_STATE_ERROR
                 );
+                if (candidate.getCv() != null && !candidate.getCv().isEmpty()) {
+                    String newCvPath = fileService.moveCvToPermanentFolder(candidate.getId(), candidate.getCv());
+                    candidate.setCv(newCvPath);
+                }
+                
                 candidateRepository.save(candidate);
             } else {
                 log.warn("Ignored unknown cmd: {}", cmd);

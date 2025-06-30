@@ -29,6 +29,8 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.StandardCopyOption;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
@@ -106,10 +108,11 @@ public class FileService {
                     typeFolder = "/" + companyId + typeFolder;
                 }
             }
-            Long candidateId= null;;
+            
             if (uploadFileForm.getType().equals("CV")) {
-                candidateId = userService.getAddInfoFromToken().getAccountId();
-                typeFolder = typeFolder + File.separator + candidateId;
+                LocalDate currentDate = LocalDate.now();
+                String dateFolder = currentDate.format(DateTimeFormatter.ofPattern("ddMMyyyy"));
+                typeFolder = typeFolder + File.separator + dateFolder + "_tmp";
             }
 
             Path fileStorageLocation = Paths.get(uploadDir + typeFolder).toAbsolutePath().normalize();
@@ -241,5 +244,85 @@ public class FileService {
             return  builderPermission.toString();
         }
         return null;
+    }
+
+    public String moveCvToPermanentFolder(Long candidateId, String currentCvPath) {
+        if (currentCvPath == null || currentCvPath.isEmpty()) {
+            return currentCvPath;
+        }
+        try {
+            String fileName = new File(currentCvPath).getName();
+            String newCvPath = "/CV/" + candidateId + "/" + fileName;
+            Path sourcePath = Paths.get(uploadDir + currentCvPath);
+            Path destPath = Paths.get(uploadDir + newCvPath);
+            Files.createDirectories(destPath.getParent());
+            Files.move(sourcePath, destPath, StandardCopyOption.REPLACE_EXISTING);
+            log.info("Moved CV file for candidate {} from {} to {}", 
+                    candidateId, currentCvPath, newCvPath);
+            return newCvPath;
+        } catch (Exception e) {
+            log.error("Failed to move CV file for candidate {}: {}", candidateId, e.getMessage());
+            return currentCvPath;
+        }
+    }
+    
+
+    public void cleanupTemporaryFolders() {
+        try {
+            Path uploadPath = Paths.get(uploadDir);
+            if (!Files.exists(uploadPath)) {
+                return;
+            }
+            
+            LocalDate sevenDaysAgo = LocalDate.now().minusDays(7);
+
+            Files.walk(uploadPath, 2)
+                .filter(Files::isDirectory)
+                .filter(path -> {
+                    String folderName = path.getFileName().toString();
+                    return folderName.endsWith("_tmp");
+                })
+                .forEach(tmpFolder -> {
+                    try {
+                        LocalDate folderDate = extractDateFromFolderName(tmpFolder.getFileName().toString());
+                        if (folderDate != null && folderDate.isBefore(sevenDaysAgo)) {
+                            deleteDirectoryRecursively(tmpFolder);
+                            log.info("Deleted temporary folder: {}", tmpFolder);
+                        }
+                    } catch (Exception e) {
+                        log.error("Error processing temporary folder {}: {}", tmpFolder, e.getMessage());
+                    }
+                });
+                
+        } catch (Exception e) {
+            log.error("Error during temporary folder cleanup: {}", e.getMessage());
+        }
+    }
+
+    private LocalDate extractDateFromFolderName(String folderName) {
+        try {
+            String dateString = folderName.replace("_tmp", "");
+
+            DateTimeFormatter formatter = DateTimeFormatter.ofPattern("ddMMyyyy");
+            return LocalDate.parse(dateString, formatter);
+        } catch (Exception e) {
+            log.warn("Could not parse date from folder name: {}", folderName);
+            return null;
+        }
+    }
+    private void deleteDirectoryRecursively(Path directory) {
+        try {
+            Files.walk(directory)
+                .sorted((p1, p2) -> -p1.compareTo(p2))
+                .forEach(path -> {
+                    try {
+                        Files.delete(path);
+                    } catch (IOException e) {
+                        log.error("Could not delete file/directory: {}", path, e);
+                    }
+                });
+        } catch (IOException e) {
+            log.error("Error deleting directory: {}", directory, e);
+        }
     }
 }
