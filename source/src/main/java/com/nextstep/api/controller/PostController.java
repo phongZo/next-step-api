@@ -10,13 +10,9 @@ import com.nextstep.api.exception.BadRequestException;
 import com.nextstep.api.form.post.CreatePostForm;
 import com.nextstep.api.form.post.UpdatePostForm;
 import com.nextstep.api.mapper.PostMapper;
-import com.nextstep.api.model.Company;
-import com.nextstep.api.model.Nation;
-import com.nextstep.api.model.Post;
+import com.nextstep.api.model.*;
 import com.nextstep.api.model.criteria.PostCriteria;
-import com.nextstep.api.repository.CompanyRepository;
-import com.nextstep.api.repository.NationRepository;
-import com.nextstep.api.repository.PostRepository;
+import com.nextstep.api.repository.*;
 import com.nextstep.api.service.rabbit.RabbitService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -31,7 +27,10 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/v1/post")
@@ -49,6 +48,10 @@ public class PostController extends ABasicController{
     PostMapper postMapper;
     @Autowired
     RabbitService rabbitService;
+    @Autowired
+    private CandidateRepository candidateRepository;
+    @Autowired
+    private CategoryRepository categoryRepository;
 
     @GetMapping(value = "/list", produces = MediaType.APPLICATION_JSON_VALUE)
     @PreAuthorize("hasRole('POST_L')")
@@ -117,6 +120,13 @@ public class PostController extends ABasicController{
                 throw new BadRequestException("Area not found", ErrorCode.NATION_ERROR_NOT_FOUND);
             }
         }
+        Category job = null;
+        if (createPostForm.getCategoryId() != null) {
+            job = categoryRepository.findById(createPostForm.getCategoryId()).orElse(null);
+            if (job == null) {
+                throw new BadRequestException("Category not found", ErrorCode.CATEGORY_ERROR_NOT_FOUND);
+            }
+        }
         
         String token = getCurrentToken();
         
@@ -124,6 +134,7 @@ public class PostController extends ABasicController{
         post.setState(NextStepConstant.POST_EMBEDDING_STATE_PENDING);
         post.setCompany(company);
         post.setArea(area);
+        post.setCategory(job);
         postRepository.save(post);
         rabbitService.processCvEmbeddingQueue(post.getId(), post.getDescription(), token);
         apiMessageDto.setMessage("Create post successfully");
@@ -163,6 +174,15 @@ public class PostController extends ABasicController{
             }
             post.setArea(area);
         }
+        
+        if (updatePostForm.getCategoryId() != null) {
+            Category job = categoryRepository.findById(updatePostForm.getCategoryId()).orElse(null);
+            if (job == null) {
+                throw new BadRequestException("Category not found", ErrorCode.CATEGORY_ERROR_NOT_FOUND);
+            }
+            post.setCategory(job);
+        }
+        
         postMapper.updateFromUpdatePostForm(post, updatePostForm);
         postRepository.save(post);
         apiMessageDto.setMessage("Update post successfully");
@@ -221,9 +241,20 @@ public class PostController extends ABasicController{
     ) {
         Specification<Post> specification = postCriteria.getSpecification();
         Page<Post> page = postRepository.findAll(specification, pageable);
-
+        List<PostDto> postDtos = postMapper.fromEntitiesToPostDtoList(page.getContent());
+        String token = getCurrentToken();
+        if (token != null && !token.isEmpty()) {
+            Long candidateId = getCurrentUser();
+            Candidate candidate = candidateRepository.findById(candidateId).orElse(null);
+            if (candidate != null && candidate.getFavoritePosts() != null) {
+                Set<Long> favoritePostIds = candidate.getFavoritePosts().stream()
+                        .map(Post::getId)
+                        .collect(Collectors.toSet());
+                postDtos.forEach(dto -> dto.setIsFavorite(favoritePostIds.contains(dto.getId())));
+            }
+        }
         ResponseListDto<List<PostDto>> responseListDto = new ResponseListDto<>(
-                postMapper.fromEntitiesToPostDtoList(page.getContent()),
+                postDtos,
                 page.getTotalElements(),
                 page.getTotalPages()
         );

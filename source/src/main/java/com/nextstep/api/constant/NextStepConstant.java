@@ -62,6 +62,10 @@ public class NextStepConstant {
 
     public static final String RESPONSE_CODE_SUCCESS = "200";
 
+    public static final Integer JOB_APPLICATION_STATE_PENDING = 0;
+    public static final Integer JOB_APPLICATION_STATE_APPROVED = 1;
+    public static final Integer JOB_APPLICATION_STATE_CANCELLED = 2;
+
     private NextStepConstant(){
         throw new IllegalStateException("Utility class");
     }

@@ -5,6 +5,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 
 public interface CompanyRepository extends JpaRepository<Company, Long>, JpaSpecificationExecutor<Company> {
-    boolean existsByNameAndStatus(String name, int status);
-    boolean existsByHotlineAndStatus(String name, int status);
+    boolean existsByNameAndStatus(String name, Integer status);
+    boolean existsByHotlineAndStatus(String hotline, Integer status);
 }

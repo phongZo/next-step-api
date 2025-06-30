@@ -59,4 +59,6 @@ public class UpdatePostForm {
     @NotNull(message = "areaId can not be null")
     @ApiModelProperty(name = "areaId",required = true)
     private Long areaId;
+    @ApiModelProperty(name = "categoryId")
+    private Long categoryId;
 }

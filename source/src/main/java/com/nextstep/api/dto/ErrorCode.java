@@ -131,4 +131,10 @@ public class ErrorCode {
      * */
     public static final String CANDIDATE_ERROR_EXIST = "ERROR-CANDIDATE-0000";
     public static final String CANDIDATE_ERROR_NOT_FOUND = "ERROR-CANDIDATE-0001";
+
+    /**
+     * Starting error code JobApplication
+     * */
+    public static final String JOB_APPLICATION_ERROR_EXIST = "ERROR-CANDIDATE-0000";
+    public static final String JOB_APPLICATION_ERROR_NOT_FOUND = "ERROR-CANDIDATE-0001";
 }
