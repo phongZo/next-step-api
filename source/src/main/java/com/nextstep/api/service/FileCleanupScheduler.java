@@ -12,7 +12,7 @@ public class FileCleanupScheduler {
     @Autowired
     private FileService fileService;
 
-    @Scheduled(cron = "0 0 2 * * ?")
+    @Scheduled(cron = "0 0 0 * * ?")
     public void cleanupTemporaryFolders() {
         log.info("Starting scheduled cleanup of temporary folders...");
         try {
