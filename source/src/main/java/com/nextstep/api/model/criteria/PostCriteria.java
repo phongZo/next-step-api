@@ -67,19 +67,17 @@ public class PostCriteria {
                 if (getCategoryKind() != null) {
                     predicates.add(cb.equal(root.get("category").get("kind"), getCategoryKind()));
                 }
-                if(getProvinceIds() != null && !getProvinceIds().isEmpty() ||
-                        (getDistrictIds() != null && !getDistrictIds().isEmpty())
-                ){
-                    Join<Post, Nation> nationJoin = root.join("nation", JoinType.INNER);
-                    List<Predicate> locPreds = new ArrayList<>();
-                    if (getProvinceIds() != null && !getProvinceIds().isEmpty()) {
-                        locPreds.add(nationJoin.get("parent").get("id").in(getProvinceIds()));
-                    }
+                if ((getProvinceIds() != null && !getProvinceIds().isEmpty()) ||
+                    (getDistrictIds() != null && !getDistrictIds().isEmpty())) {
+                    Join<Post, Nation> nationJoin = root.join("area", JoinType.INNER);
                     if (getDistrictIds() != null && !getDistrictIds().isEmpty()) {
-                        locPreds.add(nationJoin.get("id").in(getDistrictIds()));
+                        predicates.add(nationJoin.get("id").in(getDistrictIds()));
+                    } else if (getProvinceIds() != null && !getProvinceIds().isEmpty()) {
+                        predicates.add(cb.and(
+                            cb.isNotNull(nationJoin.get("parent")),
+                            nationJoin.get("parent").get("id").in(getProvinceIds())
+                        ));
                     }
-                    predicates.add(cb.or(locPreds.toArray(new Predicate[predicates.size()]))
-                    );
                 }
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
