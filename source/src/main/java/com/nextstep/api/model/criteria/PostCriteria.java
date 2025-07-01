@@ -24,6 +24,7 @@ public class PostCriteria {
     private Integer categoryKind;
     private List<Long> provinceIds;
     private List<Long> districtIds;
+    private List<Long> wardIds;
 
     public Specification<Post> getSpecification() {
         return new Specification<Post>(){
@@ -68,15 +69,14 @@ public class PostCriteria {
                     predicates.add(cb.equal(root.get("category").get("kind"), getCategoryKind()));
                 }
                 if ((getProvinceIds() != null && !getProvinceIds().isEmpty()) ||
-                    (getDistrictIds() != null && !getDistrictIds().isEmpty())) {
-                    Join<Post, Nation> nationJoin = root.join("area", JoinType.INNER);
-                    if (getDistrictIds() != null && !getDistrictIds().isEmpty()) {
-                        predicates.add(nationJoin.get("id").in(getDistrictIds()));
+                    (getDistrictIds() != null && !getDistrictIds().isEmpty()) ||
+                    (getWardIds() != null && !getWardIds().isEmpty())) {
+                    if (getWardIds() != null && !getWardIds().isEmpty()) {
+                        predicates.add(root.get("ward").get("id").in(getWardIds()));
+                    } else if (getDistrictIds() != null && !getDistrictIds().isEmpty()) {
+                        predicates.add(root.get("district").get("id").in(getDistrictIds()));
                     } else if (getProvinceIds() != null && !getProvinceIds().isEmpty()) {
-                        predicates.add(cb.and(
-                            cb.isNotNull(nationJoin.get("parent")),
-                            nationJoin.get("parent").get("id").in(getProvinceIds())
-                        ));
+                        predicates.add(root.get("province").get("id").in(getProvinceIds()));
                     }
                 }
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));

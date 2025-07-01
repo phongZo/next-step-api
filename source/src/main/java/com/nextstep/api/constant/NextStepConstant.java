@@ -19,7 +19,7 @@ public class NextStepConstant {
 
     public static final Integer NATION_KIND_PROVINCE = 1;
     public static final Integer NATION_KIND_DISTRICT = 2;
-    public static final Integer NATION_KIND_COMMUNE = 3;
+    public static final Integer NATION_KIND_WARD  = 3;
 
     public static final Integer GROUP_KIND_ADMIN = 1;
     public static final Integer GROUP_KIND_MANAGER = 2;

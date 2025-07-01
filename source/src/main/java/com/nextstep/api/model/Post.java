@@ -53,5 +53,14 @@ public class Post extends Auditable<String>{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "category_id", nullable = true)
     private Category category;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "province_id",nullable = true)
+    private Nation province;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "district_id",nullable = true)
+    private Nation district;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "ward_id",nullable = true)
+    private Nation ward;
 
 }

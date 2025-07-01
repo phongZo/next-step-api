@@ -1,7 +1,9 @@
 package com.nextstep.api.form.post;
 
+import com.nextstep.api.constant.NextStepConstant;
 import com.nextstep.api.validation.PostContractType;
 import com.nextstep.api.validation.PostType;
+import com.nextstep.api.validation.NationKind;
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiModelProperty;
 import lombok.Data;
@@ -59,6 +61,12 @@ public class UpdatePostForm {
     @NotNull(message = "areaId can not be null")
     @ApiModelProperty(name = "areaId",required = true)
     private Long areaId;
-    @ApiModelProperty(name = "categoryId")
+    @ApiModelProperty(name = "categoryId",required = true)
     private Long categoryId;
+    @ApiModelProperty(name = "provinceId",required = true)
+    private Long provinceId;
+    @ApiModelProperty(name = "districtId",required = true)
+    private Long districtId;
+    @ApiModelProperty(name = "wardId",required = true)
+    private Long wardId;
 }
