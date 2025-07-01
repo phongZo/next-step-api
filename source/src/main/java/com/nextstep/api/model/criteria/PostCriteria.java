@@ -1,10 +1,7 @@
 package com.nextstep.api.model.criteria;
 
 
-import com.nextstep.api.model.Category;
-import com.nextstep.api.model.Company;
-import com.nextstep.api.model.Employee;
-import com.nextstep.api.model.Post;
+import com.nextstep.api.model.*;
 import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
@@ -25,6 +22,8 @@ public class PostCriteria {
     private String companyName;
     private Long categoryId;
     private Integer categoryKind;
+    private List<Long> provinceIds;
+    private List<Long> districtIds;
 
     public Specification<Post> getSpecification() {
         return new Specification<Post>(){
@@ -67,6 +66,20 @@ public class PostCriteria {
                 }
                 if (getCategoryKind() != null) {
                     predicates.add(cb.equal(root.get("category").get("kind"), getCategoryKind()));
+                }
+                if(getProvinceIds() != null && !getProvinceIds().isEmpty() ||
+                        (getDistrictIds() != null && !getDistrictIds().isEmpty())
+                ){
+                    Join<Post, Nation> nationJoin = root.join("nation", JoinType.INNER);
+                    List<Predicate> locPreds = new ArrayList<>();
+                    if (getProvinceIds() != null && !getProvinceIds().isEmpty()) {
+                        locPreds.add(nationJoin.get("parent").get("id").in(getProvinceIds()));
+                    }
+                    if (getDistrictIds() != null && !getDistrictIds().isEmpty()) {
+                        locPreds.add(nationJoin.get("id").in(getDistrictIds()));
+                    }
+                    predicates.add(cb.or(locPreds.toArray(new Predicate[predicates.size()]))
+                    );
                 }
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
