@@ -110,13 +110,6 @@ public class PostController extends ABasicController{
             throw new BadRequestException("Company not found", ErrorCode.COMPANY_ERROR_NOT_FOUND);
         }
 
-        Nation area = null;
-        if (createPostForm.getAreaId() != null) {
-            area = nationRepository.findById(createPostForm.getAreaId()).orElse(null);
-            if (area == null) {
-                throw new BadRequestException("Area not found", ErrorCode.NATION_ERROR_NOT_FOUND);
-            }
-        }
         Category job = null;
         if (createPostForm.getCategoryId() != null) {
             job = categoryRepository.findById(createPostForm.getCategoryId()).orElse(null);
@@ -151,7 +144,6 @@ public class PostController extends ABasicController{
 
         post.setState(NextStepConstant.POST_EMBEDDING_STATE_PENDING);
         post.setCompany(company);
-        post.setArea(area);
         post.setCategory(job);
         postRepository.save(post);
         rabbitService.processCvEmbeddingQueue(post.getId(), post.getDescription(), token);
@@ -185,13 +177,6 @@ public class PostController extends ABasicController{
             throw new BadRequestException("You can only update posts of your company", ErrorCode.POST_ERROR_NOT_FOUND);
         }
 
-        if (updatePostForm.getAreaId() != null) {
-            Nation area = nationRepository.findById(updatePostForm.getAreaId()).orElse(null);
-            if (area == null) {
-                throw new BadRequestException("Area not found", ErrorCode.NATION_ERROR_NOT_FOUND);
-            }
-            post.setArea(area);
-        }
         
         if (updatePostForm.getCategoryId() != null) {
             Category job = categoryRepository.findById(updatePostForm.getCategoryId()).orElse(null);

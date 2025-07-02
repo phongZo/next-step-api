@@ -58,9 +58,6 @@ public class UpdatePostForm {
     @NotNull(message = "maxSalary can not be null")
     @ApiModelProperty(name = "maxSalary", required = true)
     private BigDecimal maxSalary;
-    @NotNull(message = "areaId can not be null")
-    @ApiModelProperty(name = "areaId",required = true)
-    private Long areaId;
     @ApiModelProperty(name = "categoryId",required = true)
     private Long categoryId;
     @ApiModelProperty(name = "provinceId",required = true)
