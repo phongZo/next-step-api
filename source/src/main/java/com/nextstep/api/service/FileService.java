@@ -252,7 +252,7 @@ public class FileService {
         }
         try {
             String fileName = new File(currentCvPath).getName();
-            String newCvPath = File.separator + candidateId + File.separator + fileName;
+            String newCvPath = File.separator + "CV" + File.separator + candidateId + File.separator + fileName;
             Path sourcePath = Paths.get(uploadDir + currentCvPath);
             Path destPath = Paths.get(uploadDir + newCvPath);
             Files.createDirectories(destPath.getParent());
