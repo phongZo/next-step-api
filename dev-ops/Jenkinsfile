@@ -60,24 +60,14 @@ def buildDev(){
     if (_BRANCH_NAME.matches(TARTGET_BRANCH_DEPLOY)) {
 
         stage ("Build source") {
-          // LẤY Maven/JDK từ Global Tool Configuration (tên phải khớp bạn đã khai báo)
-          def JDK_HOME   = tool 'JDK11'
-          def MAVEN_HOME = tool 'Maven 3.9.9'
-
-          withEnv([
-            "JAVA_HOME=${JDK_HOME}",
-            "PATH+JAVA=${JDK_HOME}/bin",
-            "PATH+MAVEN=${MAVEN_HOME}/bin"
-          ]) {
-            sh """
-              set -euxo pipefail
-              cp -r source/* dev-ops/
-              cd dev-ops
-              mkdir -p src/main/resources
-              cp -f config/* src/main/resources/ || true
-              mvn -B -DskipTests clean package
-            """
-          }
+            withEnv( ["PATH+MAVEN=/usr/local/src/apache-maven/bin"] ) {
+                sh """
+                    cp -r source/* dev-ops/
+                    cd dev-ops
+                    cp config/* src/main/resources/
+                    mvn clean package -Dmaven.test.skip
+                """
+            }
         }
 
         stage("Upload to remote") {
