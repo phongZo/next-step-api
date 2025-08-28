@@ -22,7 +22,7 @@ public class NationKindValidation implements ConstraintValidator<NationKind,Inte
         }
         if(!Objects.equals(kind, NextStepConstant.NATION_KIND_PROVINCE) &&
                 !Objects.equals(kind, NextStepConstant.NATION_KIND_DISTRICT) &&
-                !Objects.equals(kind, NextStepConstant.NATION_KIND_COMMUNE)) {
+                !Objects.equals(kind, NextStepConstant.NATION_KIND_WARD)) {
             return false;
         }
         return true;

@@ -26,10 +26,7 @@ import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RestController
@@ -113,13 +110,6 @@ public class PostController extends ABasicController{
             throw new BadRequestException("Company not found", ErrorCode.COMPANY_ERROR_NOT_FOUND);
         }
 
-        Nation area = null;
-        if (createPostForm.getAreaId() != null) {
-            area = nationRepository.findById(createPostForm.getAreaId()).orElse(null);
-            if (area == null) {
-                throw new BadRequestException("Area not found", ErrorCode.NATION_ERROR_NOT_FOUND);
-            }
-        }
         Category job = null;
         if (createPostForm.getCategoryId() != null) {
             job = categoryRepository.findById(createPostForm.getCategoryId()).orElse(null);
@@ -127,13 +117,33 @@ public class PostController extends ABasicController{
                 throw new BadRequestException("Category not found", ErrorCode.CATEGORY_ERROR_NOT_FOUND);
             }
         }
-        
+        Post post = postMapper.fromCreatePostFormToEntity(createPostForm);
+        if (createPostForm.getProvinceId() != null) {
+            Nation province = nationRepository.findById(createPostForm.getProvinceId()).orElse(null);
+            if (province == null || !Objects.equals(province.getKind(), NextStepConstant.NATION_KIND_PROVINCE)) {
+                throw new BadRequestException("provinceId must be a valid province", ErrorCode.NATION_ERROR_NOT_FOUND);
+            }
+            post.setProvince(province);
+        }
+        if (createPostForm.getDistrictId() != null) {
+            Nation district = nationRepository.findById(createPostForm.getDistrictId()).orElse(null);
+            if (district == null || !Objects.equals(district.getKind(), NextStepConstant.NATION_KIND_DISTRICT)) {
+                throw new BadRequestException("districtId must be a valid district", ErrorCode.NATION_ERROR_NOT_FOUND);
+            }
+            post.setDistrict(district);
+        }
+        if (createPostForm.getWardId() != null) {
+            Nation ward = nationRepository.findById(createPostForm.getWardId()).orElse(null);
+            if (ward == null || !Objects.equals(ward.getKind(), NextStepConstant.NATION_KIND_WARD)) {
+                throw new BadRequestException("wardId must be a valid ward", ErrorCode.NATION_ERROR_NOT_FOUND);
+            }
+            post.setWard(ward);
+        }
         String token = getCurrentToken();
         
-        Post post = postMapper.fromCreatePostFormToEntity(createPostForm);
+
         post.setState(NextStepConstant.POST_EMBEDDING_STATE_PENDING);
         post.setCompany(company);
-        post.setArea(area);
         post.setCategory(job);
         postRepository.save(post);
         rabbitService.processCvEmbeddingQueue(post.getId(), post.getDescription(), token);
@@ -167,13 +177,6 @@ public class PostController extends ABasicController{
             throw new BadRequestException("You can only update posts of your company", ErrorCode.POST_ERROR_NOT_FOUND);
         }
 
-        if (updatePostForm.getAreaId() != null) {
-            Nation area = nationRepository.findById(updatePostForm.getAreaId()).orElse(null);
-            if (area == null) {
-                throw new BadRequestException("Area not found", ErrorCode.NATION_ERROR_NOT_FOUND);
-            }
-            post.setArea(area);
-        }
         
         if (updatePostForm.getCategoryId() != null) {
             Category job = categoryRepository.findById(updatePostForm.getCategoryId()).orElse(null);
@@ -181,6 +184,28 @@ public class PostController extends ABasicController{
                 throw new BadRequestException("Category not found", ErrorCode.CATEGORY_ERROR_NOT_FOUND);
             }
             post.setCategory(job);
+        }
+        
+        if (updatePostForm.getProvinceId() != null) {
+            Nation province = nationRepository.findById(updatePostForm.getProvinceId()).orElse(null);
+            if (province == null || !Objects.equals(province.getKind(), NextStepConstant.NATION_KIND_PROVINCE)) {
+                throw new BadRequestException("provinceId must be a valid province", ErrorCode.NATION_ERROR_NOT_FOUND);
+            }
+            post.setProvince(province);
+        }
+        if (updatePostForm.getDistrictId() != null) {
+            Nation district = nationRepository.findById(updatePostForm.getDistrictId()).orElse(null);
+            if (district == null || !Objects.equals(district.getKind(), NextStepConstant.NATION_KIND_DISTRICT)) {
+                throw new BadRequestException("districtId must be a valid district", ErrorCode.NATION_ERROR_NOT_FOUND);
+            }
+            post.setDistrict(district);
+        }
+        if (updatePostForm.getWardId() != null) {
+            Nation ward = nationRepository.findById(updatePostForm.getWardId()).orElse(null);
+            if (ward == null || !Objects.equals(ward.getKind(), NextStepConstant.NATION_KIND_WARD)) {
+                throw new BadRequestException("wardId must be a valid ward", ErrorCode.NATION_ERROR_NOT_FOUND);
+            }
+            post.setWard(ward);
         }
         
         postMapper.updateFromUpdatePostForm(post, updatePostForm);

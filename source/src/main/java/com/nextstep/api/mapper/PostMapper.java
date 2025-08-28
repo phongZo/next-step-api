@@ -50,7 +50,9 @@ public interface PostMapper {
     @Mapping(source = "totalSlot", target = "totalSlot")
     @Mapping(source = "minSalary", target = "minSalary")
     @Mapping(source = "maxSalary", target = "maxSalary")
-    @Mapping(source = "area", target = "area")
+    @Mapping(source = "province", target = "province")
+    @Mapping(source = "district", target = "district")
+    @Mapping(source = "ward", target = "ward")
     @BeanMapping(ignoreByDefault = true)
     @Named("fromEntityToPostAdminDto")
     PostAdminDto fromEntityToPostAdminDto(Post post);
@@ -87,7 +89,9 @@ public interface PostMapper {
     @Mapping(source = "totalSlot", target = "totalSlot")
     @Mapping(source = "minSalary", target = "minSalary")
     @Mapping(source = "maxSalary", target = "maxSalary")
-    @Mapping(source = "area", target = "area")
+    @Mapping(source = "province", target = "province")
+    @Mapping(source = "district", target = "district")
+    @Mapping(source = "ward", target = "ward")
     @BeanMapping(ignoreByDefault = true)
     @Named("fromEntityToPostDto")
     PostDto fromEntityToPostDto(Post post);

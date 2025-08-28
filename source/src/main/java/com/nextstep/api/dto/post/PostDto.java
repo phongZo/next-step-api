@@ -40,6 +40,12 @@ public class PostDto {
     private BigDecimal maxSalary;
     @ApiModelProperty(name = "area")
     private NationDto area;
+    @ApiModelProperty(name = "province")
+    private NationDto province;
+    @ApiModelProperty(name = "district")
+    private NationDto district;
+    @ApiModelProperty(name = "ward")
+    private NationDto ward;
     @ApiModelProperty(name = "isFavorite")
     private Boolean isFavorite = false;
 

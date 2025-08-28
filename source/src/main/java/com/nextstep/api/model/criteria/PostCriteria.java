@@ -1,10 +1,7 @@
 package com.nextstep.api.model.criteria;
 
 
-import com.nextstep.api.model.Category;
-import com.nextstep.api.model.Company;
-import com.nextstep.api.model.Employee;
-import com.nextstep.api.model.Post;
+import com.nextstep.api.model.*;
 import lombok.Data;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.util.StringUtils;
@@ -25,6 +22,9 @@ public class PostCriteria {
     private String companyName;
     private Long categoryId;
     private Integer categoryKind;
+    private List<Long> provinceIds;
+    private List<Long> districtIds;
+    private List<Long> wardIds;
 
     public Specification<Post> getSpecification() {
         return new Specification<Post>(){
@@ -67,6 +67,17 @@ public class PostCriteria {
                 }
                 if (getCategoryKind() != null) {
                     predicates.add(cb.equal(root.get("category").get("kind"), getCategoryKind()));
+                }
+                if ((getProvinceIds() != null && !getProvinceIds().isEmpty()) ||
+                    (getDistrictIds() != null && !getDistrictIds().isEmpty()) ||
+                    (getWardIds() != null && !getWardIds().isEmpty())) {
+                    if (getWardIds() != null && !getWardIds().isEmpty()) {
+                        predicates.add(root.get("ward").get("id").in(getWardIds()));
+                    } else if (getDistrictIds() != null && !getDistrictIds().isEmpty()) {
+                        predicates.add(root.get("district").get("id").in(getDistrictIds()));
+                    } else if (getProvinceIds() != null && !getProvinceIds().isEmpty()) {
+                        predicates.add(root.get("province").get("id").in(getProvinceIds()));
+                    }
                 }
                 return cb.and(predicates.toArray(new Predicate[predicates.size()]));
             }
