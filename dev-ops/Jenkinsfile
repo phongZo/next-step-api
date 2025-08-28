@@ -14,7 +14,7 @@ LOG_PATH="/var/log/nextstep/api"
 LOG_FILE_NAME="next-step-api.log"
 
 PORT_DEV=10001
-HOST_DEV="192.168.1.5"
+HOST_DEV="192.168.155.11"
 
 
 BUILD_FOLER="dev-ops"
